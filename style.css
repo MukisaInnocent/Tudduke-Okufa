@@ -1,0 +1,83 @@
+body {
+font-family: Arial, sans-serif;
+margin: 0;
+background: #f9f9f9;
+color: #222;
+}
+header {
+background: #b30000;
+color: white;
+padding: 20px;
+text-align: center;
+}
+nav a {
+color: white;
+margin: 0 10px;
+text-decoration: none;
+}
+.hero {
+background: #e60000;
+color: white;
+padding: 60px 20px;
+text-align: center;
+}
+section {
+padding: 20px;
+}
+footer {
+text-align: center;
+padding: 10px;
+}
+    section {
+  padding: 20px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #ccc; /* line between sections */
+    }
+}
+section:nth-child(even) {
+  background-color: #f9f9f9; /* alternate background */
+}
+
+.video-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
+  gap: 20px; /* space between videos */
+}
+
+.video-container {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+}
+
+.video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Responsive: stack on smaller screens */
+@media (max-width: 900px) {
+  .video-row {
+    grid-template-columns: repeat(2, 1fr); /* 2 columns */
+  }
+}
+
+@media (max-width: 600px) {
+  .video-row {
+    grid-template-columns: 1fr; /* 1 column */
+  }
+}
+  /* Hamburger */
+.menu-toggle {
+  position: absolute;
+  left: 20px;
+  font-size: 1.8rem;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: white;
+  }

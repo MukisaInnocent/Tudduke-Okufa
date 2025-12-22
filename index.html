@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tudduke Okufa Ministry</title>
+
+<style>
+:root {
+  --brand: #b30000;
+  --bg: #f4f4f4;
+  --text: #333;
+  --radius: 14px;
+}
+
+/* RESET */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* HEADER */
+.page-header {
+  height: 80px;
+  background: var(--brand);
+  color: white;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1002;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+}
+
+.menu-toggle {
+  font-size: 1.8rem;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  margin-right: 16px;
+}
+
+.header-text h1 {
+  font-size: 1.6rem;
+  letter-spacing: 1px;
+}
+
+.header-text p {
+  font-size: 0.85rem;
+  opacity: 0.95;
+}
+
+/* SIDEBAR */
+aside#sidebar {
+  position: fixed;
+  top: 0;
+  left: -260px;
+  width: 260px;
+  height: 100vh;
+  background: white;
+  padding: 90px 20px 20px;
+  border-right: 1px solid #ddd;
+  transition: left 0.3s ease;
+  z-index: 1001;
+}
+
+aside#sidebar.active {
+  left: 0;
+}
+
+aside a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  background: #fff;
+  border-radius: 14px;
+  text-decoration: none;
+  color: var(--brand);
+  font-weight: bold;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease;
+}
+
+aside a:hover {
+  transform: translateY(-2px);
+}
+
+aside a i {
+  width: 22px;
+  height: 22px;
+}
+
+/* OVERLAY */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 1000;
+}
+
+.overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* HERO */
+.hero {
+  margin-top: 80px;
+  height: 350px;
+  background: url('https://images.unsplash.com/photo-1526045612212-70caf35c14df?auto=format&fit=crop&w=1200&q=60')
+    center / cover no-repeat;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+}
+
+.hero h2 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.hero p {
+  font-size: 1.1rem;
+  margin-bottom: 25px;
+}
+
+/* CTA BUTTONS */
+.cta-buttons {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.cta-buttons a {
+  background: var(--brand);
+  color: white;
+  padding: 12px 20px;
+  border-radius: var(--radius);
+  text-decoration: none;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
+
+.cta-buttons a:hover {
+  background: #8a0000;
+}
+
+/* CONTENT */
+.main-content {
+  max-width: 900px;
+  margin: auto;
+  padding: 30px 20px;
+}
+
+.content-block {
+  background: white;
+  padding: 30px;
+  border-radius: var(--radius);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+}
+
+.content-block h2 {
+  text-align: center;
+  color: var(--brand);
+  margin-bottom: 16px;
+}
+
+/* FOOTER */
+footer {
+  text-align: center;
+  padding: 20px;
+  background: #111;
+  color: #ccc;
+  margin-top: 40px;
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+  .header-text p {
+    display: none;
+  }
+
+  .hero {
+    height: 280px;
+  }
+
+  .hero h2 {
+    font-size: 1.6rem;
+  }
+
+  aside#sidebar {
+    width: 230px;
+  }
+
+  aside a {
+    padding: 16px;
+    font-size: 1rem;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="page-header">
+  <button class="menu-toggle" id="menuToggle">☰</button>
+  <div class="header-text">
+    <h1>TUDDUKE OKUFA</h1>
+    <p>Preparing People for the Second Coming of Jesus Christ</p>
+  </div>
+</header>
+
+<!-- SIDEBAR -->
+<aside id="sidebar">
+  <a href="index.html"><i data-feather="home"></i>Home</a>
+  <a href="videos.html"><i data-feather="video"></i>Videos</a>
+  <a href="sermons.html"><i data-feather="book-open"></i>Sermons</a>
+  <a href="donate.html"><i data-feather="heart"></i>Donate</a>
+  <a href="livestream.html"><i data-feather="tv"></i>Live</a>
+</aside>
+
+<div class="overlay" id="overlay"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <h2>“For God so loved the world…”</h2>
+  <p>Led by Servant Kiviri John Mark</p>
+
+  <div class="cta-buttons">
+    <a href="livestream.html"><i data-feather="tv"></i> Watch Live</a>
+    <a href="sermons.html"><i data-feather="book-open"></i> Daily Sermons</a>
+    <a href="donate.html"><i data-feather="heart"></i> Support Ministry</a>
+    <a href="kids/index.html"><i data-feather="heart"></i> Kids Section</a>
+  </div>
+</section>
+
+<!-- CONTENT -->
+<main class="main-content">
+  <section class="content-block">
+    <h2>Welcome to Tudduke Okufa Ministry</h2>
+    <p>
+      Tudduke Okufa Ministry is committed to preaching the Gospel and preparing believers
+      for the return of Jesus Christ our Savior. We stand firmly on the truth of Scripture
+      and the blessed hope of His soon coming.
+    </p>
+  </section>
+</main>
+
+<!-- FOOTER -->
+<footer>
+  © 2025 Tudduke Okufa Ministry
+</footer>
+
+<!-- SCRIPTS -->
+<script src="https://unpkg.com/feather-icons"></script>
+
+<script>
+const sidebar = document.getElementById("sidebar");
+const overlay = document.getElementById("overlay");
+const toggleBtn = document.getElementById("menuToggle");
+const sidebarLinks = sidebar.querySelectorAll("a");
+
+toggleBtn.addEventListener("click", () => {
+  sidebar.classList.toggle("active");
+  overlay.classList.toggle("active");
+});
+
+overlay.addEventListener("click", closeSidebar);
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") closeSidebar();
+});
+
+/* AUTO CLOSE ON LINK CLICK */
+sidebarLinks.forEach(link => {
+  link.addEventListener("click", closeSidebar);
+});
+
+function closeSidebar() {
+  sidebar.classList.remove("active");
+  overlay.classList.remove("active");
+}
+
+feather.replace();
+</script>
+
+</body>
+</html>

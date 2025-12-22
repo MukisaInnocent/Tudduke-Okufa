@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Videos | Tudduke Okufa</title>
+
+<style>
+:root {
+  --brand: #b30000;
+  --bg: #f4f4f4;
+  --text: #333;
+  --radius: 14px;
+}
+
+/* RESET */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* HEADER */
+.page-header {
+  height: 80px;
+  background: var(--brand);
+  color: white;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1002;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+}
+
+.menu-toggle {
+  font-size: 1.7rem;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  margin-right: 12px;
+}
+
+.page-header h1 {
+  flex: 1;
+  text-align: center;
+  font-size: 1.5rem;
+}
+
+.header-search input {
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: none;
+  width: 240px;
+  max-width: 60vw;
+  text-align: center;
+}
+
+/* SIDEBAR */
+aside#sidebar {
+  position: fixed;
+  top: 0;
+  left: -260px;
+  width: 260px;
+  height: 100vh;
+  background: #fff;
+  padding: 90px 20px 20px;
+  border-right: 1px solid #ddd;
+  transition: left 0.3s ease;
+  z-index: 1001;
+}
+
+aside#sidebar.active {
+  left: 0;
+}
+
+aside a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  background: white;
+  border-radius: var(--radius);
+  text-decoration: none;
+  color: var(--brand);
+  font-weight: bold;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease;
+}
+
+aside a:hover {
+  transform: translateY(-2px);
+}
+
+aside a i {
+  width: 22px;
+  height: 22px;
+}
+
+/* OVERLAY */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 1000;
+}
+
+.overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* VIDEO GRID */
+.video-row {
+  margin: 110px 20px 30px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center;
+}
+
+.video-container {
+  flex: 1 1 300px;
+  max-width: 380px;
+}
+
+.thumb {
+  position: relative;
+  cursor: pointer;
+}
+
+.thumb img {
+  width: 100%;
+  display: block;
+  border-radius: 12px;
+}
+
+.play-btn {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 60px;
+  color: white;
+  background: rgba(0,0,0,0.35);
+  border-radius: 12px;
+}
+
+.video-container iframe {
+  width: 100%;
+  height: 215px;
+  border-radius: 12px;
+  border: none;
+}
+
+.video-container h3 {
+  font-size: 14px;
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+  .page-header h1 {
+    font-size: 1.3rem;
+  }
+
+  .header-search input {
+    width: 180px;
+  }
+
+  aside#sidebar {
+    width: 230px;
+  }
+
+  aside a {
+    padding: 16px;
+    font-size: 1rem;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="page-header">
+  <button class="menu-toggle" id="menuToggle">☰</button>
+  <h1>Sermon Videos</h1>
+  <div class="header-search">
+    <input type="text" id="searchInput" placeholder="Search sermons...">
+  </div>
+</header>
+
+<!-- SIDEBAR -->
+<aside id="sidebar">
+  <a href="index.html"><i data-feather="home"></i>Home</a>
+  <a href="videos.html"><i data-feather="video"></i>Videos</a>
+  <a href="sermons.html"><i data-feather="book-open"></i>Sermons</a>
+  <a href="donate.html"><i data-feather="heart"></i>Donate</a>
+  <a href="livestream.html"><i data-feather="tv"></i>Live</a>
+</aside>
+
+<div class="overlay" id="overlay"></div>
+
+<!-- VIDEOS -->
+<section class="video-row" id="videos">
+  <p>Loading sermons...</p>
+</section>
+
+<!-- SCRIPTS -->
+<script src="https://www.youtube.com/iframe_api"></script>
+<script src="https://unpkg.com/feather-icons"></script>
+
+<script>
+/* ============ CONFIG ============ */
+const API_KEY = "AIzaSyDkSgTK7TuY4Pglpk3vPB9yYaR6Wmf4uiI";
+const CHANNEL_ID = "UCDsOIE3HRX412EbbPzW6XxQ";
+
+/* ============ ELEMENTS ============ */
+const container = document.getElementById("videos");
+const searchInput = document.getElementById("searchInput");
+const sidebar = document.getElementById("sidebar");
+const overlay = document.getElementById("overlay");
+const toggleBtn = document.getElementById("menuToggle");
+const sidebarLinks = sidebar.querySelectorAll("a");
+
+/* ============ STATE ============ */
+let allVideos = [];
+let activePlayer = null;
+
+/* ============ SIDEBAR ============ */
+toggleBtn.addEventListener("click", () => {
+  sidebar.classList.toggle("active");
+  overlay.classList.toggle("active");
+});
+
+overlay.addEventListener("click", closeSidebar);
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") closeSidebar();
+});
+
+sidebarLinks.forEach(link => {
+  link.addEventListener("click", closeSidebar);
+});
+
+function closeSidebar() {
+  sidebar.classList.remove("active");
+  overlay.classList.remove("active");
+}
+
+/* ============ LOAD VIDEOS ============ */
+async function loadAllVideos() {
+  try {
+    const channelRes = await fetch(
+      `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${CHANNEL_ID}&key=${API_KEY}`
+    );
+    const channelData = await channelRes.json();
+    const uploadsId = channelData.items[0].contentDetails.relatedPlaylists.uploads;
+
+    let pageToken = "";
+    allVideos = [];
+
+    do {
+      const res = await fetch(
+        `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${uploadsId}&pageToken=${pageToken}&key=${API_KEY}`
+      );
+      const data = await res.json();
+      allVideos.push(...data.items);
+      pageToken = data.nextPageToken || "";
+    } while (pageToken);
+
+    renderVideos(allVideos);
+  } catch {
+    container.innerHTML = "<p style='color:red'>Failed to load sermons.</p>";
+  }
+}
+
+/* ============ RENDER ============ */
+function renderVideos(videos) {
+  container.innerHTML = "";
+  if (!videos.length) {
+    container.innerHTML = "<p>No videos found.</p>";
+    return;
+  }
+
+  videos.forEach(v => {
+    const id = v.snippet.resourceId.videoId;
+    const title = v.snippet.title;
+
+    const div = document.createElement("div");
+    div.className = "video-container";
+    div.innerHTML = `
+      <div class="thumb" data-id="${id}">
+        <img src="https://i.ytimg.com/vi/${id}/hqdefault.jpg" loading="lazy">
+        <div class="play-btn">▶</div>
+      </div>
+      <h3>${title}</h3>
+    `;
+    container.appendChild(div);
+  });
+}
+
+/* ============ PLAY ============ */
+container.addEventListener("click", e => {
+  const thumb = e.target.closest(".thumb");
+  if (!thumb) return;
+
+  const videoId = thumb.dataset.id;
+  const iframe = document.createElement("iframe");
+  iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1`;
+  iframe.allowFullscreen = true;
+
+  thumb.replaceWith(iframe);
+
+  new YT.Player(iframe, {
+    events: {
+      onStateChange: e => {
+        if (e.data === YT.PlayerState.PLAYING) {
+          if (activePlayer && activePlayer !== e.target) {
+            activePlayer.pauseVideo();
+          }
+          activePlayer = e.target;
+        }
+      }
+    }
+  });
+});
+
+/* ============ SEARCH ============ */
+let timer;
+searchInput.addEventListener("input", () => {
+  clearTimeout(timer);
+  timer = setTimeout(() => {
+    const q = searchInput.value.toLowerCase();
+    renderVideos(allVideos.filter(v =>
+      v.snippet.title.toLowerCase().includes(q)
+    ));
+  }, 200);
+});
+
+/* INIT */
+loadAllVideos();
+feather.replace();
+</script>
+
+</body>
+</html>

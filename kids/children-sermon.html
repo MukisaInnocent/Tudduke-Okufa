@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Children Sermons | Tudduke Okufa Kids</title>
+
+<style>
+:root{
+  --brand:#b30000;
+  --bg:#f4f4f4;
+  --card:#fff;
+  --radius:16px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  font-family:Arial,sans-serif;
+  background:var(--bg);
+  color:#333;
+}
+
+/* ===== HEADER ===== */
+header{
+  position:fixed;
+  top:0;left:0;right:0;
+  height:80px;
+  background:var(--brand);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  padding:0 20px;
+  z-index:1002;
+}
+
+.menu-toggle{
+  font-size:1.8rem;
+  background:none;
+  border:none;
+  color:#fff;
+  cursor:pointer;
+  margin-right:16px;
+}
+
+header h1{font-size:1.5rem}
+header p{font-size:.85rem;opacity:.9}
+
+/* ===== SIDEBAR ===== */
+aside{
+  position:fixed;
+  top:0;
+  left:-260px;
+  width:260px;
+  height:100vh;
+  background:#fff;
+  padding:90px 20px 20px;
+  transition:left .3s ease;
+  z-index:1001;
+}
+
+aside.active{left:0}
+
+aside a{
+  display:block;
+  padding:14px 16px;
+  margin-bottom:12px;
+  border-radius:14px;
+  text-decoration:none;
+  color:var(--brand);
+  font-weight:bold;
+  box-shadow:0 4px 8px rgba(0,0,0,.08);
+}
+
+/* ===== OVERLAY ===== */
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.35);
+  opacity:0;
+  pointer-events:none;
+  transition:.2s;
+  z-index:1000;
+}
+.overlay.active{
+  opacity:1;
+  pointer-events:auto;
+}
+
+/* ===== MAIN ===== */
+.container{
+  max-width:1000px;
+  margin:120px auto 40px;
+  padding:0 20px;
+}
+
+h2{
+  color:var(--brand);
+  text-align:center;
+  margin-bottom:10px;
+}
+
+.intro{
+  text-align:center;
+  max-width:600px;
+  margin:0 auto 30px;
+  font-size:1rem;
+}
+
+/* ===== SERMON CARDS ===== */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:20px;
+}
+
+.card{
+  background:var(--card);
+  border-radius:var(--radius);
+  padding:22px;
+  box-shadow:0 6px 16px rgba(0,0,0,.1);
+  animation:fadeUp .6s ease;
+}
+
+.card h3{
+  color:var(--brand);
+  margin-bottom:8px;
+}
+
+.card p{
+  font-size:.9rem;
+  margin-bottom:14px;
+}
+
+.card button{
+  background:var(--brand);
+  color:#fff;
+  border:none;
+  padding:10px 16px;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:bold;
+}
+.card button:hover{opacity:.9}
+
+/* ===== FOOTER ===== */
+footer{
+  background:#111;
+  color:#ccc;
+  text-align:center;
+  padding:20px;
+  margin-top:40px;
+}
+
+/* ===== ANIMATION ===== */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(10px)}
+  to{opacity:1;transform:translateY(0)}
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header>
+  <button class="menu-toggle" id="menuToggle">☰</button>
+  <div>
+    <h1>TUDDUKE OKUFA</h1>
+    <p>Preparing People for the Second Coming of Jesus Christ</p>
+  </div>
+</header>
+
+<!-- SIDEBAR -->
+<aside id="sidebar">
+  <a href="index.html">Kids Home</a>
+  <a href="videos.html">Kids Videos</a>
+  <a href="quiz.html">Bible Quiz</a>
+  <a href="memory-verses.html">Memory Verses</a>
+  <a href="children-sermon.html">Children Sermons</a>
+</aside>
+
+<div class="overlay" id="overlay"></div>
+
+<!-- MAIN -->
+<div class="container">
+  <h2>Children Sermons</h2>
+  <p class="intro">
+    Short and simple sermons to help children understand God’s Word
+    and apply it in their daily lives.
+  </p>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Jesus Loves Me</h3>
+      <p>Teaching children about God’s unconditional love.</p>
+      <button onclick="alert('Sermon content coming soon')">Read Sermon</button>
+    </div>
+
+    <div class="card">
+      <h3>Obeying God</h3>
+      <p>Learning why obedience brings blessings.</p>
+      <button onclick="alert('Sermon content coming soon')">Read Sermon</button>
+    </div>
+
+    <div class="card">
+      <h3>Trusting God</h3>
+      <p>Encouraging children to trust God in all situations.</p>
+      <button onclick="alert('Sermon content coming soon')">Read Sermon</button>
+    </div>
+
+    <div class="card">
+      <h3>Being Kind</h3>
+      <p>Showing kindness as Jesus taught us.</p>
+      <button onclick="alert('Sermon content coming soon')">Read Sermon</button>
+    </div>
+  </div>
+</div>
+
+<footer>© 2025 Tudduke Okufa Ministry</footer>
+
+<script>
+/* ===== SIDEBAR ===== */
+const sidebar=document.getElementById("sidebar");
+const overlay=document.getElementById("overlay");
+const toggle=document.getElementById("menuToggle");
+
+toggle.onclick=()=>{
+  sidebar.classList.toggle("active");
+  overlay.classList.toggle("active");
+};
+
+overlay.onclick=closeSidebar;
+sidebar.querySelectorAll("a").forEach(a=>a.onclick=closeSidebar);
+
+function closeSidebar(){
+  sidebar.classList.remove("active");
+  overlay.classList.remove("active");
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Donate | Support the Ministry</title>
+
+<link rel="stylesheet" href="stylefordonation.css">
+
+<style>
+:root {
+  --brand: #b30000;
+  --bg-light: #f9f9f9;
+}
+
+/* RESET */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: var(--bg-light);
+  line-height: 1.6;
+}
+
+/* HEADER */
+.page-header {
+  height: 80px;
+  background: var(--brand);
+  color: white;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  position: sticky;
+  top: 0;
+  z-index: 1002;
+}
+
+.menu-toggle {
+  font-size: 1.8rem;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  margin-right: 16px;
+}
+
+.header-text h1 {
+  font-size: 1.6rem;
+}
+
+.header-text p {
+  font-size: 0.9rem;
+  opacity: 0.95;
+}
+
+/* SIDEBAR */
+aside#sidebar {
+  position: fixed;
+  top: 0;
+  left: -260px;
+  width: 260px;
+  height: 100vh;
+  background: #fff;
+  padding: 90px 20px 20px;
+  border-right: 1px solid #ddd;
+  transition: left 0.3s ease;
+  z-index: 1001;
+}
+
+aside#sidebar.active {
+  left: 0;
+}
+
+aside a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  background: white;
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--brand);
+  font-weight: bold;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease;
+}
+
+aside a:hover {
+  transform: translateY(-2px);
+}
+
+aside a i {
+  width: 22px;
+  height: 22px;
+}
+
+/* OVERLAY */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 1000;
+}
+
+.overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* MAIN CONTENT */
+.main-content {
+  padding: 30px 20px;
+  max-width: 1100px;
+  margin: auto;
+}
+
+.donate-section {
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+}
+
+/* SCRIPTURE */
+.scripture {
+  background: #fff5f5;
+  padding: 18px;
+  border-left: 5px solid var(--brand);
+  margin-bottom: 30px;
+  font-style: italic;
+}
+
+/* PAYMENTS */
+.payments {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+}
+
+.payment-card {
+  background: #fff;
+  padding: 22px;
+  border-radius: 16px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+}
+
+.payment-card h3 {
+  margin-bottom: 12px;
+}
+
+/* CTA */
+.cta {
+  margin-top: 40px;
+  text-align: center;
+}
+
+/* FOOTER */
+footer {
+  text-align: center;
+  padding: 20px;
+  background: #111;
+  color: #ccc;
+  margin-top: 40px;
+}
+
+/* MOBILE IMPROVEMENTS */
+@media (max-width: 600px) {
+  .header-text h1 {
+    font-size: 1.3rem;
+  }
+
+  .header-text p {
+    display: none;
+  }
+
+  .donate-section {
+    padding: 20px;
+  }
+
+  aside#sidebar {
+    width: 230px;
+  }
+
+  aside a {
+    padding: 16px;
+    font-size: 1rem;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header class="page-header">
+  <button class="menu-toggle" id="menuToggle">☰</button>
+  <div class="header-text">
+    <h1>Support the Ministry</h1>
+    <p>Give faithfully as the Lord leads you</p>
+  </div>
+</header>
+
+<!-- SIDEBAR -->
+<aside id="sidebar">
+  <a href="index.html"><i data-feather="home"></i>Home</a>
+  <a href="videos.html"><i data-feather="video"></i>Videos</a>
+  <a href="sermons.html"><i data-feather="book-open"></i>Sermons</a>
+  <a href="donate.html"><i data-feather="heart"></i>Donate</a>
+  <a href="livestream.html"><i data-feather="tv"></i>Live</a>
+</aside>
+
+<div class="overlay" id="overlay"></div>
+
+<main class="main-content">
+  <section class="donate-section">
+
+    <div class="scripture">
+      “Honor the Lord with your wealth.” — <strong>Proverbs 3:9</strong>
+    </div>
+
+    <h2>Ways You Can Give</h2>
+
+    <div class="payments">
+
+      <div class="payment-card">
+        <h3>📱 Mobile Money</h3>
+        <p><strong>MTN:</strong> +256 XXX XXX XXX</p>
+        <p><strong>Airtel:</strong> +256 XXX XXX XXX</p>
+      </div>
+
+      <div class="payment-card">
+        <h3>🏦 Bank Transfer</h3>
+        <p>Details coming soon</p>
+      </div>
+
+      <div class="payment-card">
+        <h3>💳 International</h3>
+        <p>PayPal / Visa / Stripe</p>
+      </div>
+
+      <div class="payment-card">
+        <h3>🙏 Partnership</h3>
+        <ul>
+          <li>Outreach</li>
+          <li>Equipment</li>
+          <li>Prayer support</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="cta">
+      <h2>Thank You for Standing With Us</h2>
+      <p>May God bless you abundantly.</p>
+    </div>
+
+  </section>
+</main>
+
+<footer>
+  © 2025 Ministry Name • All Rights Reserved
+</footer>
+
+<!-- SCRIPTS -->
+<script src="https://unpkg.com/feather-icons"></script>
+
+<script>
+const sidebar = document.getElementById("sidebar");
+const overlay = document.getElementById("overlay");
+const toggleBtn = document.getElementById("menuToggle");
+const sidebarLinks = sidebar.querySelectorAll("a");
+
+toggleBtn.addEventListener("click", () => {
+  sidebar.classList.toggle("active");
+  overlay.classList.toggle("active");
+});
+
+overlay.addEventListener("click", closeSidebar);
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") closeSidebar();
+});
+
+/* AUTO-CLOSE ON LINK CLICK */
+sidebarLinks.forEach(link => {
+  link.addEventListener("click", closeSidebar);
+});
+
+function closeSidebar() {
+  sidebar.classList.remove("active");
+  overlay.classList.remove("active");
+}
+
+feather.replace();
+</script>
+
+</body>
+</html>
