@@ -8,21 +8,23 @@
 <style>
 :root{
   --brand:#b30000;
-  --bg:#111;
-  --card:#000;
-  --radius:14px;
+  --bg:#0d0d0d;
+  --card:#1a1a1a;
+  --radius:16px;
+  --glass:rgba(255,255,255,0.08);
 }
 
 /* RESET */
-*{box-sizing:border-box;margin:0;padding:0}
+*{margin:0;padding:0;box-sizing:border-box}
 
 body{
-  font-family:Arial,sans-serif;
+  font-family:Arial, sans-serif;
   background:var(--bg);
   color:#fff;
+  overflow-x:hidden;
 }
 
-/* ===== HEADER ===== */
+/* HEADER */
 header{
   position:fixed;
   top:0;left:0;right:0;
@@ -32,28 +34,29 @@ header{
   align-items:center;
   padding:0 20px;
   z-index:1002;
-  box-shadow:0 2px 6px rgba(0,0,0,.3);
+  box-shadow:0 2px 8px rgba(0,0,0,.4);
 }
 
 .menu-toggle{
-  font-size:1.8rem;
+  font-size:1.9rem;
   background:none;
   border:none;
   color:#fff;
   cursor:pointer;
-  margin-right:16px;
+  margin-right:18px;
 }
 
 .header-text h1{
-  font-size:1.6rem;
+  font-size:1.7rem;
+  font-weight:900;
   letter-spacing:1px;
 }
 .header-text p{
-  font-size:.85rem;
+  font-size:.9rem;
   opacity:.95;
 }
 
-/* ===== SIDEBAR ===== */
+/* SIDEBAR */
 aside#sidebar{
   position:fixed;
   top:0;
@@ -66,7 +69,6 @@ aside#sidebar{
   transition:left .3s ease;
   z-index:1001;
 }
-
 aside#sidebar.active{left:0}
 
 aside a{
@@ -76,24 +78,25 @@ aside a{
   padding:14px 16px;
   margin-bottom:14px;
   background:#fff;
-  border-radius:14px;
+  border-radius:var(--radius);
   text-decoration:none;
   color:var(--brand);
   font-weight:bold;
-  box-shadow:0 4px 8px rgba(0,0,0,.08);
-  transition:.2s ease;
+  box-shadow:0 4px 10px rgba(0,0,0,.1);
+  transition:.25s ease;
+}
+aside a:hover{
+  transform:translateX(6px);
 }
 
-aside a:hover{transform:translateY(-2px)}
-
-/* ===== OVERLAY ===== */
+/* OVERLAY */
 .overlay{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.4);
+  background:rgba(0,0,0,.45);
   opacity:0;
   pointer-events:none;
-  transition:.2s;
+  transition:.25s;
   z-index:1000;
 }
 .overlay.active{
@@ -101,49 +104,72 @@ aside a:hover{transform:translateY(-2px)}
   pointer-events:auto;
 }
 
-/* ===== MAIN ===== */
+/* MAIN */
 main{
-  margin-top:100px;
+  margin-top:110px;
   padding:20px;
-  max-width:1000px;
+  max-width:1100px;
   margin-inline:auto;
   text-align:center;
 }
 
 main h2{
   margin-bottom:20px;
-  color:#fff;
+  font-size:1.8rem;
+  font-weight:700;
 }
 
-/* ===== VIDEO ===== */
+/* VIDEO WRAPPER */
+.video-wrapper{
+  position:relative;
+  background:var(--glass);
+  backdrop-filter:blur(12px);
+  padding:14px;
+  border-radius:var(--radius);
+  box-shadow:0 10px 40px rgba(0,0,0,.6);
+}
+
+/* LIVE BADGE */
+.live-badge{
+  position:absolute;
+  top:18px;
+  left:18px;
+  background:var(--brand);
+  padding:6px 14px;
+  border-radius:20px;
+  font-weight:bold;
+  font-size:.9rem;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  box-shadow:0 0 12px rgba(255,0,0,.7);
+  z-index:10;
+  animation:pulse 1.4s infinite;
+}
+
+@keyframes pulse{
+  0%{box-shadow:0 0 6px rgba(255,0,0,.6)}
+  50%{box-shadow:0 0 14px rgba(255,0,0,1)}
+  100%{box-shadow:0 0 6px rgba(255,0,0,.6)}
+}
+
+/* VIDEO */
 .video-container{
   position:relative;
   padding-bottom:56.25%;
   height:0;
   overflow:hidden;
   border-radius:var(--radius);
-  box-shadow:0 10px 30px rgba(0,0,0,.6);
 }
-
-.video-container iframe,
-#fallbackMessage{
+.video-container iframe{
   position:absolute;
   inset:0;
   width:100%;
   height:100%;
+  border:none;
 }
 
-#fallbackMessage{
-  display:none;
-  background:#000;
-  color:#fff;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-  padding:20px;
-}
-
-/* ===== FOOTER ===== */
+/* FOOTER */
 footer{
   margin-top:40px;
   padding:20px;
@@ -152,7 +178,7 @@ footer{
   color:#aaa;
 }
 
-/* ===== MOBILE ===== */
+/* MOBILE */
 @media(max-width:600px){
   .header-text p{display:none}
   aside#sidebar{width:230px}
@@ -162,7 +188,6 @@ footer{
 
 <body>
 
-<!-- HEADER -->
 <header>
   <button class="menu-toggle" id="menuToggle">☰</button>
   <div class="header-text">
@@ -171,7 +196,6 @@ footer{
   </div>
 </header>
 
-<!-- SIDEBAR -->
 <aside id="sidebar">
   <a href="index.html"><i data-feather="home"></i>Home</a>
   <a href="videos.html"><i data-feather="video"></i>Videos</a>
@@ -182,32 +206,31 @@ footer{
 
 <div class="overlay" id="overlay"></div>
 
-<!-- MAIN -->
 <main>
-  <h2>Welcome to Our Live Stream</h2>
+  <h2>Our Live Stream Broadcast</h2>
 
-  <div class="video-container">
-    <iframe
-      id="liveFrame"
-      src="https://www.youtube.com/embed/live_stream?channel=UCdsoIE3HRX412EbbPzW6XxQ&autoplay=1&mute=1"
-      frameborder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen>
-    </iframe>
+  <div class="video-wrapper">
+    <div class="live-badge">🔴 LIVE</div>
 
-    <div id="fallbackMessage">
-      <h3>The live stream is currently offline</h3>
-      <p>Please check back later.</p>
+    <div class="video-container">
+      <iframe
+    id="liveFrame"
+    width="800"
+    height="450"
+    src="https://www.youtube.com/embed/TPhoTaGCYpg?autoplay=1&mute=1&rel=0"
+    title="YouTube Live Stream"
+    frameborder="0"
+    allow="autoplay; encrypted-media; picture-in-picture"
+    allowfullscreen>
+</iframe>
     </div>
   </div>
 </main>
 
-<!-- FOOTER -->
 <footer>
   © 2025 Tudduke Okufa Ministry
 </footer>
 
-<!-- SCRIPTS -->
 <script src="https://unpkg.com/feather-icons"></script>
 
 <script>
@@ -215,7 +238,6 @@ const sidebar=document.getElementById("sidebar");
 const overlay=document.getElementById("overlay");
 const toggleBtn=document.getElementById("menuToggle");
 
-/* SIDEBAR TOGGLE */
 toggleBtn.addEventListener("click",()=>{
   sidebar.classList.toggle("active");
   overlay.classList.toggle("active");
@@ -224,8 +246,6 @@ overlay.addEventListener("click",closeSidebar);
 document.addEventListener("keydown",e=>{
   if(e.key==="Escape")closeSidebar();
 });
-
-/* AUTO CLOSE ON LINK CLICK */
 sidebar.querySelectorAll("a").forEach(link=>{
   link.addEventListener("click",closeSidebar);
 });
@@ -233,14 +253,6 @@ function closeSidebar(){
   sidebar.classList.remove("active");
   overlay.classList.remove("active");
 }
-
-/* FALLBACK IF STREAM OFFLINE */
-setTimeout(()=>{
-  const iframe=document.getElementById("liveFrame");
-  if(!iframe.contentWindow || iframe.contentWindow.length===0){
-    document.getElementById("fallbackMessage").style.display="flex";
-  }
-},3000);
 
 feather.replace();
 </script>
