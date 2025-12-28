@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://yourapp.onrender.com/sitemap.xml
+
+Sitemap: https://tudduke-okufa.onrender.com/sitemap.xml
