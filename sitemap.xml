@@ -1,18 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Homepage -->
   <url>
     <loc>https://tudduke-okufa.onrender.com/</loc>
     <lastmod>2025-12-28</lastmod>
     <priority>1.0</priority>
   </url>
+
+  <!-- About Page -->
   <url>
-    <loc>https://tudduke-okufa.onrender.com/about</loc>
+    <loc>https://tudduke-okufa.onrender.com/livestream</loc>
     <lastmod>2025-12-28</lastmod>
     <priority>0.8</priority>
   </url>
+
+  <!-- Contact Page -->
   <url>
-    <loc>https://tudduke-okufa.onrender.com/contact</loc>
+    <loc>https:https://tudduke-okufa.onrender.com/sermons</loc>
     <lastmod>2025-12-28</lastmod>
     <priority>0.8</priority>
   </url>
+
+  <!-- Videos Page -->
+  <url>
+    <loc>https://tudduke-okufa.onrender.com/videos</loc>
+    <lastmod>2025-12-28</lastmod>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Teachings Page -->
+  <url>
+    <loc>https://tudduke-okufa.onrender.com/donate</loc>
+    <lastmod>2025-12-28</lastmod>
+    <priority>0.7</priority>
+  </url>
+
 </urlset>
