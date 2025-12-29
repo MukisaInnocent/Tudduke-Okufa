@@ -1,3 +1,6 @@
+// Load environment variables first
+require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 const { Pool } = require('pg');
@@ -14,9 +17,15 @@ const pool = new Pool({
 
 // Example route
 app.get('/api/sermons', async (req, res) => {
-  const result = await pool.query('SELECT * FROM sermons');
-  res.json(result.rows);
+  try {
+    const result = await pool.query('SELECT * FROM sermons');
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Database query failed' });
+  }
 });
 
+// Use Render’s provided PORT
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Backend running on port ${PORT}`));
