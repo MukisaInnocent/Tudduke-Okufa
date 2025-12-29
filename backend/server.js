@@ -15,7 +15,12 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }
 });
 
-// Example route
+// Root route for testing
+app.get('/', (req, res) => {
+  res.send('Hello from Tudduke Backend!');
+});
+
+// Example API route
 app.get('/api/sermons', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM sermons');
