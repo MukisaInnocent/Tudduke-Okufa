@@ -109,3 +109,33 @@ navLinks.forEach(link => {
     link.style.opacity = "1";
   });
 });
+
+document.getElementById('contactForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const name = document.getElementById('name').value;
+  const email = document.getElementById('email').value;
+  const message = document.getElementById('message').value;
+
+  try {
+    const res = await fetch('http://localhost:3000/api/contact', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ name, email, message })
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      document.getElementById('response').innerText = 'Message sent successfully!';
+      document.getElementById('contactForm').reset();
+    } else {
+      document.getElementById('response').innerText = 'Error sending message';
+    }
+
+  } catch (err) {
+    document.getElementById('response').innerText = 'Server not reachable';
+  }
+});

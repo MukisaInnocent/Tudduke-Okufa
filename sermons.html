@@ -12,16 +12,13 @@
   --text:#333;
   --card:#fff;
 }
-
 *{box-sizing:border-box}
-
 body{
   margin:0;
   font-family:Arial,sans-serif;
   background:var(--bg);
   color:var(--text);
 }
-
 /* ===== HEADER ===== */
 header{
   position:fixed;
@@ -35,7 +32,6 @@ header{
   padding:0 16px;
   z-index:1000;
 }
-
 .menu-toggle{
   font-size:1.6rem;
   background:none;
@@ -43,7 +39,6 @@ header{
   color:#fff;
   cursor:pointer;
 }
-
 .header-center{
   flex:1;
   text-align:center;
@@ -52,12 +47,7 @@ header{
   align-items:center;
   gap:6px;
 }
-
-.header-center h1{
-  margin:0;
-  font-size:1.5rem;
-}
-
+.header-center h1{margin:0;font-size:1.5rem}
 .search-bar input{
   padding:8px 14px;
   border-radius:20px;
@@ -66,7 +56,6 @@ header{
   max-width:70vw;
   text-align:center;
 }
-
 /* ===== SIDEBAR ===== */
 aside#sidebar{
   position:fixed;
@@ -81,10 +70,7 @@ aside#sidebar{
   z-index:1001;
   overflow-y:auto;
 }
-
 aside#sidebar.active{left:0}
-
-/* Sidebar links (same as Home page) */
 aside a{
   display:flex;
   align-items:center;
@@ -99,19 +85,12 @@ aside a{
   text-decoration:none;
   transition:.2s ease;
 }
-
 aside a:hover{
   transform:translateY(-2px);
   box-shadow:0 6px 12px rgba(0,0,0,.15);
   background:#fdfdfd;
 }
-
-aside a i{
-  width:22px;
-  height:22px;
-  stroke-width:2.2;
-}
-
+aside a i{width:22px;height:22px;stroke-width:2.2}
 /* ===== OVERLAY ===== */
 .overlay{
   position:fixed;
@@ -122,18 +101,13 @@ aside a i{
   transition:.2s;
   z-index:1000;
 }
-.overlay.active{
-  opacity:1;
-  pointer-events:auto;
-}
-
+.overlay.active{opacity:1;pointer-events:auto}
 /* ===== MAIN ===== */
 main{
   max-width:900px;
   margin:100px auto 30px;
   padding:0 16px;
 }
-
 h2{
   text-align:center;
   color:var(--brand);
@@ -141,7 +115,6 @@ h2{
   padding-bottom:6px;
   margin-top:40px;
 }
-
 article{
   background:var(--card);
   padding:16px;
@@ -149,9 +122,7 @@ article{
   border-radius:10px;
   box-shadow:0 2px 6px rgba(0,0,0,.1);
 }
-
 article p{margin:6px 0}
-
 /* ===== FOOTERS ===== */
 .doc-footer{
   text-align:center;
@@ -161,7 +132,6 @@ article p{margin:6px 0}
   border-radius:8px;
   font-style:italic;
 }
-
 footer.main-footer{
   background:var(--brand);
   color:#fff;
@@ -169,7 +139,6 @@ footer.main-footer{
   padding:20px;
   font-weight:bold;
 }
-
 /* ===== MOBILE ===== */
 @media(max-width:600px){
   .search-bar input{width:220px}
@@ -177,19 +146,16 @@ footer.main-footer{
 }
 </style>
 </head>
-
 <body>
 
 <header>
   <button class="menu-toggle" id="menuToggle">☰</button>
-
   <div class="header-center">
     <h1>Daily Sermons</h1>
     <div class="search-bar">
       <input type="text" id="searchInput" placeholder="Search sermons...">
     </div>
   </div>
-
   <div style="width:32px"></div>
 </header>
 
@@ -205,163 +171,7 @@ footer.main-footer{
 <div class="overlay" id="overlay"></div>
 
 <main id="sermons">
-    <!-- Topic 1: The Sabbath -->
-    <h2>The Sabbath</h2>
-    <article>
-        <p><strong>Scripture (KJV):</strong> Genesis 2:3</p>
-        <p>And God blessed the seventh day, and sanctified it: because that in it he had rested from all his work which God created and made.</p>
-        <p><em>Explanation:</em> God set apart the Sabbath as holy, a day of rest.</p>
-    </article>
-    <article>
-        <p><strong>Scripture (KJV):</strong> Exodus 20:8-10</p>
-        <p>Remember the sabbath day, to keep it holy. Six days shalt thou labour, and do all thy work: But the seventh day is the sabbath of the LORD thy God...</p>
-        <p><em>Explanation:</em> God commands His people to honor the Sabbath by resting from work.</p>
-    </article>
-    <article>
-        <p><strong>Scripture (KJV):</strong> Isaiah 58:13-14</p>
-        <p>If thou turn away thy foot from the sabbath, from doing thy pleasure on my holy day... Then shalt thou delight thyself in the LORD...</p>
-        <p><em>Explanation:</em> Honoring the Sabbath brings joy and blessings from God.</p>
-    </article>
-    <article>
-        <p><strong>Scripture (KJV):</strong> Mark 2:27</p>
-        <p>And he said unto them, The sabbath was made for man, and not man for the sabbath.</p>
-        <p><em>Explanation:</em> The Sabbath is a gift for mankind’s benefit, not a burden.</p>
-    </article>
-    <article>
-        <p><strong>Scripture (KJV):</strong> Hebrews 4:9-10</p>
-        <p>There remaineth therefore a rest to the people of God. For he that is entered into his rest, he also hath ceased from his own works, as God did from his.</p>
-        <p><em>Explanation:</em> The Sabbath points to the eternal rest we find in Christ.</p>
-    </article>
-    <article>
-        <p><strong>Scripture (KJV):</strong> Nehemiah 13:22</p>
-        <p>And I commanded the Levites that they should cleanse themselves, and that they should come and keep the gates, to sanctify the sabbath day...</p>
-        <p><em>Explanation:</em> Nehemiah ensured the Sabbath was guarded and kept holy.</p>
-    </article>
-    <article>
-        <p><strong>Scripture (KJV):</strong> Ezekiel 20:12</p>
-        <p>Moreover also I gave them my sabbaths, to be a sign between me and them, that they might know that I am the LORD that sanctify them.</p>
-        <p><em>Explanation:</em> The Sabbath is a sign of God’s covenant with His people.</p>
-    </article>
-
-    <!-- Topic 2: The Coming of Our Lord Jesus Christ -->
-    <h2>The Coming of Our Lord Jesus Christ</h2>
-    <article>
-        <p><strong>Scripture (KJV):</strong> Matthew 24:30</p>
-        <p>And then shall appear the sign of the Son of man in heaven... and they shall see the Son of man coming in the clouds of heaven with power and great glory.</p>
-        <p><em>Explanation:</em> Christ will return in glory, seen by all nations.</p>
-    </article>
-    <article>
-        <p><strong>Scripture (KJV):</strong> Acts 1:11</p>
-        <p>Ye men of Galilee, why stand ye gazing up into heaven? this same Jesus... shall so come in like manner as ye have seen him go into heaven.</p>
-        <p><em>Explanation:</em> Jesus will return the same way He ascended into heaven.</p>
-    </article>
-    <article>
-        <p><strong>Scripture (KJV):</strong> 1 Thessalonians 4:16-17</p>
-        <p>For the Lord himself shall descend from heaven with a shout... and the dead in Christ shall rise first: Then we which are alive... shall be caught up together with them in the clouds...</p>
-        <p><em>Explanation:</em> Believers will meet Christ in the air at His coming.</p>
-    </article>
-    <article>
-        <p><strong>Scripture (KJV):</strong> Revelation 1:7</p>
-        <p>Behold, he cometh with clouds; and every eye shall see him, and they also which pierced him...</p>
-        <p><em>Explanation:</em> Every eye will see Christ when He returns.</p>
-    </article>
-    <article>
-        <p><strong>Scripture (KJV):</strong> 2 Peter 3:10</p>
-        <p>But the day of the Lord will come as a thief in the night...</p>
-        <p><em>Explanation:</em> The coming of Christ will be sudden and unexpected.</p>
-    </article>
-    <article>
-        <p><strong>Scripture (KJV):</strong> Titus 2:13</p>
-        <p>Looking for that blessed hope, and the glorious appearing of the great God and our Saviour Jesus Christ.</p>
-        <p><em>Explanation:</em> Believers wait with hope for Christ’s glorious appearing.</p>
-    </article>
-    <article>
-        <p><strong>Scripture (KJV):</strong> Philippians 3:20-21</p>
-        <p>For our conversation is in heaven; from whence also we look for the Saviour... Who shall change our vile body, that it may be fashioned like unto his glorious body...</p>
-        <p><em>Explanation:</em> Christ will transform our bodies when He returns.</p>
-    </article>
-
-    <!-- Topic 3: The Gospel of Salvation -->
-    <h2>The Gospel of Salvation</h2>
-    <article>
-        <p><strong>Scripture (KJV):</strong> John 3:16</p>
-        <p>For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.</p>
-        <p><em>Explanation:</em> Salvation comes through faith in Jesus Christ.</p>
-    </article>
-    <article>
-        <p><strong>Scripture (KJV):</strong> Romans 10:9</p>
-        <p>That if thou shalt confess with thy mouth the Lord Jesus, and shalt believe in thine heart that God hath raised him from the dead, thou shalt be saved.</p>
-        <p><em>Explanation:</em> Confessing Christ and believing in His resurrection brings salvation.</p>
-    </article>
-    <article>
-        <p><strong>Scripture (KJV):</strong> Ephesians 2:8-9</p>
-        <p>For by grace are ye saved through faith; and that not of yourselves: it is the gift of God: Not of works, lest any man should boast.</p>
-        <p><em>Explanation:</em> Salvation is God’s gift, not earned by works.</p>
-    </article>
-    <article>
-        <p><strong>Scripture (KJV):</strong> Acts 4:12</p>
-        <p>Neither is there salvation in any other: for there is none other name under heaven given among men, whereby we must be saved.</p>
-        <p><em>Explanation:</em> Salvation is found only in Jesus Christ.</p>
-    </article>
-    <article>
-        <p><strong>Scripture (KJV):</strong> 1 Timothy 2:5</p>
-        <p>For there is one God, and one mediator between God and men, the man Christ Jesus.</p>
-        <p><em>Explanation:</em> Jesus is the only mediator between God and man.</p>
-    </article>
-    <article>
-        <p><strong>Scripture (KJV):</strong> 2 Corinthians 5:17</p>
-        <p>Therefore if any man be in Christ, he is a new creature: old things are passed away; behold, all things are become new.</p>
-        <p><em>Explanation:</em> In Christ, believers are made new creations.</p>
-    </article>
-    <article>
-        <p><strong>Scripture (KJV):</strong> Hebrews 7:25</p>
-        <p>Wherefore he is able also to save them to the uttermost that come unto God by him, seeing he ever liveth to make intercession for them.</p>
-        <p><em>Explanation:</em> Jesus saves completely and intercedes for believers.</p>
-    </article>
-
-    <!-- Topic 4: The Creation of Man -->
-    <h2>The Creation of Man</h2>
-    <article>
-        <p><strong>Scripture (KJV):</strong> Genesis 1:27</p>
-        <p>So God created man in his own image, in the image of God created he him; male and female created he them.</p>
-        <p><em>Explanation:</em> Humanity was created in God’s image, reflecting His likeness.</p>
-    </article>
-    <article>
-        <p><strong>Scripture (KJV):</strong> Genesis 2:7</p>
-        <p>And the LORD God formed man of the dust of the ground, and breathed into his nostrils the breath of life; and man became a living soul.</p>
-        <p><em>Explanation:</em> God gave man life by His own breath.</p>
-    </article>
-    <article>
-        <p><strong>Scripture (KJV):</strong> Psalm 8:4-5</p>
-        <p>What is man, that thou art mindful of him? ... For thou hast made him a little lower than the angels, and hast crowned him with glory and honour.</p>
-        <p><em>Explanation:</em> God honors mankind with dignity and responsibility over creation.</p>
-    </article>
-    <article>
-        <p><strong>Scripture (KJV):</strong> Psalm 139:14</p>
-        <p>I will praise thee; for I am fearfully and wonderfully made: marvellous are thy works; and that my soul knoweth right well.</p>
-        <p><em>Explanation:</em> Each person is wonderfully made by God’s design.</p>
-    </article>
-    <article>
-        <p><strong>Scripture (KJV):</strong> Ecclesiastes 12:7</p>
-        <p>Then shall the dust return to the earth as it was: and the spirit shall return unto God who gave it.</p>
-        <p><em>Explanation:</em> Our bodies return to dust, but our spirit belongs to God.</p>
-    </article>
-    <article>
-        <p><strong>Scripture (KJV):</strong> Job 33:4</p>
-        <p>The Spirit of God hath made me, and the breath of the Almighty hath given me life.</p>
-        <p><em>Explanation:</em> Our life comes directly from God’s Spirit.</p>
-    </article>
-    <article>
-        <p><strong>Scripture (KJV):</strong> 1 Corinthians 15:45</p>
-        <p>And so it is written, The first man Adam was made a living soul; the last Adam was made a quickening spirit.</p>
-        <p><em>Explanation:</em> Adam was given life, but Christ gives eternal life as the life-giving Spirit.</p>
-    </article>
-
-   <!-- Document footer (author credit) -->
-  <div class="doc-footer">
-    <p><strong>Author:</strong> Servant Kiviri John Mark</p>
-  </div>
-      
+  <!-- Sermons will be injected here dynamically -->
 </main>
 
 <footer class="main-footer">
@@ -370,35 +180,42 @@ footer.main-footer{
 
 <!-- SCRIPTS -->
 <script src="https://unpkg.com/feather-icons"></script>
-
 <script>
 const sidebar=document.getElementById("sidebar");
 const overlay=document.getElementById("overlay");
 const toggleBtn=document.getElementById("menuToggle");
 const searchInput=document.getElementById("searchInput");
+const sermonsContainer=document.getElementById("sermons");
 
 /* SIDEBAR */
-function openSidebar(){
-  sidebar.classList.add("active");
-  overlay.classList.add("active");
-}
-function closeSidebar(){
-  sidebar.classList.remove("active");
-  overlay.classList.remove("active");
-}
-
-toggleBtn.addEventListener("click",()=>{
-  sidebar.classList.contains("active")?closeSidebar():openSidebar();
-});
+function openSidebar(){sidebar.classList.add("active");overlay.classList.add("active");}
+function closeSidebar(){sidebar.classList.remove("active");overlay.classList.remove("active");}
+toggleBtn.addEventListener("click",()=>{sidebar.classList.contains("active")?closeSidebar():openSidebar();});
 overlay.addEventListener("click",closeSidebar);
-document.addEventListener("keydown",e=>{
-  if(e.key==="Escape")closeSidebar();
-});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSidebar();});
+sidebar.querySelectorAll("a").forEach(link=>{link.addEventListener("click",closeSidebar);});
 
-/* AUTO CLOSE */
-sidebar.querySelectorAll("a").forEach(link=>{
-  link.addEventListener("click",closeSidebar);
-});
+/* FETCH SERMONS FROM BACKEND */
+async function loadSermons(){
+  try {
+    const res = await fetch("https://Tudduke-DB.onrender.com/api/sermons"); // replace with your backend URL
+    const data = await res.json();
+    sermonsContainer.innerHTML = ""; // clear existing
+    data.forEach(s => {
+      const article = document.createElement("article");
+      article.innerHTML = `
+        <h2>${s.title}</h2>
+        <p><strong>Scripture:</strong> ${s.scripture}</p>
+        <p>${s.content}</p>
+      `;
+      sermonsContainer.appendChild(article);
+    });
+  } catch(err){
+    sermonsContainer.innerHTML = "<p style='color:red'>Failed to load sermons.</p>";
+    console.error(err);
+  }
+}
+loadSermons();
 
 /* SEARCH */
 searchInput.addEventListener("input",()=>{
@@ -411,6 +228,5 @@ searchInput.addEventListener("input",()=>{
 /* FEATHER ICONS */
 feather.replace();
 </script>
-
 </body>
 </html>
