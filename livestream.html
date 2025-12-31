@@ -207,22 +207,22 @@ footer{
 <div class="overlay" id="overlay"></div>
 
 <main>
-  <h2>Your watching Tudduke Okufa Television</h2>
+  <h2>You’re watching Tudduke Okufa Television</h2>
 
   <div class="video-wrapper">
     <div class="live-badge">🔴 LIVE</div>
 
     <div class="video-container">
       <iframe
-    id="liveFrame"
-    width="800"
-    height="450"
-    src="https://www.youtube.com/embed/nZL_mL-cBy4?autoplay=1&mute=1&rel=0"
-    title="YouTube Live Stream"
-    frameborder="0"
-    allow="autoplay; encrypted-media; picture-in-picture"
-    allowfullscreen>
-</iframe>
+        id="liveFrame"
+        width="800"
+        height="450"
+        src=""
+        title="YouTube Live Stream"
+        frameborder="0"
+        allow="autoplay; encrypted-media; picture-in-picture"
+        allowfullscreen>
+      </iframe>
     </div>
   </div>
 </main>
@@ -255,9 +255,37 @@ function closeSidebar(){
 }
 
 feather.replace();
+
+/* === YouTube Live Stream Auto Embed === */
+const API_KEY = "AIzaSyDkSgTK7TuY4Pglpk3vPB9yYaR6Wmf4uiI"; // replace with your YouTube API key
+const CHANNEL_ID = "UCDsOIE3HRX412EbbPzW6XxQ"; // replace with your channel ID
+const liveFrame = document.getElementById("liveFrame");
+
+async function checkLiveStream() {
+  const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&eventType=live&type=video&key=${API_KEY}`;
+  
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (data.items && data.items.length > 0) {
+      const liveVideoId = data.items[0].id.videoId;
+      liveFrame.src = `https://www.youtube.com/embed/${liveVideoId}?autoplay=1&mute=1&rel=0`;
+    } else {
+      liveFrame.src = "https://www.youtube.com/embed/nZL_mL-cBy4?rel=0"; // fallback video
+    }
+  } catch (error) {
+    console.error("Error fetching live stream:", error);
+    liveFrame.src = "https://www.youtube.com/embed/nZL_mL-cBy4?rel=0"; // fallback video
+  }
+}
+
+// Run once on load
+checkLiveStream();
+
+// Refresh every 5 minutes
+setInterval(checkLiveStream, 300000);
 </script>
 
 </body>
 </html>
-
-

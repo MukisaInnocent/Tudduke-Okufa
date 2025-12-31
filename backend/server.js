@@ -1,26 +1,36 @@
+/*********************************
+ * ENV & CORE IMPORTS
+ *********************************/
 require('dotenv').config();
 const express = require('express');
-const { Sequelize } = require('sequelize');
+const cors = require('cors');
+const path = require('path');
 
+/*********************************
+ * DATABASE & MODELS
+ *********************************/
+const { sequelize, ContactMessage } = require('./models');
+
+/*********************************
+ * APP INIT
+ *********************************/
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// PostgreSQL connection
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
-  dialect: 'postgres',
-  logging: false,
-  dialectOptions: {
-    ssl: process.env.NODE_ENV === 'production'
-      ? { require: true, rejectUnauthorized: false }
-      : false
-  }
-});
+/*********************************
+ * MIDDLEWARE (ORDER MATTERS)
+ *********************************/
+app.use(cors());
+app.use(express.json());
 
-// Test DB connection
+/*********************************
+ * DATABASE INIT
+ *********************************/
 (async () => {
   try {
     await sequelize.authenticate();
     console.log('✅ Database connected');
+
     await sequelize.sync();
     console.log('✅ Models synced');
   } catch (error) {
@@ -28,36 +38,59 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
   }
 })();
 
-app.use(express.json());
-
+/*********************************
+ * API ROUTES
+ *********************************/
 app.post('/api/contact', async (req, res) => {
   try {
     const { name, email, message } = req.body;
 
     if (!name || !email || !message) {
-      return res.status(400).json({ error: 'All fields are required' });
+      return res.status(400).json({
+        success: false,
+        error: 'All fields are required'
+      });
     }
 
-    // TEMP: just return data (DB comes next)
-    res.status(201).json({
-      success: true,
-      data: { name, email, message }
+    const savedMessage = await ContactMessage.create({
+      name,
+      email,
+      message
     });
 
+    res.status(201).json({
+      success: true,
+      message: 'Message saved successfully',
+      data: savedMessage
+    });
   } catch (err) {
-    res.status(500).json({ error: 'Server error' });
+    console.error('❌ Contact save error:', err);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to save message'
+    });
   }
 });
 
-
-// Test route
-app.get('/', (req, res) => {
-  res.json({ message: 'Tudduke Okufa API running 🚀' });
+/*********************************
+ * HEALTH CHECK
+ *********************************/
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'OK 🚀' });
 });
 
+/*********************************
+ * FRONTEND (STATIC FILES)
+ *********************************/
+app.use(express.static(path.join(__dirname, '../')));
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../test.html'));
+});
+
+/*********************************
+ * START SERVER
+ *********************************/
 app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
 });
-
-const cors = require('cors');
-app.use(cors());
