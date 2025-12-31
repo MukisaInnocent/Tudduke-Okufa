@@ -271,9 +271,32 @@ async function checkLiveStream() {
     if (data.items && data.items.length > 0) {
       const liveVideoId = data.items[0].id.videoId;
       liveFrame.src = `https://www.youtube.com/embed/${liveVideoId}?autoplay=1&mute=1&rel=0`;
-    } else {
-      liveFrame.src = "https://www.youtube.com/embed/nZL_mL-cBy4?rel=0"; // fallback video
-    }
+    } if (data.items && data.items.length > 0) {
+  const liveVideoId = data.items[0].id.videoId;
+  liveFrame.src = `https://www.youtube.com/embed/${liveVideoId}?autoplay=1&mute=1&rel=0`;
+  document.querySelector(".live-badge").style.display = "flex"; // show badge
+}   else {
+  // Hide the live badge
+  document.querySelector(".live-badge").style.display = "none";
+
+  // Show offline message instead of video
+  document.querySelector(".video-container").innerHTML = `
+    <div style="
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      height:100%;
+      color:#fff;
+      font-size:1.2rem;
+      font-weight:bold;
+      background:rgba(0,0,0,0.6);
+      border-radius:16px;
+    ">
+      📺 Tudduke Okufa is currently offline.<br>
+      Please check back later for our next live stream.
+    </div>
+  `;
+}
   } catch (error) {
     console.error("Error fetching live stream:", error);
     liveFrame.src = "https://www.youtube.com/embed/nZL_mL-cBy4?rel=0"; // fallback video
