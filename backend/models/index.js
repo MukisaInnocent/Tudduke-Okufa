@@ -30,11 +30,6 @@ Sermon.belongsTo(User, {
 module.exports = {
   sequelize,
   User,
-  Sermon
-};
-
-
-module.exports = {
-  sequelize,
+  Sermon,
   ContactMessage
 };

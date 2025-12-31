@@ -1,11 +1,11 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "type": "commonjs",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
-  "type": "commonjs",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
