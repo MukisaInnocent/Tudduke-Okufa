@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
   return sequelize.define(
-    'ContactMessage',
+    'contact_messages', // 👈 model name = table name
     {
       id: {
         type: DataTypes.INTEGER,
@@ -16,13 +16,13 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false
       },
       message: {
-        type: DataTypes.STRING(1000),
+        type: DataTypes.TEXT,
         allowNull: false
       }
     },
     {
-      tableName: 'contact_messages',
-      timestamps: true
+      timestamps: true,
+      freezeTableName: true // 👈 VERY IMPORTANT
     }
   );
 };
