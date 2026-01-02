@@ -31,7 +31,8 @@ app.use(express.json());
     await sequelize.authenticate();
     console.log('✅ Database connected');
 
-    await sequelize.sync();
+    // TEMP: force table alignment (remove after first success)
+    await sequelize.sync({ alter: true });
     console.log('✅ Models synced');
   } catch (error) {
     console.error('❌ Database error:', error);
@@ -43,6 +44,8 @@ app.use(express.json());
  *********************************/
 app.post('/api/contact', async (req, res) => {
   try {
+    console.log('📩 Incoming body:', req.body); // DEBUG
+
     const { name, email, message } = req.body;
 
     if (!name || !email || !message) {
@@ -69,6 +72,20 @@ app.post('/api/contact', async (req, res) => {
       success: false,
       error: 'Failed to save message'
     });
+  }
+});
+
+/*********************************
+ * DEBUG ROUTE (VERY IMPORTANT)
+ *********************************/
+app.get('/api/debug/messages', async (req, res) => {
+  try {
+    const messages = await ContactMessage.findAll({
+      order: [['createdAt', 'DESC']]
+    });
+    res.json(messages);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch messages' });
   }
 });
 
