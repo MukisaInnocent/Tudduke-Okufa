@@ -31,7 +31,7 @@ app.use(express.json());
     await sequelize.authenticate();
     console.log('✅ Database connected');
 
-    // TEMP: force table alignment (remove after first success)
+    // TEMP — run once, then remove alter:true
     await sequelize.sync({ alter: true });
     console.log('✅ Models synced');
   } catch (error) {
@@ -43,9 +43,9 @@ app.use(express.json());
  * API ROUTES
  *********************************/
 app.post('/api/contact', async (req, res) => {
-  try {
-    console.log('📩 Incoming body:', req.body); // DEBUG
+  console.log('📩 Incoming body:', req.body); // 🔥 DEBUG
 
+  try {
     const { name, email, message } = req.body;
 
     if (!name || !email || !message) {
@@ -63,7 +63,6 @@ app.post('/api/contact', async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: 'Message saved successfully',
       data: savedMessage
     });
   } catch (err) {
@@ -85,6 +84,7 @@ app.get('/api/debug/messages', async (req, res) => {
     });
     res.json(messages);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: 'Failed to fetch messages' });
   }
 });
@@ -100,10 +100,6 @@ app.get('/api/health', (req, res) => {
  * FRONTEND (STATIC FILES)
  *********************************/
 app.use(express.static(path.join(__dirname, '../')));
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../test.html'));
-});
 
 /*********************************
  * START SERVER

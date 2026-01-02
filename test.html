@@ -6,16 +6,56 @@
     <title>Document</title>
 </head>
 <body>
-    <form id="contactForm">
-  <input type="text" id="name" placeholder="Your Name" required />
-  <input type="email" id="email" placeholder="Your Email" required />
+   <form id="contactForm">
+  <input type="text" id="name" placeholder="Name" required />
+  <input type="email" id="email" placeholder="Email" required />
   <textarea id="message" placeholder="Message" required></textarea>
   <button type="submit">Send</button>
 </form>
 
 <p id="response"></p>
 
-<script src="script.js"></script>
+<script>
+document.getElementById('contactForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const name = document.getElementById('name').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const message = document.getElementById('message').value.trim();
+
+  console.log({ name, email, message }); // 🔥 DEBUG
+
+  try {
+    const res = await fetch(
+      'https://YOUR-BACKEND.onrender.com/api/contact',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name, email, message })
+      }
+    );
+
+    const data = await res.json();
+    console.log(data); // 🔥 DEBUG
+
+    if (data.success) {
+      document.getElementById('response').innerText =
+        '✅ Message sent successfully!';
+      document.getElementById('contactForm').reset();
+    } else {
+      document.getElementById('response').innerText =
+        '❌ ' + data.error;
+    }
+  } catch (err) {
+    console.error(err);
+    document.getElementById('response').innerText =
+      '❌ Server not reachable';
+  }
+});
+</script>
+
 
 </body>
 </html>

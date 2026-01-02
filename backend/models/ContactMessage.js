@@ -1,6 +1,8 @@
-module.exports = (sequelize, DataTypes) => {
+const { DataTypes } = require('sequelize');
+
+module.exports = (sequelize) => {
   return sequelize.define(
-    'contact_messages', // 👈 model name = table name
+    'ContactMessage',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -8,11 +10,11 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true
       },
       name: {
-        type: DataTypes.STRING(100),
+        type: DataTypes.STRING,
         allowNull: false
       },
       email: {
-        type: DataTypes.STRING(100),
+        type: DataTypes.STRING,
         allowNull: false
       },
       message: {
@@ -21,8 +23,8 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     {
-      timestamps: true,
-      freezeTableName: true // 👈 VERY IMPORTANT
+      tableName: 'contact_messages',
+      timestamps: true
     }
   );
 };
