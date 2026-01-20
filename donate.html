@@ -279,11 +279,33 @@
         display: none;
       }
 
-      /* Shift content */
+      /* Shift content and Center it in remaining space */
       .main-content,
       footer {
         margin-left: 260px;
         width: auto;
+        /* Remove max-width constraint from wrapper so it fills screen */
+        max-width: none;
+      }
+
+      /* Make main-content a flex container to center the inner section */
+      .main-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      /* Constraint transfers to the child */
+      .donate-section {
+        width: 100%;
+        max-width: 1100px;
+      }
+
+      /* Ensure footer content is also centered similarly */
+      .site-footer .footer-content {
+        max-width: 1100px;
+        margin: 0 auto 30px;
+        width: 100%;
       }
 
       /* Shift header title if needed, or just let it be. 
