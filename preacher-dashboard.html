@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Preacher Dashboard | Tudduke Okufa Ministry</title>
     <script src="https://unpkg.com/feather-icons"></script>
+    <script src="/socket.io/socket.io.js"></script>
 
     <style>
         :root {
@@ -439,6 +440,13 @@
         }
 
         loadSermons();
+
+        // Socket.io Real-time Updates
+        const socket = io();
+        socket.on('sermon_update', (data) => {
+            console.log('Sermon update received:', data);
+            loadSermons();
+        });
     </script>
 </body>
 

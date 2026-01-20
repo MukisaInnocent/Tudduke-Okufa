@@ -5,6 +5,8 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const http = require('http');
+const { Server } = require("socket.io");
 
 /*********************************
  * DATABASE & MODELS
@@ -26,7 +28,21 @@ const {
  * APP INIT
  *********************************/
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "*", // Allow all origins for simplicity in this setup
+    methods: ["GET", "POST", "PUT", "DELETE"]
+  }
+});
+
 const PORT = process.env.PORT || 3000;
+
+// Attach io to req for use in routes
+app.use((req, res, next) => {
+  req.io = io;
+  next();
+});
 
 /*********************************
  * MIDDLEWARE (ORDER MATTERS)
@@ -73,6 +89,8 @@ app.post('/api/contact', async (req, res) => {
       email,
       message
     });
+
+    req.io.emit('contact_message', savedMessage); // Real-time notify
 
     res.status(201).json({
       success: true,
@@ -155,6 +173,23 @@ app.post('/api/auth/register', async (req, res) => {
       ipAddress: req.ip
     });
 
+    // Real-time events
+    req.io.emit('user_registered', {
+      userid: user.userid,
+      fullname: user.fullname,
+      email: user.email,
+      roles: user.roles,
+      isSubscribed: user.isSubscribed,
+      registerdate: user.createdAt
+    });
+
+    req.io.emit('activity_log', {
+      createdAt: new Date(),
+      action: 'REGISTER',
+      userId: user.userid,
+      details: `New user: ${user.fullname} (${userRole})`
+    });
+
     res.status(201).json({ success: true, message: 'User registered successfully' });
   } catch (err) {
     console.error('Registration Error:', err);
@@ -181,10 +216,13 @@ app.post('/api/auth/login', async (req, res) => {
     );
 
     // Async Log
+    // Async Log
     ActivityLog.create({
       userId: user.userid,
       action: 'LOGIN',
       ipAddress: req.ip
+    }).then(log => {
+      req.io.emit('activity_log', log);
     }).catch(console.error);
 
     res.json({ success: true, token, user: { userid: user.userid, fullname: user.fullname, role: user.roles } });
@@ -209,6 +247,9 @@ app.post('/api/kids/sermons', authenticateToken, async (req, res) => {
       teacherName,
       userId: req.user.userid
     });
+
+    req.io.emit('kids_sermon_update', { action: 'create', sermon });
+
     res.status(201).json({ success: true, data: sermon });
   } catch (err) {
     console.error('Add Sermon Error:', err);
@@ -271,6 +312,8 @@ app.put('/api/kids/sermons/:id', authenticateToken, async (req, res) => {
       teacherName
     });
 
+    req.io.emit('kids_sermon_update', { action: 'update', sermon });
+
     res.json({ success: true, data: sermon });
   } catch (err) {
     console.error('Update Kids Sermon Error:', err);
@@ -292,6 +335,7 @@ app.delete('/api/kids/sermons/:id', authenticateToken, async (req, res) => {
     }
 
     await sermon.destroy();
+    req.io.emit('kids_sermon_update', { action: 'delete', id: req.params.id });
     res.json({ success: true, message: 'Sermon deleted' });
   } catch (err) {
     res.status(500).json({ error: 'Failed to delete sermon' });
@@ -336,6 +380,7 @@ app.post('/api/sermons', authenticateToken, async (req, res) => {
       examples,
       authorid: req.user.userid
     });
+    req.io.emit('sermon_update', { action: 'create', sermon });
     res.status(201).json({ success: true, data: sermon });
   } catch (err) {
     console.error('Create Sermon Error:', err);
@@ -364,6 +409,8 @@ app.put('/api/sermons/:id', authenticateToken, async (req, res) => {
       examples
     });
 
+    req.io.emit('sermon_update', { action: 'update', sermon });
+
     res.json({ success: true, data: sermon });
   } catch (err) {
     console.error('Update Sermon Error:', err);
@@ -383,6 +430,7 @@ app.delete('/api/sermons/:id', authenticateToken, async (req, res) => {
     }
 
     await sermon.destroy();
+    req.io.emit('sermon_update', { action: 'delete', id: req.params.id });
     res.json({ success: true, message: 'Sermon deleted' });
   } catch (err) {
     console.error('Delete Sermon Error:', err);
@@ -519,6 +567,8 @@ app.post('/api/donations', async (req, res) => {
       status: 'pending'
     });
 
+    req.io.emit('donation_received', donation);
+
     res.status(201).json({
       success: true,
       data: donation
@@ -560,6 +610,6 @@ app.use(express.static(path.join(__dirname, '../')));
 /*********************************
  * START SERVER
  *********************************/
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
 });

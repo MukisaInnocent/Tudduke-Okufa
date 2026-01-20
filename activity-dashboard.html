@@ -175,6 +175,7 @@
         </div>
     </div>
 
+    <script src="/socket.io/socket.io.js"></script>
     <script>
         async function loadData() {
             // Load Users
@@ -186,16 +187,7 @@
                 if (users.length === 0) {
                     userBody.innerHTML = '<tr><td colspan="6">No users found.</td></tr>';
                 } else {
-                    userBody.innerHTML = users.map(u => `
-                    <tr>
-                        <td>${u.userid}</td>
-                        <td>${u.fullname}</td>
-                        <td>${u.email}</td>
-                        <td>${u.roles}</td>
-                        <td><span class="badge badge-${u.isSubscribed}">${u.isSubscribed ? 'Yes' : 'No'}</span></td>
-                        <td>${new Date(u.registerdate).toLocaleDateString()}</td>
-                    </tr>
-                `).join('');
+                    userBody.innerHTML = users.map(u => createUserRow(u)).join('');
                 }
             } catch (e) { console.error(e); }
 
@@ -208,17 +200,34 @@
                 if (logs.length === 0) {
                     logBody.innerHTML = '<tr><td colspan="5">No activity recorded yet.</td></tr>';
                 } else {
-                    logBody.innerHTML = logs.map(l => `
-                    <tr>
-                        <td>${new Date(l.createdAt).toLocaleString()}</td>
-                        <td><b>${l.action}</b></td>
-                        <td>${l.userId || 'Guest'}</td>
-                        <td>${l.ipAddress || '-'}</td>
-                        <td>${l.details || ''}</td>
-                    </tr>
-                `).join('');
+                    logBody.innerHTML = logs.map(l => createLogRow(l)).join('');
                 }
             } catch (e) { console.error(e); }
+        }
+
+        function createUserRow(u) {
+            return `
+                <tr id="user-${u.userid}">
+                    <td>${u.userid}</td>
+                    <td>${u.fullname}</td>
+                    <td>${u.email}</td>
+                    <td>${u.roles}</td>
+                    <td><span class="badge badge-${u.isSubscribed}">${u.isSubscribed ? 'Yes' : 'No'}</span></td>
+                    <td>${new Date(u.registerdate).toLocaleDateString()}</td>
+                </tr>
+            `;
+        }
+
+        function createLogRow(l) {
+            return `
+                <tr class="log-entry">
+                    <td>${new Date(l.createdAt).toLocaleString()}</td>
+                    <td><b>${l.action}</b></td>
+                    <td>${l.userId || 'Guest'}</td>
+                    <td>${l.ipAddress || '-'}</td>
+                    <td>${l.details || ''}</td>
+                </tr>
+            `;
         }
 
         function switchTab(id) {
@@ -227,13 +236,43 @@
 
             document.getElementById(id).classList.add('active');
             // Find button that calls this function with same id - simplified:
-            event.target.classList.add('active');
+            const buttons = document.querySelectorAll('.tab');
+            buttons.forEach(b => {
+                if (b.textContent.includes(id === 'users' ? 'Registered Users' : 'Activity Logs')) {
+                    b.classList.add('active');
+                }
+            });
         }
 
         // Init
         loadData();
-    </script>
 
+        // Socket.io Real-time Updates
+        const socket = io();
+
+        socket.on('user_registered', (user) => {
+            console.log('New user!', user);
+            const userBody = document.getElementById('userTable');
+            // Remove "No users found" if present
+            if (userBody.innerHTML.includes('No users found')) userBody.innerHTML = '';
+
+            // Prepend new user
+            const row = createUserRow(user);
+            userBody.insertAdjacentHTML('afterbegin', row);
+        });
+
+        socket.on('activity_log', (log) => {
+            console.log('New activity!', log);
+            const logBody = document.getElementById('activityTable');
+            // Remove "No activity" if present
+            if (logBody.innerHTML.includes('No activity recorded')) logBody.innerHTML = '';
+
+            // Prepend new log
+            const row = createLogRow(log);
+            logBody.insertAdjacentHTML('afterbegin', row);
+        });
+
+    </script>
 </body>
 
 </html>

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teacher Dashboard | Tudduke Okufa Ministry</title>
     <script src="https://unpkg.com/feather-icons"></script>
+    <script src="/socket.io/socket.io.js"></script>
 
     <style>
         :root {
@@ -631,8 +632,14 @@
 
         // INIT
         loadSermons();
-    </script>
 
+        // Socket.io Real-time Updates
+        const socket = io();
+        socket.on('kids_sermon_update', (data) => {
+            console.log('Kids Sermon update received:', data);
+            loadSermons();
+        });
+    </script>
 </body>
 
 </html>
