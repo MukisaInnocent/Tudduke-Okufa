@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kids Login | Tudduke Okufa Ministry</title>
+
+    <style>
+        :root {
+            --brand: #b30000;
+            --bg: #f4f4f4;
+            --card: #fff;
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: var(--bg);
+            color: #333;
+        }
+
+        /* HEADER */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: var(--brand);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            z-index: 1002;
+        }
+
+        .menu-toggle {
+            font-size: 1.8rem;
+            background: none;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            margin-right: 16px;
+        }
+
+        .header-text h1 {
+            font-size: 1.6rem
+        }
+
+        .header-text p {
+            font-size: .85rem;
+            opacity: .9
+        }
+
+        /* SIDEBAR */
+        aside {
+            position: fixed;
+            top: 0;
+            left: -260px;
+            width: 260px;
+            height: 100vh;
+            background: #fff;
+            padding: 90px 20px;
+            transition: .3s;
+            z-index: 1001;
+        }
+
+        aside.active {
+            left: 0
+        }
+
+        aside a {
+            display: block;
+            padding: 14px 16px;
+            margin-bottom: 12px;
+            border-radius: 14px;
+            text-decoration: none;
+            color: var(--brand);
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, .08);
+        }
+
+        /* OVERLAY */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .35);
+            opacity: 0;
+            pointer-events: none;
+            transition: .2s;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            pointer-events: auto
+        }
+
+        /* AUTH SECTION */
+        .auth-section {
+            margin-top: 80px;
+            padding: 50px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 80px - 200px);
+            /* Adjust for header/footer */
+        }
+
+        .auth-container {
+            background: #fff;
+            padding: 40px;
+            border-radius: var(--radius);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, .1);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+
+        .auth-container h2 {
+            color: var(--brand);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        /* AUTH FORM ELEMENTS */
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            background: var(--bg);
+            padding: 5px;
+            border-radius: 10px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: bold;
+            color: #555;
+            transition: 0.3s;
+        }
+
+        .tab.active {
+            background: var(--brand);
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--brand);
+            outline: none;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--brand);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #900000;
+            transform: translateY(-2px);
+        }
+
+        .toggle-text {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .toggle-text a {
+            color: var(--brand);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .error-msg {
+            color: red;
+            margin-bottom: 15px;
+            font-weight: bold;
+            display: none;
+        }
+
+        /* DESKTOP SIDEBAR */
+        @media (min-width: 1024px) {
+            aside#sidebar {
+                left: 0;
+                box-shadow: none;
+                border-right: 1px solid #ddd;
+            }
+
+            .menu-toggle {
+                display: none;
+            }
+
+            header {
+                padding-left: 280px;
+            }
+
+            .auth-section,
+            footer {
+                margin-left: 260px;
+                width: auto;
+            }
+
+            .overlay {
+                display: none !important;
+            }
+        }
+
+        /* FOOTER */
+        .site-footer {
+            background: linear-gradient(to bottom, #1a1a1a, #000);
+            color: #ccc;
+            padding: 40px 20px;
+            text-align: center;
+            border-top: 4px solid var(--brand);
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .footer-brand h3 {
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .leader-text {
+            color: var(--brand);
+            font-weight: bold;
+            font-style: italic;
+        }
+
+        .footer-dev p {
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        .dev-link {
+            display: inline-block;
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: 0.3s;
+        }
+
+        .dev-link:hover {
+            background: var(--brand);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(179, 0, 0, 0.3);
+        }
+
+        .footer-bottom {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .footer-content {
+                flex-direction: row;
+                justify-content: space-around;
+                text-align: left;
+            }
+
+            .footer-brand {
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <button class="menu-toggle" id="menu">☰</button>
+        <div class="header-text">
+            <h1>TUDDUKE OKUFA</h1>
+            <p>Preparing People for the Second Coming of Jesus Christ</p>
+        </div>
+    </header>
+
+    <aside id="sidebar">
+        <a href="index.html">Kids Home</a>
+        <a href="videos.html">Kids Videos</a>
+        <a href="quiz.html">Bible Quiz</a>
+        <a href="memory-verses.html">Memory Verses</a>
+        <a href="children-sermon.html">Children Sermons</a>
+        <a href="weekly-lesson.html">Weekly Lessons</a>
+        <a href="parents.html">Parents & Teachers</a>
+        <a href="auth.html" style="color: var(--brand); border: 2px solid var(--brand);">🔐 Login / Join</a>
+        <a href="../index.html">⬅️🏠 Home Page</a>
+    </aside>
+
+    <div class="overlay" id="overlay"></div>
+
+    <section class="auth-section">
+        <div class="auth-container">
+            <h2 id="pageTitle">Welcome Back!</h2>
+
+            <!-- TABS -->
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('login')">Login</div>
+                <div class="tab" onclick="switchTab('register')">Register</div>
+            </div>
+
+            <!-- ERROR MESSAGE -->
+            <p id="errorMsg" class="error-msg"></p>
+
+            <!-- FORM -->
+            <form id="authForm">
+                <div class="form-group hidden" id="nameGroup">
+                    <label>Full Name</label>
+                    <input type="text" id="fullname" placeholder="Enter your name">
+                </div>
+
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="email" required placeholder="hello@example.com">
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="password" required placeholder="••••••••">
+                </div>
+
+                <div class="form-group hidden" id="roleGroup">
+                    <label>I am a...</label>
+                    <select id="role">
+                        <option value="kid">Kid</option>
+                        <option value="teacher">Teacher</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                        <input type="checkbox" id="regSubscribe" checked style="width: auto;">
+                        <span>Subscribe to email updates and newsletters</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="auth-btn">Join Ministry</button>
+            </form>
+
+            <div class="toggle-text">
+                <a href="index.html">← Back to Kids Zone</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>Tudduke Okufa Ministry</h3>
+                <p class="leader-text">Led by Servant Kiviri John Mark</p>
+            </div>
+
+            <div class="footer-dev">
+                <p>Developed with excellence by</p>
+                <a href="#" class="dev-link">Innotech Solutions Uganda</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; <span id="year"></span> Tudduke Okufa. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        /* Dynamic Year */
+        document.getElementById("year").textContent = new Date().getFullYear();
+
+        /* Sidebar Toggle */
+        const sidebar = document.getElementById("sidebar");
+        const overlay = document.getElementById("overlay");
+        document.getElementById("menu").onclick = () => {
+            sidebar.classList.toggle("active");
+            overlay.classList.toggle("active");
+        };
+        overlay.onclick = close;
+        sidebar.querySelectorAll("a").forEach(a => a.onclick = close);
+        function close() {
+            sidebar.classList.remove("active");
+            overlay.classList.remove("active");
+        }
+
+        /* Auth Logic */
+        let isLogin = true;
+
+        function switchTab(tab) {
+            isLogin = tab === 'login';
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            document.getElementById('pageTitle').textContent = isLogin ? 'Welcome Back!' : 'Join the Fun!';
+            document.getElementById('submitBtn').textContent = isLogin ? 'Login' : 'Create Account';
+
+            // Toggle Fields
+            document.getElementById('nameGroup').classList.toggle('hidden', isLogin);
+            document.getElementById('roleGroup').classList.toggle('hidden', isLogin);
+
+            // Add required attribute to name only on register
+            document.getElementById('fullname').required = !isLogin;
+        }
+
+        document.getElementById('authForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('errorMsg');
+
+            errorMsg.style.display = 'none';
+
+            const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
+            const body = { email, password };
+
+            if (!isLogin) {
+                body.fullname = document.getElementById('fullname').value;
+                body.role = document.getElementById('role').value;
+                body.isSubscribed = document.getElementById('regSubscribe').checked;
+            }
+
+            try {
+                const res = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+
+                const data = await res.json();
+
+                if (!data.success && !data.token) {
+                    throw new Error(data.error || 'Authentication failed');
+                }
+
+                if (isLogin) {
+                    // Save token and user info
+                    localStorage.setItem('kidsToken', data.token);
+                    localStorage.setItem('kidsUser', JSON.stringify(data.user)); // Name, Role
+
+                    // Redirect based on role
+                    if (data.user.role === 'teacher') {
+                        window.location.href = 'teacher-dashboard.html';
+                    } else {
+                        window.location.href = 'index.html';
+                    }
+                } else {
+                    alert('Account created! Please login.');
+                    switchTab('login');
+                }
+
+            } catch (err) {
+                console.error(err);
+                errorMsg.textContent = err.message;
+                errorMsg.style.display = 'block';
+            }
+        });
+    </script>
+
+</body>
+
+</html>

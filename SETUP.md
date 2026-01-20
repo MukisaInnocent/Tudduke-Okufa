@@ -26,6 +26,7 @@ DB_USER=postgres
 DB_PASSWORD=your_postgres_password
 PORT=3000
 NODE_ENV=development
+JWT_SECRET=supersecretkey123
 ```
 
 ### Step 3: Create the Database
@@ -42,65 +43,64 @@ npm run seed
 ```bash
 npm start
 ```
-
 The server will start on `http://localhost:3000`
 
-## ✅ Verify Setup
+---
 
-Test the database connection:
+## 🌐 Access & Testing Guide
+
+### 1. 🏠 Public Pages
+- **Home**: [http://localhost:3000/index.html](http://localhost:3000/index.html)
+- **Sermons (Main)**: [http://localhost:3000/sermons.html](http://localhost:3000/sermons.html)
+- **Kids Section**: [http://localhost:3000/kids/index.html](http://localhost:3000/kids/index.html) (Fun, animated interface)
+
+### 2. ✝️ Preacher Dashboard (Main Sermons)
+*For managing main sermons (not kids).*
+- **URL**: [http://localhost:3000/preacher-dashboard.html](http://localhost:3000/preacher-dashboard.html)
+- **Action**: Login -> Add/Edit/Delete Sermons.
+- **Account**: You can register a new account at `kids/auth.html` (it shares the auth system).
+
+### 3. 👩‍🏫 Kids Teacher Dashboard
+*For managing children's sermons/lessons.*
+- **URL**: [http://localhost:3000/kids/teacher-dashboard.html](http://localhost:3000/kids/teacher-dashboard.html)
+- **Auth**: [http://localhost:3000/kids/auth.html](http://localhost:3000/kids/auth.html)
+- **Features**:
+  - **Register**: Sign up as a "Teacher". **Check "Subscribe"** to test subscriptions.
+  - **View**: See only your own sermons.
+  - **Edit**: Click the **Pencil Icon** to edit your lessons.
+  - **Delete**: Remove your lessons.
+
+### 4. � Activity & Admin Dashboard
+*For monitoring system usage and users.*
+- **URL**: [http://localhost:3000/activity-dashboard.html](http://localhost:3000/activity-dashboard.html)
+- **Features**:
+  - **Users Tab**: View all registered users and their subscription status.
+  - **Activity Tab**: View real-time logs of Logins, Registrations, and Sermon creations.
+  
+### 5. 💰 Financial Admin
+*For viewing donations.*
+- **URL**: [http://localhost:3000/admin.html](http://localhost:3000/admin.html)
+- **PIN**: `1234` (Default for demo)
+
+---
+
+## 🛠 Troubleshooting
+
+### Database Error "userId contains null values"
+If you see this error when starting the server, run the wipe script to clean incompatible old data:
 ```bash
-npm run test-connection
+npm start # If fails
+node wipe-kids-sermons.js
+npm start # Retry
 ```
-
-## 🌐 Access the Application
-
-Once the server is running:
-- **Homepage**: http://localhost:3000/index.html
-- **Sermons**: http://localhost:3000/sermons.html
-- **Videos**: http://localhost:3000/videos.html
-- **Donate**: http://localhost:3000/donate.html
-- **Kids Section**: http://localhost:3000/kids/index.html
-
-## 📝 Troubleshooting
 
 ### PostgreSQL Not Running
-**Windows:**
-- Open Services (Win+R → services.msc)
-- Find PostgreSQL service and start it
-- Or run: `net start postgresql-x64-XX` (replace XX with version)
-
-**Linux/Mac:**
-```bash
-sudo service postgresql start
-# or
-brew services start postgresql
-```
-
-### Database Connection Failed
-1. Verify PostgreSQL is running
-2. Check `.env` file has correct credentials
-3. Test connection: `npm run test-connection`
-4. Create database: `npm run setup-db`
-
-### Port Already in Use
-Change `PORT` in `.env` to a different port (e.g., 3001)
+**Windows:** `net start postgresql-x64-XX`
+**Mac/Linux:** `brew services start postgresql`
 
 ## 📚 API Endpoints
 
-All API endpoints are prefixed with `/api`:
-- `GET /api/health` - Health check
-- `GET /api/sermons` - Get sermons
-- `GET /api/kids/lessons` - Get weekly lessons
-- `GET /api/kids/memory-verses` - Get memory verses
-- `GET /api/kids/quiz` - Get quiz questions
-- `POST /api/contact` - Submit contact form
-- `POST /api/donations` - Submit donation
-
-## 🎯 Next Steps
-
-1. ✅ Database is connected
-2. ✅ Backend is running
-3. ✅ Frontend pages are connected to backend
-4. ✅ Sample data is loaded
-
-You're all set! The application is ready to use.
+- **Auth**: `/api/auth/register`, `/api/auth/login`
+- **Main Sermons**: `/api/sermons` (GET/POST/PUT/DELETE)
+- **Kids Sermons**: `/api/kids/sermons` (GET/POST/PUT/DELETE)
+- **Admin**: `/api/admin/users`, `/api/admin/activity`

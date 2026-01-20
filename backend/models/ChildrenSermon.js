@@ -15,13 +15,17 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         allowNull: true
       },
-      content: {
-        type: DataTypes.TEXT,
-        allowNull: false
+      videoUrl: {
+        type: DataTypes.STRING(255),
+        allowNull: true
       },
-      scripture: {
+      teacherName: {
         type: DataTypes.STRING(100),
         allowNull: true
+      },
+      userId: {
+        type: DataTypes.INTEGER,
+        allowNull: false
       },
       createdAt: {
         type: DataTypes.DATE,

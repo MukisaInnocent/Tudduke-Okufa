@@ -52,6 +52,8 @@ const MemoryVerse = require('./MemoryVerse')(sequelize, require('sequelize').Dat
 const ChildrenSermon = require('./ChildrenSermon')(sequelize, require('sequelize').DataTypes);
 const QuizQuestion = require('./QuizQuestion')(sequelize, require('sequelize').DataTypes);
 const Donation = require('./Donation')(sequelize, require('sequelize').DataTypes);
+const User = require('./User')(sequelize, require('sequelize').DataTypes);
+const ActivityLog = require('./ActivityLog')(sequelize, require('sequelize').DataTypes);
 
 module.exports = {
   sequelize,
@@ -61,5 +63,7 @@ module.exports = {
   MemoryVerse,
   ChildrenSermon,
   QuizQuestion,
-  Donation
+  Donation,
+  User,
+  ActivityLog
 };

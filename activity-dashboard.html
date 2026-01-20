@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activity & Users | Tudduke Okufa</title>
+    <style>
+        :root {
+            --brand: #b30000;
+            --bg: #f4f4f4;
+            --card: #fff;
+        }
+
+        body {
+            font-family: sans-serif;
+            background: var(--bg);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: var(--brand);
+            margin: 0;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 1rem;
+            opacity: 0.6;
+        }
+
+        .tab.active {
+            opacity: 1;
+            border-bottom: 3px solid var(--brand);
+            font-weight: bold;
+        }
+
+        .panel {
+            display: none;
+            background: var(--card);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .panel.active {
+            display: block;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #f9f9f9;
+            color: #555;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .badge-true {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        /* Green */
+        .badge-false {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Red */
+
+        .refresh-btn {
+            padding: 8px 16px;
+            background: var(--brand);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <h1>System Activity</h1>
+            <button class="refresh-btn" onclick="loadData()">Refresh Data</button>
+        </header>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('users')">Registered Users</button>
+            <button class="tab" onclick="switchTab('activity')">Activity Logs</button>
+        </div>
+
+        <!-- USERS PANEL -->
+        <div id="users" class="panel active">
+            <h2>User Database</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Subscribed?</th>
+                        <th>Joined</th>
+                    </tr>
+                </thead>
+                <tbody id="userTable">
+                    <tr>
+                        <td colspan="6">Loading...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ACTIVITY PANEL -->
+        <div id="activity" class="panel">
+            <h2>Recent Activity (Last 100)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Action</th>
+                        <th>User ID</th>
+                        <th>IP Address</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody id="activityTable">
+                    <tr>
+                        <td colspan="5">Loading...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        async function loadData() {
+            // Load Users
+            try {
+                const res = await fetch('/api/admin/users');
+                const users = await res.json();
+                const userBody = document.getElementById('userTable');
+
+                if (users.length === 0) {
+                    userBody.innerHTML = '<tr><td colspan="6">No users found.</td></tr>';
+                } else {
+                    userBody.innerHTML = users.map(u => `
+                    <tr>
+                        <td>${u.userid}</td>
+                        <td>${u.fullname}</td>
+                        <td>${u.email}</td>
+                        <td>${u.roles}</td>
+                        <td><span class="badge badge-${u.isSubscribed}">${u.isSubscribed ? 'Yes' : 'No'}</span></td>
+                        <td>${new Date(u.registerdate).toLocaleDateString()}</td>
+                    </tr>
+                `).join('');
+                }
+            } catch (e) { console.error(e); }
+
+            // Load Activity
+            try {
+                const res = await fetch('/api/admin/activity');
+                const logs = await res.json();
+                const logBody = document.getElementById('activityTable');
+
+                if (logs.length === 0) {
+                    logBody.innerHTML = '<tr><td colspan="5">No activity recorded yet.</td></tr>';
+                } else {
+                    logBody.innerHTML = logs.map(l => `
+                    <tr>
+                        <td>${new Date(l.createdAt).toLocaleString()}</td>
+                        <td><b>${l.action}</b></td>
+                        <td>${l.userId || 'Guest'}</td>
+                        <td>${l.ipAddress || '-'}</td>
+                        <td>${l.details || ''}</td>
+                    </tr>
+                `).join('');
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        function switchTab(id) {
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+
+            document.getElementById(id).classList.add('active');
+            // Find button that calls this function with same id - simplified:
+            event.target.classList.add('active');
+        }
+
+        // Init
+        loadData();
+    </script>
+
+</body>
+
+</html>

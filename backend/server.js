@@ -9,15 +9,17 @@ const path = require('path');
 /*********************************
  * DATABASE & MODELS
  *********************************/
-const { 
-  sequelize, 
-  ContactMessage, 
-  Sermon, 
-  WeeklyLesson, 
-  MemoryVerse, 
-  ChildrenSermon, 
-  QuizQuestion, 
-  Donation 
+const {
+  sequelize,
+  ContactMessage,
+  Sermon,
+  WeeklyLesson,
+  MemoryVerse,
+  ChildrenSermon,
+  QuizQuestion,
+  Donation,
+  User,
+  ActivityLog
 } = require('./models');
 
 /*********************************
@@ -98,6 +100,201 @@ app.get('/api/debug/messages', async (req, res) => {
 });
 
 // Sermons
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+
+const JWT_SECRET = process.env.JWT_SECRET || 'supersecretkey123'; // In prod, use .env
+
+// Middleware to verify token
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) return res.sendStatus(401);
+
+  jwt.verify(token, JWT_SECRET, (err, user) => {
+    if (err) return res.sendStatus(403);
+    req.user = user;
+    next();
+  });
+};
+
+/* ===== AUTH ROUTES ===== */
+
+// Register
+app.post('/api/auth/register', async (req, res) => {
+  try {
+    const { fullname, email, password, role } = req.body;
+
+    // Check if user exists
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser) return res.status(400).json({ error: 'Email already exists' });
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create user (Role default to 'kid' if not specified, or 'teacher' via secret code in frontend if implemented)
+    // For MVP, we allow role to be passed.
+    const userRole = role === 'teacher' ? 'teacher' : 'kid';
+
+    const user = await User.create({
+      fullname,
+      email,
+      password: hashedPassword,
+      password: hashedPassword,
+      roles: userRole,
+      isSubscribed: req.body.isSubscribed || false
+    });
+
+    await ActivityLog.create({
+      userId: user.userid,
+      action: 'REGISTER',
+      details: `New user: ${user.fullname} (${userRole})`,
+      ipAddress: req.ip
+    });
+
+    res.status(201).json({ success: true, message: 'User registered successfully' });
+  } catch (err) {
+    console.error('Registration Error:', err);
+    res.status(500).json({ error: 'Registration failed' });
+  }
+});
+
+// Login
+app.post('/api/auth/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ where: { email } });
+
+    if (!user) return res.status(400).json({ error: 'Invalid email or password' });
+
+    const validPassword = await bcrypt.compare(password, user.password);
+    if (!validPassword) return res.status(400).json({ error: 'Invalid email or password' });
+
+    // Generate Token
+    const token = jwt.sign(
+      { userid: user.userid, fullname: user.fullname, role: user.roles },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    // Async Log
+    ActivityLog.create({
+      userId: user.userid,
+      action: 'LOGIN',
+      ipAddress: req.ip
+    }).catch(console.error);
+
+    res.json({ success: true, token, user: { userid: user.userid, fullname: user.fullname, role: user.roles } });
+  } catch (err) {
+    console.error('Login Error:', err);
+    res.status(500).json({ error: 'Login failed' });
+  }
+});
+
+/* ===== PROTECTED SERMON ROUTES ===== */
+
+// Add Children Sermon (Protected)
+app.post('/api/kids/sermons', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'teacher') return res.sendStatus(403);
+
+  try {
+    const { title, description, videoUrl, teacherName } = req.body;
+    const sermon = await ChildrenSermon.create({
+      title,
+      description,
+      videoUrl,
+      teacherName,
+      userId: req.user.userid
+    });
+    res.status(201).json({ success: true, data: sermon });
+  } catch (err) {
+    console.error('Add Sermon Error:', err);
+    res.status(500).json({ error: 'Failed to add sermon' });
+  }
+});
+
+// GET Children Sermons (Public or Protected? Public for viewing, but dashboard uses it too)
+app.get('/api/kids/sermons', async (req, res) => {
+  try {
+    // Check if filtering by "mine"
+    const whereClause = {};
+    if (req.query.mine === 'true') {
+      // We need user token here, but this route is currently public for fetching.
+      // So we have to handle auth manually effectively or make a separate route.
+      // Easiest is to check auth header manually if query param exists.
+      const authHeader = req.headers['authorization'];
+      const token = authHeader && authHeader.split(' ')[1];
+      if (token) {
+        try {
+          const JWT_SECRET = process.env.JWT_SECRET || 'supersecretkey123';
+          const user = jwt.verify(token, JWT_SECRET);
+          whereClause.userId = user.userid;
+        } catch (e) {
+          // ignore or return error
+        }
+      }
+    }
+
+    const sermons = await ChildrenSermon.findAll({
+      where: whereClause,
+      order: [['createdAt', 'DESC']]
+    });
+    res.json(sermons);
+  } catch (err) {
+    console.error('Fetch Kids Sermons Error:', err);
+    res.status(500).json({ error: 'Failed to fetch sermons' });
+  }
+});
+
+// Update Children Sermon (Protected)
+app.put('/api/kids/sermons/:id', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'teacher') return res.sendStatus(403);
+
+  try {
+    const { title, description, videoUrl, teacherName } = req.body;
+    const sermon = await ChildrenSermon.findByPk(req.params.id);
+
+    if (!sermon) return res.status(404).json({ error: 'Sermon not found' });
+
+    // Verify ownership
+    if (sermon.userId !== req.user.userid) {
+      return res.status(403).json({ error: 'You can only edit your own sermons' });
+    }
+
+    await sermon.update({
+      title,
+      description,
+      videoUrl,
+      teacherName
+    });
+
+    res.json({ success: true, data: sermon });
+  } catch (err) {
+    console.error('Update Kids Sermon Error:', err);
+    res.status(500).json({ error: 'Failed to update sermon' });
+  }
+});
+
+// Delete Sermon (Protected)
+app.delete('/api/kids/sermons/:id', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'teacher') return res.sendStatus(403);
+
+  try {
+    const sermon = await ChildrenSermon.findByPk(req.params.id);
+    if (!sermon) return res.status(404).json({ error: 'Sermon not found' });
+
+    // Verify ownership
+    if (sermon.userId !== req.user.userid) {
+      return res.status(403).json({ error: 'You can only delete your own sermons' });
+    }
+
+    await sermon.destroy();
+    res.json({ success: true, message: 'Sermon deleted' });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to delete sermon' });
+  }
+});
 app.get('/api/sermons', async (req, res) => {
   try {
     const sermons = await Sermon.findAll({
@@ -121,6 +318,73 @@ app.get('/api/sermons/:id', async (req, res) => {
   } catch (err) {
     console.error('❌ Sermon fetch error:', err);
     res.status(500).json({ error: 'Failed to fetch sermon' });
+  }
+});
+
+// Create Main Sermon (Protected)
+app.post('/api/sermons', authenticateToken, async (req, res) => {
+  // Ideally check if user is admin/preacher/teacher
+  try {
+    const { topic, title, scripture, explanation, examples } = req.body;
+    const sermon = await Sermon.create({
+      topic,
+      title,
+      scripture,
+      explanation,
+      examples,
+      authorid: req.user.userid
+    });
+    res.status(201).json({ success: true, data: sermon });
+  } catch (err) {
+    console.error('Create Sermon Error:', err);
+    res.status(500).json({ error: 'Failed to create sermon' });
+  }
+});
+
+// Update Main Sermon (Protected)
+app.put('/api/sermons/:id', authenticateToken, async (req, res) => {
+  try {
+    const { topic, title, scripture, explanation, examples } = req.body;
+    const sermon = await Sermon.findByPk(req.params.id);
+
+    if (!sermon) return res.status(404).json({ error: 'Sermon not found' });
+
+    // Ownership Check
+    if (sermon.authorid !== req.user.userid) {
+      return res.status(403).json({ error: 'Not authorized to edit this sermon' });
+    }
+
+    await sermon.update({
+      topic,
+      title,
+      scripture,
+      explanation,
+      examples
+    });
+
+    res.json({ success: true, data: sermon });
+  } catch (err) {
+    console.error('Update Sermon Error:', err);
+    res.status(500).json({ error: 'Failed to update sermon' });
+  }
+});
+
+// Delete Main Sermon (Protected)
+app.delete('/api/sermons/:id', authenticateToken, async (req, res) => {
+  try {
+    const sermon = await Sermon.findByPk(req.params.id);
+    if (!sermon) return res.status(404).json({ error: 'Sermon not found' });
+
+    // Ownership Check
+    if (sermon.authorid !== req.user.userid) {
+      return res.status(403).json({ error: 'Not authorized to delete this sermon' });
+    }
+
+    await sermon.destroy();
+    res.json({ success: true, message: 'Sermon deleted' });
+  } catch (err) {
+    console.error('Delete Sermon Error:', err);
+    res.status(500).json({ error: 'Failed to delete sermon' });
   }
 });
 
@@ -170,7 +434,7 @@ app.get('/api/kids/memory-verses/daily', async (req, res) => {
     let verse = await MemoryVerse.findOne({
       where: { dayOfWeek, isActive: true }
     });
-    
+
     // If no verse for today, get a random active verse
     if (!verse) {
       const verses = await MemoryVerse.findAll({
@@ -181,7 +445,7 @@ app.get('/api/kids/memory-verses/daily', async (req, res) => {
         verse = verses[randomIndex];
       }
     }
-    
+
     res.json(verse || {});
   } catch (err) {
     console.error('❌ Daily verse fetch error:', err);

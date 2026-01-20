@@ -376,35 +376,34 @@
         sermons.forEach(sermon => {
           const card = document.createElement('div');
           card.className = 'card';
+
+          let videoEmbed = '';
+          if (sermon.videoUrl) {
+            // Simple extraction of YouTube ID if full URL is pasted
+            let videoId = sermon.videoUrl;
+            if (sermon.videoUrl.includes('v=')) {
+              videoId = sermon.videoUrl.split('v=')[1].split('&')[0];
+            } else if (sermon.videoUrl.includes('youtu.be/')) {
+              videoId = sermon.videoUrl.split('youtu.be/')[1];
+            }
+
+            videoEmbed = `
+                <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;margin-bottom:15px;border-radius:10px;">
+                    <iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
+                </div>`;
+          }
+
           card.innerHTML = `
-        <h3>${sermon.title}</h3>
-        <p>${sermon.description || sermon.content.substring(0, 100) + '...'}</p>
-        <button onclick="showSermon(${sermon.sermonid})">Read Sermon</button>
-      `;
+            ${videoEmbed}
+            <h3>${sermon.title}</h3>
+            <p style="font-size: 0.85rem; color: #666; margin-bottom: 10px;">By ${sermon.teacherName} • ${new Date(sermon.createdAt).toLocaleDateString()}</p>
+            <p>${sermon.description}</p>
+          `;
           grid.appendChild(card);
         });
       } catch (err) {
         console.error('Error loading sermons:', err);
         document.getElementById('sermonsGrid').innerHTML = '<p style="color:red;text-align:center;grid-column:1/-1;padding:20px;">Failed to load sermons. Please try again later.</p>';
-      }
-    }
-
-    async function showSermon(id) {
-      try {
-        const res = await fetch(`/api/kids/sermons/${id}`);
-        if (!res.ok) throw new Error('Failed to fetch sermon');
-        const sermon = await res.json();
-
-        const content = `
-      <h3>${sermon.title}</h3>
-      ${sermon.scripture ? `<p><strong>Scripture:</strong> ${sermon.scripture}</p>` : ''}
-      <p>${sermon.content}</p>
-    `;
-
-        alert(content.replace(/<[^>]*>/g, '')); // Simple alert, could be improved with a modal
-      } catch (err) {
-        console.error('Error loading sermon:', err);
-        alert('Failed to load sermon content.');
       }
     }
 

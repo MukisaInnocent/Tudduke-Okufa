@@ -29,6 +29,10 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: 'User'
       },
+      isSubscribed: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+      },
       registerdate: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW
