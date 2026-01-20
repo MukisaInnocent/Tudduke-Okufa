@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: tudduke-okufa-web
+    env: node
+    plan: free 
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm run seed && node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: tudduke-okufa-db
+          property: connectionString
+
+databases:
+  - name: tudduke-okufa-db
+    databaseName: tudduke_okufa
+    user: tudduke
+    plan: free 
