@@ -1,303 +1,904 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Donate | Support the Ministry</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Donate | Support the Ministry</title>
 
-<link rel="stylesheet" href="stylefordonation.css">
+  <link rel="stylesheet" href="stylefordonation.css">
 
-<style>
-:root {
-  --brand: #b30000;
-  --bg-light: #f9f9f9;
-}
+  <style>
+    :root {
+      --brand: #b30000;
+      --bg-light: #f9f9f9;
+    }
 
-/* RESET */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+    /* RESET */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-body {
-  font-family: Arial, sans-serif;
-  background: var(--bg-light);
-  line-height: 1.6;
-}
+    body {
+      font-family: Arial, sans-serif;
+      background: var(--bg-light);
+      line-height: 1.6;
+    }
 
-/* HEADER */
-.page-header {
-  height: 80px;
-  background: var(--brand);
-  color: white;
-  display: flex;
-  align-items: center;
-  padding: 0 20px;
-  position: sticky;
-  top: 0;
-  z-index: 1002;
-}
+    /* HEADER */
+    .page-header {
+      height: 80px;
+      background: var(--brand);
+      color: white;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      position: sticky;
+      top: 0;
+      z-index: 1002;
+    }
 
-.menu-toggle {
-  font-size: 1.8rem;
-  background: none;
-  border: none;
-  color: white;
-  cursor: pointer;
-  margin-right: 16px;
-}
+    .menu-toggle {
+      font-size: 1.8rem;
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      margin-right: 16px;
+    }
 
-.header-text h1 {
-  font-size: 1.6rem;
-}
+    .header-text h1 {
+      font-size: 1.6rem;
+    }
 
-.header-text p {
-  font-size: 0.9rem;
-  opacity: 0.95;
-}
+    .header-text p {
+      font-size: 0.9rem;
+      opacity: 0.95;
+    }
 
-/* SIDEBAR */
-aside#sidebar {
-  position: fixed;
-  top: 0;
-  left: -260px;
-  width: 260px;
-  height: 100vh;
-  background: #fff;
-  padding: 90px 20px 20px;
-  border-right: 1px solid #ddd;
-  transition: left 0.3s ease;
-  z-index: 1001;
-}
+    /* SIDEBAR */
+    aside#sidebar {
+      position: fixed;
+      top: 0;
+      left: -260px;
+      width: 260px;
+      height: 100vh;
+      background: #fff;
+      padding: 90px 20px 20px;
+      border-right: 1px solid #ddd;
+      transition: left 0.3s ease;
+      z-index: 1001;
+    }
 
-aside#sidebar.active {
-  left: 0;
-}
+    aside#sidebar.active {
+      left: 0;
+    }
 
-aside a {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
-  margin-bottom: 14px;
-  background: white;
-  border-radius: 12px;
-  text-decoration: none;
-  color: var(--brand);
-  font-weight: bold;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
-  transition: transform 0.2s ease;
-}
+    aside a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+      background: white;
+      border-radius: 12px;
+      text-decoration: none;
+      color: var(--brand);
+      font-weight: bold;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+      transition: transform 0.2s ease;
+    }
 
-aside a:hover {
-  transform: translateY(-2px);
-}
+    aside a:hover {
+      transform: translateY(-2px);
+    }
 
-aside a i {
-  width: 22px;
-  height: 22px;
-}
+    aside a i {
+      width: 22px;
+      height: 22px;
+    }
 
-/* OVERLAY */
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.35);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease;
-  z-index: 1000;
-}
+    /* OVERLAY */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.35);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      z-index: 1000;
+    }
 
-.overlay.active {
-  opacity: 1;
-  pointer-events: auto;
-}
+    .overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
 
-/* MAIN CONTENT */
-.main-content {
-  padding: 30px 20px;
-  max-width: 1100px;
-  margin: auto;
-}
+    /* MAIN CONTENT */
+    .main-content {
+      padding: 30px 20px;
+      max-width: 1100px;
+      margin: auto;
+    }
 
-.donate-section {
-  background: white;
-  padding: 30px;
-  border-radius: 16px;
-}
+    .donate-section {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+    }
 
-/* SCRIPTURE */
-.scripture {
-  background: #fff5f5;
-  padding: 18px;
-  border-left: 5px solid var(--brand);
-  margin-bottom: 30px;
-  font-style: italic;
-}
+    /* SCRIPTURE */
+    .scripture {
+      background: #fff5f5;
+      padding: 18px;
+      border-left: 5px solid var(--brand);
+      margin-bottom: 30px;
+      font-style: italic;
+    }
 
-/* PAYMENTS */
-.payments {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 24px;
-}
+    /* PAYMENTS */
+    .payments {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+    }
 
-.payment-card {
-  background: #fff;
-  padding: 22px;
-  border-radius: 16px;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
-}
+    .payment-card {
+      background: #fff;
+      padding: 22px;
+      border-radius: 16px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    }
 
-.payment-card h3 {
-  margin-bottom: 12px;
-}
+    .payment-card h3 {
+      margin-bottom: 12px;
+    }
 
-/* CTA */
-.cta {
-  margin-top: 40px;
-  text-align: center;
-}
+    /* CTA */
+    .cta {
+      margin-top: 40px;
+      text-align: center;
+    }
 
-/* FOOTER */
-footer {
-  text-align: center;
-  padding: 20px;
-  background: #111;
-  color: #ccc;
-  margin-top: 40px;
-}
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: #111;
+      color: #ccc;
+      margin-top: 40px;
+    }
 
-/* MOBILE IMPROVEMENTS */
-@media (max-width: 600px) {
-  .header-text h1 {
-    font-size: 1.3rem;
-  }
+    /* AMOUNT BUTTONS */
+    .amount-btn {
+      padding: 12px;
+      border: 2px solid #ddd;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 0.95rem;
+      transition: all 0.3s;
+    }
 
-  .header-text p {
-    display: none;
-  }
+    .amount-btn:hover {
+      border-color: var(--brand);
+      background: #fff5f5;
+      transform: translateY(-2px);
+    }
 
-  .donate-section {
-    padding: 20px;
-  }
+    .amount-btn.active {
+      border-color: var(--brand);
+      background: var(--brand);
+      color: white;
+    }
 
-  aside#sidebar {
-    width: 230px;
-  }
+    /* FORM INPUTS */
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--brand) !important;
+      box-shadow: 0 0 0 3px rgba(179, 0, 0, 0.1);
+    }
 
-  aside a {
-    padding: 16px;
-    font-size: 1rem;
-  }
-}
-</style>
+    /* PAYMENT METHOD FIELDS */
+    .payment-method-fields {
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* SUBMIT BUTTON */
+    #submitBtn:hover {
+      background: #8a0000;
+    }
+
+    #submitBtn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    /* MOBILE IMPROVEMENTS */
+    @media (max-width: 600px) {
+      .header-text h1 {
+        font-size: 1.3rem;
+      }
+
+      .header-text p {
+        display: none;
+      }
+
+      .donate-section {
+        padding: 20px;
+      }
+
+      aside#sidebar {
+        width: 230px;
+      }
+
+      aside a {
+        padding: 16px;
+        font-size: 1rem;
+      }
+
+      .donation-form {
+        padding: 20px !important;
+      }
+
+      .amount-btn {
+        padding: 10px;
+        font-size: 0.85rem;
+      }
+    }
+
+    /* DESKTOP SIDEBAR */
+    @media (min-width: 1024px) {
+
+      /* Sidebar always visible */
+      aside#sidebar {
+        left: 0;
+        box-shadow: none;
+        border-right: 1px solid #ddd;
+      }
+
+      /* Hide menu toggle */
+      .menu-toggle {
+        display: none;
+      }
+
+      /* Shift content */
+      .main-content,
+      footer {
+        margin-left: 260px;
+        width: auto;
+      }
+
+      /* Shift header title if needed, or just let it be. 
+     Usually keeping header full width is fine, or adding padding. */
+      .page-header {
+        padding-left: 280px;
+        /* shift content inside header */
+      }
+
+      /* Hide overlay */
+      .overlay {
+        display: none !important;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<header class="page-header">
-  <button class="menu-toggle" id="menuToggle">☰</button>
-  <div class="header-text">
-    <h1>Support the Ministry</h1>
-    <p>Give faithfully as the Lord leads you</p>
-  </div>
-</header>
+  <header class="page-header">
+    <button class="menu-toggle" id="menuToggle">☰</button>
+    <div class="header-text">
+      <h1>Support the Ministry</h1>
+      <p>Give faithfully as the Lord leads you</p>
+    </div>
+  </header>
 
-<!-- SIDEBAR -->
-<aside id="sidebar">
-  <a href="index.html"><i data-feather="home"></i>Home</a>
-  <a href="videos.html"><i data-feather="video"></i>Videos</a>
-  <a href="sermons.html"><i data-feather="book-open"></i>Sermons</a>
-  <a href="donate.html"><i data-feather="heart"></i>Donate</a>
-  <a href="livestream.html"><i data-feather="tv"></i>Live</a>
-</aside>
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <a href="index.html"><i data-feather="home"></i>Home</a>
+    <a href="videos.html"><i data-feather="video"></i>Videos</a>
+    <a href="sermons.html"><i data-feather="book-open"></i>Sermons</a>
+    <a href="donate.html"><i data-feather="heart"></i>Donate</a>
+    <a href="livestream.html"><i data-feather="tv"></i>Live</a>
+  </aside>
 
-<div class="overlay" id="overlay"></div>
+  <div class="overlay" id="overlay"></div>
 
-<main class="main-content">
-  <section class="donate-section">
+  <main class="main-content">
+    <section class="donate-section">
 
-    <div class="scripture">
-      “Honor the Lord with your wealth.” — <strong>Proverbs 3:9</strong>
+      <div class="scripture">
+        “Honor the Lord with your wealth.” — <strong>Proverbs 3:9</strong>
+      </div>
+
+      <h2>Ways You Can Give</h2>
+
+      <div class="payments">
+
+        <div class="payment-card">
+          <h3>📱 Mobile Money</h3>
+          <p><strong>MTN Mobile Money:</strong></p>
+          <p style="font-size: 1.1rem; color: var(--brand); font-weight: bold;">+256 XXX XXX XXX</p>
+          <p><strong>Airtel Money:</strong></p>
+          <p style="font-size: 1.1rem; color: var(--brand); font-weight: bold;">+256 XXX XXX XXX</p>
+          <p style="font-size: 0.85rem; color: #666; margin-top: 8px;">Use the form below to submit your donation</p>
+        </div>
+
+        <div class="payment-card">
+          <h3>🏦 Bank Transfer</h3>
+          <p><strong>Bank:</strong> [Your Bank Name]</p>
+          <p><strong>Account Name:</strong> Tudduke Okufa Ministry</p>
+          <p><strong>Account Number:</strong> XXXX XXXX XXXX</p>
+          <p><strong>Branch:</strong> [Branch Name]</p>
+          <p style="font-size: 0.85rem; color: #666; margin-top: 8px;">Use the form below to submit your donation</p>
+        </div>
+
+        <div class="payment-card">
+          <h3>💳 Online Payment</h3>
+          <p>PayPal, Credit/Debit Cards</p>
+          <p style="font-size: 0.85rem; color: #666; margin-top: 8px;">Secure online payment available in the form below
+          </p>
+        </div>
+
+        <div class="payment-card">
+          <h3>🙏 Other Ways to Give</h3>
+          <ul style="text-align: left; padding-left: 20px;">
+            <li>Cash donations</li>
+            <li>In-kind contributions</li>
+            <li>Volunteer support</li>
+            <li>Prayer partnership</li>
+          </ul>
+          <p style="font-size: 0.85rem; color: #666; margin-top: 8px;">Contact us for more information</p>
+        </div>
+
+      </div>
+
+      <div class="cta">
+        <h2>Thank You for Standing With Us</h2>
+        <p>May God bless you abundantly.</p>
+      </div>
+
+      <!-- DONATION FORM -->
+      <div class="donation-form"
+        style="margin-top: 40px; background: #fff; padding: 30px; border-radius: 16px; box-shadow: 0 6px 16px rgba(0,0,0,0.08);">
+        <h2 style="text-align: center; color: var(--brand); margin-bottom: 10px;">Make a Donation</h2>
+        <p style="text-align: center; color: #666; margin-bottom: 30px;">Your generous support helps us spread the
+          Gospel</p>
+
+        <form id="donationForm" style="max-width: 600px; margin: 0 auto;">
+          <!-- Donor Information -->
+          <div style="background: #f9f9f9; padding: 20px; border-radius: 12px; margin-bottom: 24px;">
+            <h3 style="color: var(--brand); margin-bottom: 16px; font-size: 1.2rem;">Donor Information</h3>
+
+            <div style="margin-bottom: 16px;">
+              <label style="display: block; margin-bottom: 6px; font-weight: bold;">Full Name *</label>
+              <input type="text" id="donorName" required placeholder="Enter your full name"
+                style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; transition: border-color 0.3s;">
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+              <div>
+                <label style="display: block; margin-bottom: 6px; font-weight: bold;">Email</label>
+                <input type="email" id="donorEmail" placeholder="your@email.com"
+                  style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;">
+              </div>
+              <div>
+                <label style="display: block; margin-bottom: 6px; font-weight: bold;">Phone</label>
+                <input type="tel" id="donorPhone" placeholder="+256 XXX XXX XXX"
+                  style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;">
+              </div>
+            </div>
+          </div>
+
+          <!-- Donation Amount -->
+          <div style="background: #f9f9f9; padding: 20px; border-radius: 12px; margin-bottom: 24px;">
+            <h3 style="color: var(--brand); margin-bottom: 16px; font-size: 1.2rem;">Donation Amount</h3>
+
+            <div style="margin-bottom: 16px;">
+              <label style="display: block; margin-bottom: 6px; font-weight: bold;">Currency *</label>
+              <select id="currency" required
+                style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;">
+                <option value="UGX">UGX - Ugandan Shilling</option>
+                <option value="USD">USD - US Dollar</option>
+                <option value="EUR">EUR - Euro</option>
+                <option value="GBP">GBP - British Pound</option>
+              </select>
+            </div>
+
+            <div style="margin-bottom: 12px;">
+              <label style="display: block; margin-bottom: 8px; font-weight: bold;">Quick Select Amount</label>
+              <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; margin-bottom: 12px;">
+                <button type="button" class="amount-btn" data-amount="10000">10,000</button>
+                <button type="button" class="amount-btn" data-amount="25000">25,000</button>
+                <button type="button" class="amount-btn" data-amount="50000">50,000</button>
+                <button type="button" class="amount-btn" data-amount="100000">100,000</button>
+                <button type="button" class="amount-btn" data-amount="250000">250,000</button>
+                <button type="button" class="amount-btn" data-amount="500000">500,000</button>
+              </div>
+            </div>
+
+            <div>
+              <label style="display: block; margin-bottom: 6px; font-weight: bold;">Custom Amount *</label>
+              <input type="number" id="donationAmount" required min="1" step="0.01" placeholder="Enter amount"
+                style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1.2rem; font-weight: bold; text-align: center;">
+              <small style="color: #666; font-size: 0.85rem; display: block; margin-top: 6px;">Minimum: 1</small>
+            </div>
+          </div>
+
+          <!-- Payment Method -->
+          <div style="background: #f9f9f9; padding: 20px; border-radius: 12px; margin-bottom: 24px;">
+            <h3 style="color: var(--brand); margin-bottom: 16px; font-size: 1.2rem;">Payment Method</h3>
+
+            <div style="margin-bottom: 16px;">
+              <label style="display: block; margin-bottom: 6px; font-weight: bold;">Select Payment Method *</label>
+              <select id="paymentMethod" required
+                style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;">
+                <option value="">-- Choose Payment Method --</option>
+                <option value="MTN Mobile Money">📱 MTN Mobile Money</option>
+                <option value="Airtel Money">📱 Airtel Money</option>
+                <option value="Bank Transfer">🏦 Bank Transfer</option>
+                <option value="PayPal">💳 PayPal</option>
+                <option value="Credit/Debit Card">💳 Credit/Debit Card</option>
+                <option value="Cash">💵 Cash</option>
+                <option value="Other">📝 Other</option>
+              </select>
+            </div>
+
+            <!-- Dynamic Payment Fields -->
+            <div id="paymentFields" style="display: none;">
+              <!-- MTN Mobile Money Fields -->
+              <div id="mtnFields" class="payment-method-fields" style="display: none;">
+                <div style="margin-bottom: 12px;">
+                  <label style="display: block; margin-bottom: 6px; font-weight: bold;">MTN Mobile Money Number
+                    *</label>
+                  <input type="tel" id="mtnPhone" placeholder="+256 XXX XXX XXX" pattern="[0-9+\s-]+"
+                    style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;">
+                </div>
+                <div
+                  style="background: #fff5f5; padding: 12px; border-radius: 8px; border-left: 4px solid var(--brand);">
+                  <p style="margin: 0; font-size: 0.9rem; color: #666;">
+                    <strong>MTN Mobile Money:</strong> Send to +256 XXX XXX XXX<br>
+                    After payment, you'll receive a confirmation message.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Airtel Money Fields -->
+              <div id="airtelFields" class="payment-method-fields" style="display: none;">
+                <div style="margin-bottom: 12px;">
+                  <label style="display: block; margin-bottom: 6px; font-weight: bold;">Airtel Money Number *</label>
+                  <input type="tel" id="airtelPhone" placeholder="+256 XXX XXX XXX" pattern="[0-9+\s-]+"
+                    style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;">
+                </div>
+                <div
+                  style="background: #fff5f5; padding: 12px; border-radius: 8px; border-left: 4px solid var(--brand);">
+                  <p style="margin: 0; font-size: 0.9rem; color: #666;">
+                    <strong>Airtel Money:</strong> Send to +256 XXX XXX XXX<br>
+                    After payment, you'll receive a confirmation message.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Bank Transfer Fields -->
+              <div id="bankFields" class="payment-method-fields" style="display: none;">
+                <div style="margin-bottom: 12px;">
+                  <label style="display: block; margin-bottom: 6px; font-weight: bold;">Bank Name *</label>
+                  <input type="text" id="bankName" placeholder="e.g., Bank of Uganda"
+                    style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;">
+                </div>
+                <div style="margin-bottom: 12px;">
+                  <label style="display: block; margin-bottom: 6px; font-weight: bold;">Account Number *</label>
+                  <input type="text" id="accountNumber" placeholder="Enter account number"
+                    style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;">
+                </div>
+                <div style="margin-bottom: 12px;">
+                  <label style="display: block; margin-bottom: 6px; font-weight: bold;">Account Name</label>
+                  <input type="text" id="accountName" placeholder="Account holder name"
+                    style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;">
+                </div>
+                <div
+                  style="background: #fff5f5; padding: 12px; border-radius: 8px; border-left: 4px solid var(--brand);">
+                  <p style="margin: 0; font-size: 0.9rem; color: #666;">
+                    <strong>Bank Details:</strong><br>
+                    Account Name: Tudduke Okufa Ministry<br>
+                    Account Number: XXXX XXXX XXXX<br>
+                    Bank: [Your Bank Name]<br>
+                    Branch: [Branch Name]
+                  </p>
+                </div>
+              </div>
+
+              <!-- PayPal Fields -->
+              <div id="paypalFields" class="payment-method-fields" style="display: none;">
+                <div
+                  style="background: #fff5f5; padding: 12px; border-radius: 8px; border-left: 4px solid var(--brand);">
+                  <p style="margin: 0; font-size: 0.9rem; color: #666;">
+                    <strong>PayPal:</strong> You will be redirected to PayPal to complete your payment securely.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Credit/Debit Card Fields -->
+              <div id="cardFields" class="payment-method-fields" style="display: none;">
+                <div style="margin-bottom: 12px;">
+                  <label style="display: block; margin-bottom: 6px; font-weight: bold;">Card Number *</label>
+                  <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19"
+                    style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;">
+                </div>
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 12px; margin-bottom: 12px;">
+                  <div>
+                    <label style="display: block; margin-bottom: 6px; font-weight: bold;">Expiry Date *</label>
+                    <input type="text" id="cardExpiry" placeholder="MM/YY" maxlength="5"
+                      style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;">
+                  </div>
+                  <div>
+                    <label style="display: block; margin-bottom: 6px; font-weight: bold;">CVV *</label>
+                    <input type="text" id="cardCVV" placeholder="123" maxlength="4"
+                      style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;">
+                  </div>
+                </div>
+                <div
+                  style="background: #fff5f5; padding: 12px; border-radius: 8px; border-left: 4px solid var(--brand);">
+                  <p style="margin: 0; font-size: 0.9rem; color: #666;">
+                    <strong>Secure Payment:</strong> Your card information is encrypted and secure.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Cash Fields -->
+              <div id="cashFields" class="payment-method-fields" style="display: none;">
+                <div
+                  style="background: #fff5f5; padding: 12px; border-radius: 8px; border-left: 4px solid var(--brand);">
+                  <p style="margin: 0; font-size: 0.9rem; color: #666;">
+                    <strong>Cash Donation:</strong> Please bring your donation to our ministry office or contact us for
+                    pickup arrangements.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Other Fields -->
+              <div id="otherFields" class="payment-method-fields" style="display: none;">
+                <div style="margin-bottom: 12px;">
+                  <label style="display: block; margin-bottom: 6px; font-weight: bold;">Payment Details *</label>
+                  <textarea id="otherDetails" rows="3" placeholder="Please describe your payment method and details"
+                    style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; resize: vertical;"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Additional Notes -->
+          <div style="margin-bottom: 24px;">
+            <label style="display: block; margin-bottom: 6px; font-weight: bold;">Additional Notes (Optional)</label>
+            <textarea id="donationNotes" rows="3" placeholder="Any special instructions or notes..."
+              style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; resize: vertical;"></textarea>
+          </div>
+
+          <!-- Response Message -->
+          <div id="donationResponse" style="margin-bottom: 16px; padding: 12px; border-radius: 8px; display: none;">
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" id="submitBtn"
+            style="width: 100%; padding: 16px; background: var(--brand); color: white; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: background 0.3s;">
+            Submit Donation
+          </button>
+
+          <p style="text-align: center; margin-top: 16px; font-size: 0.85rem; color: #666;">
+            By submitting, you agree to our donation terms and conditions.
+          </p>
+        </form>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <h3>Tudduke Okufa Ministry</h3>
+        <p class="leader-text">Led by Servant Kiviri John Mark</p>
+      </div>
+
+      <div class="footer-dev">
+        <p>Developed with excellence by</p>
+        <a href="#" class="dev-link">Innotech Solutions Uganda</a>
+      </div>
     </div>
 
-    <h2>Ways You Can Give</h2>
-
-    <div class="payments">
-
-      <div class="payment-card">
-        <h3>📱 Mobile Money</h3>
-        <p><strong>MTN:</strong> +256 XXX XXX XXX</p>
-        <p><strong>Airtel:</strong> +256 XXX XXX XXX</p>
-      </div>
-
-      <div class="payment-card">
-        <h3>🏦 Bank Transfer</h3>
-        <p>Details coming soon</p>
-      </div>
-
-      <div class="payment-card">
-        <h3>💳 International</h3>
-        <p>PayPal / Visa / Stripe</p>
-      </div>
-
-      <div class="payment-card">
-        <h3>🙏 Partnership</h3>
-        <ul>
-          <li>Outreach</li>
-          <li>Equipment</li>
-          <li>Prayer support</li>
-        </ul>
-      </div>
-
+    <div class="footer-bottom">
+      <p>&copy; <span id="year"></span> Tudduke Okufa. All Rights Reserved.</p>
     </div>
+  </footer>
 
-    <div class="cta">
-      <h2>Thank You for Standing With Us</h2>
-      <p>May God bless you abundantly.</p>
-    </div>
+  <!-- SCRIPTS -->
+  <script src="https://unpkg.com/feather-icons"></script>
 
-  </section>
-</main>
+  <script>
+    /* Dynamic Year */
+    document.getElementById("year").textContent = new Date().getFullYear();
 
-<footer>
-  © 2025 Ministry Name • All Rights Reserved
-</footer>
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+    const toggleBtn = document.getElementById("menuToggle");
+    const sidebarLinks = sidebar.querySelectorAll("a");
 
-<!-- SCRIPTS -->
-<script src="https://unpkg.com/feather-icons"></script>
+    toggleBtn.addEventListener("click", () => {
+      sidebar.classList.toggle("active");
+      overlay.classList.toggle("active");
+    });
 
-<script>
-const sidebar = document.getElementById("sidebar");
-const overlay = document.getElementById("overlay");
-const toggleBtn = document.getElementById("menuToggle");
-const sidebarLinks = sidebar.querySelectorAll("a");
+    overlay.addEventListener("click", closeSidebar);
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") closeSidebar();
+    });
 
-toggleBtn.addEventListener("click", () => {
-  sidebar.classList.toggle("active");
-  overlay.classList.toggle("active");
-});
+    /* AUTO-CLOSE ON LINK CLICK */
+    sidebarLinks.forEach(link => {
+      link.addEventListener("click", closeSidebar);
+    });
 
-overlay.addEventListener("click", closeSidebar);
-document.addEventListener("keydown", e => {
-  if (e.key === "Escape") closeSidebar();
-});
+    function closeSidebar() {
+      sidebar.classList.remove("active");
+      overlay.classList.remove("active");
+    }
 
-/* AUTO-CLOSE ON LINK CLICK */
-sidebarLinks.forEach(link => {
-  link.addEventListener("click", closeSidebar);
-});
+    feather.replace();
 
-function closeSidebar() {
-  sidebar.classList.remove("active");
-  overlay.classList.remove("active");
-}
+    /* DONATION FORM FUNCTIONALITY */
+    const donationForm = document.getElementById('donationForm');
+    const donationResponse = document.getElementById('donationResponse');
+    const paymentMethod = document.getElementById('paymentMethod');
+    const paymentFields = document.getElementById('paymentFields');
+    const donationAmount = document.getElementById('donationAmount');
+    const currency = document.getElementById('currency');
 
-feather.replace();
-</script>
+    // Amount buttons
+    document.querySelectorAll('.amount-btn').forEach(btn => {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        const amount = this.dataset.amount;
+        donationAmount.value = amount;
+      });
+    });
+
+    // Payment method change handler
+    paymentMethod.addEventListener('change', function () {
+      const method = this.value;
+
+      // Hide all payment method fields
+      document.querySelectorAll('.payment-method-fields').forEach(field => {
+        field.style.display = 'none';
+      });
+
+      // Show relevant fields based on selection
+      if (method) {
+        paymentFields.style.display = 'block';
+
+        if (method.includes('MTN')) {
+          document.getElementById('mtnFields').style.display = 'block';
+        } else if (method.includes('Airtel')) {
+          document.getElementById('airtelFields').style.display = 'block';
+        } else if (method.includes('Bank')) {
+          document.getElementById('bankFields').style.display = 'block';
+        } else if (method.includes('PayPal')) {
+          document.getElementById('paypalFields').style.display = 'block';
+        } else if (method.includes('Card')) {
+          document.getElementById('cardFields').style.display = 'block';
+        } else if (method.includes('Cash')) {
+          document.getElementById('cashFields').style.display = 'block';
+        } else if (method === 'Other') {
+          document.getElementById('otherFields').style.display = 'block';
+        }
+      } else {
+        paymentFields.style.display = 'none';
+      }
+    });
+
+    // Format card number input
+    const cardNumber = document.getElementById('cardNumber');
+    if (cardNumber) {
+      cardNumber.addEventListener('input', function (e) {
+        let value = e.target.value.replace(/\s/g, '');
+        let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+        e.target.value = formattedValue;
+      });
+    }
+
+    // Format expiry date input
+    const cardExpiry = document.getElementById('cardExpiry');
+    if (cardExpiry) {
+      cardExpiry.addEventListener('input', function (e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length >= 2) {
+          value = value.substring(0, 2) + '/' + value.substring(2, 4);
+        }
+        e.target.value = value;
+      });
+    }
+
+    // Format CVV input
+    const cardCVV = document.getElementById('cardCVV');
+    if (cardCVV) {
+      cardCVV.addEventListener('input', function (e) {
+        e.target.value = e.target.value.replace(/\D/g, '');
+      });
+    }
+
+    // Form validation
+    function validateForm() {
+      const method = paymentMethod.value;
+      let isValid = true;
+      let errorMessage = '';
+
+      // Check payment method specific fields
+      if (method.includes('MTN')) {
+        const mtnPhone = document.getElementById('mtnPhone').value.trim();
+        if (!mtnPhone) {
+          isValid = false;
+          errorMessage = 'Please enter your MTN Mobile Money number';
+        }
+      } else if (method.includes('Airtel')) {
+        const airtelPhone = document.getElementById('airtelPhone').value.trim();
+        if (!airtelPhone) {
+          isValid = false;
+          errorMessage = 'Please enter your Airtel Money number';
+        }
+      } else if (method.includes('Bank')) {
+        const bankName = document.getElementById('bankName').value.trim();
+        const accountNumber = document.getElementById('accountNumber').value.trim();
+        if (!bankName || !accountNumber) {
+          isValid = false;
+          errorMessage = 'Please fill in all bank transfer details';
+        }
+      } else if (method.includes('Card')) {
+        const cardNum = document.getElementById('cardNumber').value.replace(/\s/g, '');
+        const expiry = document.getElementById('cardExpiry').value;
+        const cvv = document.getElementById('cardCVV').value;
+        if (!cardNum || cardNum.length < 13 || !expiry || !cvv) {
+          isValid = false;
+          errorMessage = 'Please fill in all card details correctly';
+        }
+      } else if (method === 'Other') {
+        const otherDetails = document.getElementById('otherDetails').value.trim();
+        if (!otherDetails) {
+          isValid = false;
+          errorMessage = 'Please provide payment details';
+        }
+      }
+
+      return { isValid, errorMessage };
+    }
+
+    // Form submission
+    donationForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Validate form
+      const validation = validateForm();
+      if (!validation.isValid) {
+        donationResponse.style.display = 'block';
+        donationResponse.style.background = '#f8d7da';
+        donationResponse.style.color = '#721c24';
+        donationResponse.textContent = '❌ ' + validation.errorMessage;
+        return;
+      }
+
+      // Collect payment details based on method
+      const method = paymentMethod.value;
+      let paymentDetails = '';
+
+      if (method.includes('MTN')) {
+        paymentDetails = `MTN Mobile Money: ${document.getElementById('mtnPhone').value}`;
+      } else if (method.includes('Airtel')) {
+        paymentDetails = `Airtel Money: ${document.getElementById('airtelPhone').value}`;
+      } else if (method.includes('Bank')) {
+        paymentDetails = `Bank: ${document.getElementById('bankName').value}, Account: ${document.getElementById('accountNumber').value}, Name: ${document.getElementById('accountName').value || 'N/A'}`;
+      } else if (method.includes('Card')) {
+        paymentDetails = `Card ending in: ${document.getElementById('cardNumber').value.slice(-4)}`;
+      } else if (method === 'Other') {
+        paymentDetails = document.getElementById('otherDetails').value;
+      } else {
+        paymentDetails = method;
+      }
+
+      const donationData = {
+        name: document.getElementById('donorName').value.trim(),
+        email: document.getElementById('donorEmail').value.trim(),
+        phone: document.getElementById('donorPhone').value.trim(),
+        amount: parseFloat(donationAmount.value),
+        currency: currency.value,
+        paymentMethod: method,
+        paymentDetails: paymentDetails,
+        notes: document.getElementById('donationNotes').value.trim()
+      };
+
+      // Disable submit button
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+
+      try {
+        donationResponse.style.display = 'block';
+        donationResponse.style.background = '#f0f0f0';
+        donationResponse.style.color = '#333';
+        donationResponse.innerHTML = '<div style="display: flex; align-items: center; gap: 10px;"><span>⏳</span> Submitting donation...</div>';
+
+        const res = await fetch('/api/donations', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(donationData)
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          donationResponse.style.background = '#d4edda';
+          donationResponse.style.color = '#155724';
+          donationResponse.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 1.5rem;">✅</span>
+          <div>
+            <strong>Thank you for your generous donation!</strong><br>
+            Your donation of ${currency.value} ${donationData.amount.toLocaleString()} has been recorded.<br>
+            We will contact you regarding payment confirmation.
+          </div>
+        </div>
+      `;
+          donationForm.reset();
+          document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('active'));
+          paymentFields.style.display = 'none';
+
+          // Scroll to response
+          donationResponse.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        } else {
+          donationResponse.style.background = '#f8d7da';
+          donationResponse.style.color = '#721c24';
+          donationResponse.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 1.5rem;">❌</span>
+          <div>${data.error || 'Failed to submit donation. Please try again.'}</div>
+        </div>
+      `;
+        }
+      } catch (err) {
+        console.error('Donation error:', err);
+        donationResponse.style.background = '#f8d7da';
+        donationResponse.style.color = '#721c24';
+        donationResponse.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="font-size: 1.5rem;">❌</span>
+        <div>Server error. Please check your connection and try again later.</div>
+      </div>
+    `;
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Donation';
+      }
+    });
+  </script>
 
 </body>
+
 </html>

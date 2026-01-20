@@ -1,232 +1,319 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Daily Sermons | Tudduke Okufa</title>
 
-<style>
-:root{
-  --brand:#b30000;
-  --bg:#f4f4f4;
-  --text:#333;
-  --card:#fff;
-}
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-}
-/* ===== HEADER ===== */
-header{
-  position:fixed;
-  top:0;left:0;right:0;
-  height:70px;
-  background:var(--brand);
-  color:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 16px;
-  z-index:1000;
-}
-.menu-toggle{
-  font-size:1.6rem;
-  background:none;
-  border:none;
-  color:#fff;
-  cursor:pointer;
-}
-.header-center{
-  flex:1;
-  text-align:center;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:6px;
-}
-.header-center h1{margin:0;font-size:1.5rem}
-.search-bar input{
-  padding:8px 14px;
-  border-radius:20px;
-  border:none;
-  width:260px;
-  max-width:70vw;
-  text-align:center;
-}
-/* ===== SIDEBAR ===== */
-aside#sidebar{
-  position:fixed;
-  top:70px;
-  left:-260px;
-  width:260px;
-  height:calc(100vh - 70px);
-  background:#fff;
-  padding:20px;
-  border-right:1px solid #ddd;
-  transition:left .3s ease;
-  z-index:1001;
-  overflow-y:auto;
-}
-aside#sidebar.active{left:0}
-aside a{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:12px 16px;
-  margin:12px 0;
-  background:#fff;
-  border-radius:12px;
-  box-shadow:0 4px 8px rgba(0,0,0,.08);
-  color:var(--brand);
-  font-weight:bold;
-  text-decoration:none;
-  transition:.2s ease;
-}
-aside a:hover{
-  transform:translateY(-2px);
-  box-shadow:0 6px 12px rgba(0,0,0,.15);
-  background:#fdfdfd;
-}
-aside a i{width:22px;height:22px;stroke-width:2.2}
-/* ===== OVERLAY ===== */
-.overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.35);
-  opacity:0;
-  pointer-events:none;
-  transition:.2s;
-  z-index:1000;
-}
-.overlay.active{opacity:1;pointer-events:auto}
-/* ===== MAIN ===== */
-main{
-  max-width:900px;
-  margin:100px auto 30px;
-  padding:0 16px;
-}
-h2{
-  text-align:center;
-  color:var(--brand);
-  border-bottom:2px solid var(--brand);
-  padding-bottom:6px;
-  margin-top:40px;
-}
-article{
-  background:var(--card);
-  padding:16px;
-  margin:14px 0;
-  border-radius:10px;
-  box-shadow:0 2px 6px rgba(0,0,0,.1);
-}
-article p{margin:6px 0}
-/* ===== FOOTERS ===== */
-.doc-footer{
-  text-align:center;
-  margin-top:30px;
-  padding:14px;
-  background:#eee;
-  border-radius:8px;
-  font-style:italic;
-}
-footer.main-footer{
-  background:var(--brand);
-  color:#fff;
-  text-align:center;
-  padding:20px;
-  font-weight:bold;
-}
-/* ===== MOBILE ===== */
-@media(max-width:600px){
-  .search-bar input{width:220px}
-  aside#sidebar{width:240px;left:-240px}
-}
-</style>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daily Sermons | Tudduke Okufa</title>
+
+  <style>
+    :root {
+      --brand: #b30000;
+      --bg: #f4f4f4;
+      --text: #333;
+      --card: #fff;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 70px;
+      background: var(--brand);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      z-index: 1000;
+    }
+
+    .menu-toggle {
+      font-size: 1.6rem;
+      background: none;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .header-center {
+      flex: 1;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .header-center h1 {
+      margin: 0;
+      font-size: 1.5rem
+    }
+
+    .search-bar input {
+      padding: 8px 14px;
+      border-radius: 20px;
+      border: none;
+      width: 260px;
+      max-width: 70vw;
+      text-align: center;
+    }
+
+    /* ===== SIDEBAR ===== */
+    aside#sidebar {
+      position: fixed;
+      top: 70px;
+      left: -260px;
+      width: 260px;
+      height: calc(100vh - 70px);
+      background: #fff;
+      padding: 20px;
+      border-right: 1px solid #ddd;
+      transition: left .3s ease;
+      z-index: 1001;
+      overflow-y: auto;
+    }
+
+    aside#sidebar.active {
+      left: 0
+    }
+
+    aside a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      margin: 12px 0;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, .08);
+      color: var(--brand);
+      font-weight: bold;
+      text-decoration: none;
+      transition: .2s ease;
+    }
+
+    aside a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, .15);
+      background: #fdfdfd;
+    }
+
+    aside a i {
+      width: 22px;
+      height: 22px;
+      stroke-width: 2.2
+    }
+
+    /* ===== OVERLAY ===== */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .35);
+      opacity: 0;
+      pointer-events: none;
+      transition: .2s;
+      z-index: 1000;
+    }
+
+    .overlay.active {
+      opacity: 1;
+      pointer-events: auto
+    }
+
+    /* ===== MAIN ===== */
+    main {
+      max-width: 900px;
+      margin: 100px auto 30px;
+      padding: 0 16px;
+    }
+
+    h2 {
+      text-align: center;
+      color: var(--brand);
+      border-bottom: 2px solid var(--brand);
+      padding-bottom: 6px;
+      margin-top: 40px;
+    }
+
+    article {
+      background: var(--card);
+      padding: 16px;
+      margin: 14px 0;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, .1);
+    }
+
+    article p {
+      margin: 6px 0
+    }
+
+    /* ===== FOOTERS ===== */
+    .doc-footer {
+      text-align: center;
+      margin-top: 30px;
+      padding: 14px;
+      background: #eee;
+      border-radius: 8px;
+      font-style: italic;
+    }
+
+    footer.main-footer {
+      background: var(--brand);
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+      font-weight: bold;
+    }
+
+    /* ===== MOBILE ===== */
+    @media(max-width:600px) {
+      .search-bar input {
+        width: 220px
+      }
+
+      aside#sidebar {
+        width: 240px;
+        left: -240px
+      }
+    }
+
+    /* DESKTOP SIDEBAR */
+    @media (min-width: 1024px) {
+      aside#sidebar {
+        left: 0;
+        box-shadow: none;
+        border-right: 1px solid #ddd;
+      }
+
+      .menu-toggle {
+        display: none;
+      }
+
+      header {
+        padding-left: 280px;
+      }
+
+      main {
+        margin-left: 280px;
+        margin-right: auto;
+        /* keep top/bottom margin logic or override specifically */
+        margin-top: 100px;
+        margin-bottom: 30px;
+        width: auto;
+      }
+
+      .overlay {
+        display: none !important;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<header>
-  <button class="menu-toggle" id="menuToggle">☰</button>
-  <div class="header-center">
-    <h1>Daily Sermons</h1>
-    <div class="search-bar">
-      <input type="text" id="searchInput" placeholder="Search sermons...">
+  <header>
+    <button class="menu-toggle" id="menuToggle">☰</button>
+    <div class="header-center">
+      <h1>Daily Sermons</h1>
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search sermons...">
+      </div>
     </div>
-  </div>
-  <div style="width:32px"></div>
-</header>
+    <div style="width:32px"></div>
+  </header>
 
-<!-- SIDEBAR -->
-<aside id="sidebar">
-  <a href="index.html"><i data-feather="home"></i>Home</a>
-  <a href="videos.html"><i data-feather="video"></i>Videos</a>
-  <a href="sermons.html"><i data-feather="book-open"></i>Daily Sermons</a>
-  <a href="donate.html"><i data-feather="heart"></i>Donate</a>
-  <a href="livestream.html"><i data-feather="tv"></i>Live</a>
-</aside>
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <a href="index.html"><i data-feather="home"></i>Home</a>
+    <a href="videos.html"><i data-feather="video"></i>Videos</a>
+    <a href="sermons.html"><i data-feather="book-open"></i>Daily Sermons</a>
+    <a href="donate.html"><i data-feather="heart"></i>Donate</a>
+    <a href="livestream.html"><i data-feather="tv"></i>Live</a>
+  </aside>
 
-<div class="overlay" id="overlay"></div>
+  <div class="overlay" id="overlay"></div>
 
-<main id="sermons">
-  <!-- Sermons will be injected here dynamically -->
-</main>
+  <main id="sermons">
+    <!-- Sermons will be injected here dynamically -->
+  </main>
 
-<footer class="main-footer">
-  <p>Developed by InnoTech Solutions</p>
-</footer>
+  <footer class="main-footer">
+    <p>Developed by InnoTech Solutions</p>
+  </footer>
 
-<!-- SCRIPTS -->
-<script src="https://unpkg.com/feather-icons"></script>
-<script>
-const sidebar=document.getElementById("sidebar");
-const overlay=document.getElementById("overlay");
-const toggleBtn=document.getElementById("menuToggle");
-const searchInput=document.getElementById("searchInput");
-const sermonsContainer=document.getElementById("sermons");
+  <!-- SCRIPTS -->
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script>
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+    const toggleBtn = document.getElementById("menuToggle");
+    const searchInput = document.getElementById("searchInput");
+    const sermonsContainer = document.getElementById("sermons");
 
-/* SIDEBAR */
-function openSidebar(){sidebar.classList.add("active");overlay.classList.add("active");}
-function closeSidebar(){sidebar.classList.remove("active");overlay.classList.remove("active");}
-toggleBtn.addEventListener("click",()=>{sidebar.classList.contains("active")?closeSidebar():openSidebar();});
-overlay.addEventListener("click",closeSidebar);
-document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSidebar();});
-sidebar.querySelectorAll("a").forEach(link=>{link.addEventListener("click",closeSidebar);});
+    /* SIDEBAR */
+    function openSidebar() { sidebar.classList.add("active"); overlay.classList.add("active"); }
+    function closeSidebar() { sidebar.classList.remove("active"); overlay.classList.remove("active"); }
+    toggleBtn.addEventListener("click", () => { sidebar.classList.contains("active") ? closeSidebar() : openSidebar(); });
+    overlay.addEventListener("click", closeSidebar);
+    document.addEventListener("keydown", e => { if (e.key === "Escape") closeSidebar(); });
+    sidebar.querySelectorAll("a").forEach(link => { link.addEventListener("click", closeSidebar); });
 
-/* FETCH SERMONS FROM BACKEND */
-async function loadSermons(){
-  try {
-    const res = await fetch("https://Tudduke-DB.onrender.com/api/sermons"); // replace with your backend URL
-    const data = await res.json();
-    sermonsContainer.innerHTML = ""; // clear existing
-    data.forEach(s => {
-      const article = document.createElement("article");
-      article.innerHTML = `
-        <h2>${s.title}</h2>
-        <p><strong>Scripture:</strong> ${s.scripture}</p>
-        <p>${s.content}</p>
+    /* FETCH SERMONS FROM BACKEND */
+    async function loadSermons() {
+      try {
+        const res = await fetch("/api/sermons");
+        if (!res.ok) throw new Error('Failed to fetch sermons');
+        const data = await res.json();
+        sermonsContainer.innerHTML = ""; // clear existing
+
+        if (data.length === 0) {
+          sermonsContainer.innerHTML = "<p style='text-align:center;padding:20px;'>No sermons available yet. Check back soon!</p>";
+          return;
+        }
+
+        data.forEach(s => {
+          const article = document.createElement("article");
+          article.innerHTML = `
+        <h2>${s.title || s.topic || 'Untitled Sermon'}</h2>
+        ${s.scripture ? `<p><strong>Scripture:</strong> ${s.scripture}</p>` : ''}
+        ${s.explanation ? `<p><strong>Explanation:</strong> ${s.explanation}</p>` : ''}
+        ${s.examples ? `<p><strong>Examples:</strong> ${s.examples}</p>` : ''}
+        ${s.entrytime ? `<p style='font-size:0.85rem;color:#666;margin-top:10px;'><em>Posted: ${new Date(s.entrytime).toLocaleDateString()}</em></p>` : ''}
       `;
-      sermonsContainer.appendChild(article);
+          sermonsContainer.appendChild(article);
+        });
+      } catch (err) {
+        sermonsContainer.innerHTML = "<p style='color:red;text-align:center;padding:20px;'>Failed to load sermons. Please try again later.</p>";
+        console.error(err);
+      }
+    }
+    loadSermons();
+
+    /* SEARCH */
+    searchInput.addEventListener("input", () => {
+      const q = searchInput.value.toLowerCase();
+      document.querySelectorAll("#sermons article").forEach(a => {
+        a.style.display = a.textContent.toLowerCase().includes(q) ? "" : "none";
+      });
     });
-  } catch(err){
-    sermonsContainer.innerHTML = "<p style='color:red'>Failed to load sermons.</p>";
-    console.error(err);
-  }
-}
-loadSermons();
 
-/* SEARCH */
-searchInput.addEventListener("input",()=>{
-  const q=searchInput.value.toLowerCase();
-  document.querySelectorAll("#sermons article").forEach(a=>{
-    a.style.display=a.textContent.toLowerCase().includes(q)?"":"none";
-  });
-});
-
-/* FEATHER ICONS */
-feather.replace();
-</script>
+    /* FEATHER ICONS */
+    feather.replace();
+  </script>
 </body>
+
 </html>

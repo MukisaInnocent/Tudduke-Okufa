@@ -26,16 +26,13 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
   console.log({ name, email, message }); // 🔥 DEBUG
 
   try {
-    const res = await fetch(
-      'https://tudduke-okufa-gospel-ministries.onrender.com/api/contact',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ name, email, message })
-      }
-    );
+    const res = await fetch('/api/contact', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ name, email, message })
+    });
 
     const data = await res.json();
     console.log(data); // 🔥 DEBUG

@@ -1,304 +1,434 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Memory Verses | Tudduke Okufa Kids</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memory Verses | Tudduke Okufa Kids</title>
 
-<style>
-:root{
-  --brand:#b30000;
-  --bg:#f4f4f4;
-  --card:#fff;
-  --radius:16px;
-}
+  <style>
+    :root {
+      --brand: #b30000;
+      --bg: #f4f4f4;
+      --card: #fff;
+      --radius: 16px;
+    }
 
-/* RESET */
-*{box-sizing:border-box;margin:0;padding:0}
+    /* RESET */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
 
-body{
-  font-family:Arial,sans-serif;
-  background:var(--bg);
-  color:#333;
-}
+    body {
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: #333;
+    }
 
-/* ===== HEADER ===== */
-header{
-  position:fixed;
-  top:0;left:0;right:0;
-  height:80px;
-  background:var(--brand);
-  color:#fff;
-  display:flex;
-  align-items:center;
-  padding:0 20px;
-  z-index:1002;
-}
+    /* ===== HEADER ===== */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 80px;
+      background: var(--brand);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      z-index: 1002;
+    }
 
-.menu-toggle{
-  font-size:1.8rem;
-  background:none;
-  border:none;
-  color:#fff;
-  cursor:pointer;
-  margin-right:16px;
-}
+    .menu-toggle {
+      font-size: 1.8rem;
+      background: none;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      margin-right: 16px;
+    }
 
-header h1{font-size:1.5rem}
-header p{font-size:.85rem;opacity:.9}
+    header h1 {
+      font-size: 1.5rem
+    }
 
-/* ===== SIDEBAR ===== */
-aside{
-  position:fixed;
-  top:0;
-  left:-260px;
-  width:260px;
-  height:100vh;
-  background:#fff;
-  padding:90px 20px 20px;
-  transition:left .3s ease;
-  z-index:1001;
-}
+    header p {
+      font-size: .85rem;
+      opacity: .9
+    }
 
-aside.active{left:0}
+    /* ===== SIDEBAR ===== */
+    aside {
+      position: fixed;
+      top: 0;
+      left: -260px;
+      width: 260px;
+      height: 100vh;
+      background: #fff;
+      padding: 90px 20px 20px;
+      transition: left .3s ease;
+      z-index: 1001;
+    }
 
-aside a{
-  display:block;
-  padding:14px 16px;
-  margin-bottom:12px;
-  border-radius:14px;
-  text-decoration:none;
-  color:var(--brand);
-  font-weight:bold;
-  box-shadow:0 4px 8px rgba(0,0,0,.08);
-}
+    aside.active {
+      left: 0
+    }
 
-/* ===== OVERLAY ===== */
-.overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.35);
-  opacity:0;
-  pointer-events:none;
-  transition:.2s;
-  z-index:1000;
-}
-.overlay.active{
-  opacity:1;
-  pointer-events:auto;
-}
+    aside a {
+      display: block;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      border-radius: 14px;
+      text-decoration: none;
+      color: var(--brand);
+      font-weight: bold;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, .08);
+    }
 
-/* ===== MAIN ===== */
-.container{
-  max-width:900px;
-  margin:120px auto 40px;
-  padding:0 20px;
-  text-align:center;
-}
+    /* ===== OVERLAY ===== */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .35);
+      opacity: 0;
+      pointer-events: none;
+      transition: .2s;
+      z-index: 1000;
+    }
 
-h2{color:var(--brand);margin-bottom:16px}
+    .overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
 
-/* ===== VERSE CARD ===== */
-.main-verse{
-  background:var(--card);
-  padding:30px;
-  border-radius:var(--radius);
-  box-shadow:0 6px 16px rgba(0,0,0,.1);
-  margin-bottom:20px;
-  animation:float 3s ease-in-out infinite;
-}
-.main-verse p{font-size:1.4rem}
-.reference{color:var(--brand);font-weight:bold}
+    /* ===== MAIN ===== */
+    .container {
+      max-width: 900px;
+      margin: 120px auto 40px;
+      padding: 0 20px;
+      text-align: center;
+    }
 
-/* ===== CONTROLS ===== */
-.controls{
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  gap:14px;
-  margin:20px 0;
-}
-button{
-  padding:10px 16px;
-  border:none;
-  border-radius:20px;
-  cursor:pointer;
-  background:var(--brand);
-  color:#fff;
-  font-weight:bold;
-}
-label{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  font-weight:bold;
-}
+    h2 {
+      color: var(--brand);
+      margin-bottom: 16px
+    }
 
-/* ===== OTHER VERSES ===== */
-.other-verses{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:16px;
-}
-.verse-card{
-  background:#fff;
-  padding:20px;
-  border-radius:14px;
-  box-shadow:0 4px 10px rgba(0,0,0,.08);
-  animation:fadeUp .6s ease;
-}
+    /* ===== VERSE CARD ===== */
+    .main-verse {
+      background: var(--card);
+      padding: 30px;
+      border-radius: var(--radius);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, .1);
+      margin-bottom: 20px;
+      animation: float 3s ease-in-out infinite;
+    }
 
-/* ===== WEEKLY ===== */
-.weekly{
-  margin-top:40px;
-}
-.weekly ul{
-  list-style:none;
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:12px;
-}
-.weekly li{
-  background:#fff;
-  padding:14px;
-  border-radius:12px;
-  box-shadow:0 4px 8px rgba(0,0,0,.08);
-}
+    .main-verse p {
+      font-size: 1.4rem
+    }
 
-/* ===== FOOTER ===== */
-footer{
-  background:#111;
-  color:#ccc;
-  text-align:center;
-  padding:20px;
-  margin-top:40px;
-}
+    .reference {
+      color: var(--brand);
+      font-weight: bold
+    }
 
-/* ===== ANIMATIONS ===== */
-@keyframes float{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-6px)}
-}
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(10px)}
-  to{opacity:1;transform:translateY(0)}
-}
+    /* ===== CONTROLS ===== */
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+      margin: 20px 0;
+    }
 
-/* ===== PRINT ===== */
-@media print{
-  body *{visibility:hidden}
-  .main-verse,.verse-card{visibility:visible}
-}
-</style>
+    button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      background: var(--brand);
+      color: #fff;
+      font-weight: bold;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: bold;
+    }
+
+    /* ===== OTHER VERSES ===== */
+    .other-verses {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .verse-card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 14px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, .08);
+      animation: fadeUp .6s ease;
+    }
+
+    /* ===== WEEKLY ===== */
+    .weekly {
+      margin-top: 40px;
+    }
+
+    .weekly ul {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+    }
+
+    .weekly li {
+      background: #fff;
+      padding: 14px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, .08);
+    }
+
+    /* DESKTOP SIDEBAR */
+    @media (min-width: 1024px) {
+      aside#sidebar {
+        left: 0;
+        box-shadow: none;
+        border-right: 1px solid #ddd;
+      }
+
+      .menu-toggle {
+        display: none;
+      }
+
+      header {
+        padding-left: 280px;
+      }
+
+      .container,
+      footer {
+        margin-left: 260px;
+        width: auto;
+      }
+
+      .overlay {
+        display: none !important;
+      }
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: #111;
+      color: #ccc;
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+    }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0)
+      }
+
+      50% {
+        transform: translateY(-6px)
+      }
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    /* ===== PRINT ===== */
+    @media print {
+      body * {
+        visibility: hidden
+      }
+
+      .main-verse,
+      .verse-card {
+        visibility: visible
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<!-- HEADER -->
-<header>
-  <button class="menu-toggle" id="menuToggle">☰</button>
-  <div>
-    <h1>TUDDUKE OKUFA</h1>
-    <p>Preparing People for the Second Coming of Jesus Christ</p>
+  <!-- HEADER -->
+  <header>
+    <button class="menu-toggle" id="menuToggle">☰</button>
+    <div>
+      <h1>TUDDUKE OKUFA</h1>
+      <p>Preparing People for the Second Coming of Jesus Christ</p>
+    </div>
+  </header>
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <a href="index.html">Kids Home</a>
+    <a href="videos.html">Kids Videos</a>
+    <a href="quiz.html">Bible Quiz</a>
+    <a href="memory-verses.html">Memory Verses</a>
+    <a href="children-sermon.html">Children Sermons</a>
+  </aside>
+
+  <div class="overlay" id="overlay"></div>
+
+  <!-- MAIN CONTENT -->
+  <div class="container">
+    <h2>Daily Memory Verse</h2>
+
+    <div class="main-verse">
+      <p id="mainText"></p>
+      <div class="reference" id="mainRef"></div>
+    </div>
+
+    <div class="controls">
+      <button onclick="readVerse()">Read Aloud</button>
+      <button onclick="window.print()">Print Verse Card</button>
+      <label><input type="checkbox" id="memorized"> Memorized Today</label>
+    </div>
+
+    <h3>More Bible Verses</h3>
+    <div class="other-verses" id="otherVerses"></div>
+
+    <div class="weekly">
+      <h3>Weekly Verse Schedule</h3>
+      <ul id="weeklyList"></ul>
+    </div>
   </div>
-</header>
 
-<!-- SIDEBAR -->
-<aside id="sidebar">
-  <a href="index.html">Kids Home</a>
-  <a href="videos.html">Kids Videos</a>
-  <a href="quiz.html">Bible Quiz</a>
-  <a href="memory-verses.html">Memory Verses</a>
-  <a href="children-sermon.html">Children Sermons</a>
-</aside>
+  <footer>© 2025 Tudduke Okufa Ministry</footer>
 
-<div class="overlay" id="overlay"></div>
+  <script>
+    /* SIDEBAR */
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+    const toggle = document.getElementById("menuToggle");
 
-<!-- MAIN CONTENT -->
-<div class="container">
-  <h2>Daily Memory Verse</h2>
+    toggle.onclick = () => {
+      sidebar.classList.toggle("active");
+      overlay.classList.toggle("active");
+    };
+    overlay.onclick = closeSidebar;
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") closeSidebar();
+    });
+    sidebar.querySelectorAll("a").forEach(a => a.onclick = closeSidebar);
 
-  <div class="main-verse">
-    <p id="mainText"></p>
-    <div class="reference" id="mainRef"></div>
-  </div>
+    function closeSidebar() {
+      sidebar.classList.remove("active");
+      overlay.classList.remove("active");
+    }
 
-  <div class="controls">
-    <button onclick="readVerse()">Read Aloud</button>
-    <button onclick="window.print()">Print Verse Card</button>
-    <label><input type="checkbox" id="memorized"> Memorized Today</label>
-  </div>
+    /* LOAD VERSES FROM BACKEND */
+    let allVerses = [];
+    let dailyVerse = null;
 
-  <h3>More Bible Verses</h3>
-  <div class="other-verses" id="otherVerses"></div>
+    async function loadMemoryVerses() {
+      try {
+        // Load daily verse
+        const dailyRes = await fetch('/api/kids/memory-verses/daily');
+        if (dailyRes.ok) {
+          dailyVerse = await dailyRes.json();
+          if (dailyVerse && dailyVerse.text) {
+            document.getElementById("mainText").textContent = `"${dailyVerse.text}"`;
+            document.getElementById("mainRef").textContent = dailyVerse.reference || '';
+          }
+        }
 
-  <div class="weekly">
-    <h3>Weekly Verse Schedule</h3>
-    <ul id="weeklyList"></ul>
-  </div>
-</div>
+        // Load all verses
+        const res = await fetch('/api/kids/memory-verses');
+        if (!res.ok) throw new Error('Failed to fetch verses');
+        allVerses = await res.json();
 
-<footer>© 2025 Tudduke Okufa Ministry</footer>
+        // Display other verses
+        const otherVersesContainer = document.getElementById("otherVerses");
+        if (allVerses.length > 0) {
+          allVerses.slice(0, 6).forEach(verse => {
+            const card = document.createElement("div");
+            card.className = "verse-card";
+            card.innerHTML = `
+          <p>"${verse.text}"</p>
+          <div class="reference">${verse.reference}</div>
+        `;
+            otherVersesContainer.appendChild(card);
+          });
+        } else {
+          otherVersesContainer.innerHTML = '<p>More verses coming soon!</p>';
+        }
 
-<script>
-/* SIDEBAR */
-const sidebar=document.getElementById("sidebar");
-const overlay=document.getElementById("overlay");
-const toggle=document.getElementById("menuToggle");
+        // Load weekly schedule
+        loadWeeklySchedule();
+      } catch (err) {
+        console.error('Error loading verses:', err);
+        document.getElementById("mainText").textContent = '"Trust in the Lord with all your heart."';
+        document.getElementById("mainRef").textContent = "Proverbs 3:5";
+      }
+    }
 
-toggle.onclick=()=>{
-  sidebar.classList.toggle("active");
-  overlay.classList.toggle("active");
-};
-overlay.onclick=closeSidebar;
-document.addEventListener("keydown",e=>{
-  if(e.key==="Escape")closeSidebar();
-});
-sidebar.querySelectorAll("a").forEach(a=>a.onclick=closeSidebar);
+    function loadWeeklySchedule() {
+      const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+      const list = document.getElementById("weeklyList");
 
-function closeSidebar(){
-  sidebar.classList.remove("active");
-  overlay.classList.remove("active");
-}
+      if (allVerses.length === 0) {
+        list.innerHTML = '<li>Weekly schedule coming soon!</li>';
+        return;
+      }
 
-/* VERSES */
-const verses=[
- {t:"Jesus wept.",r:"John 11:35"},
- {t:"Be kind to one another.",r:"Ephesians 4:32"},
- {t:"Trust in the Lord with all your heart.",r:"Proverbs 3:5"},
- {t:"The Lord is good to all.",r:"Psalm 145:9"},
- {t:"Let the little children come to Me.",r:"Matthew 19:14"}
-];
+      days.forEach((day, i) => {
+        const verse = allVerses[i % allVerses.length];
+        if (verse) {
+          const li = document.createElement("li");
+          li.innerHTML = `<strong>${day}</strong><br>"${verse.text}"<br>${verse.reference}`;
+          list.appendChild(li);
+        }
+      });
+    }
 
-const today=new Date().toDateString();
-const index=today.split("").reduce((a,c)=>a+c.charCodeAt(0),0)%verses.length;
-const verse=verses[index];
+    // Load verses on page load
+    loadMemoryVerses();
 
-document.getElementById("mainText").textContent=`"${verse.t}"`;
-document.getElementById("mainRef").textContent=verse.r;
+    /* TEXT TO SPEECH */
+    function readVerse() {
+      const text = document.getElementById("mainText").textContent;
+      const ref = document.getElementById("mainRef").textContent;
+      const msg = new SpeechSynthesisUtterance(`${text} ${ref}`);
+      msg.rate = 0.9;
+      speechSynthesis.speak(msg);
+    }
 
-/* WEEKLY */
-const days=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
-const list=document.getElementById("weeklyList");
-days.forEach((d,i)=>{
-  const v=verses[i%verses.length];
-  const li=document.createElement("li");
-  li.innerHTML=`<strong>${d}</strong><br>"${v.t}"<br>${v.r}`;
-  list.appendChild(li);
-});
-
-/* TEXT TO SPEECH */
-function readVerse(){
-  const msg=new SpeechSynthesisUtterance(`${verse.t} ${verse.r}`);
-  msg.rate=0.9;
-  speechSynthesis.speak(msg);
-}
-
-/* MEMORIZED */
-const box=document.getElementById("memorized");
-box.checked=localStorage.getItem(today)==="yes";
-box.onchange=()=>localStorage.setItem(today,box.checked?"yes":"no");
-</script>
+    /* MEMORIZED */
+    const box = document.getElementById("memorized");
+    const today = new Date().toDateString();
+    box.checked = localStorage.getItem(`verse-${today}`) === "yes";
+    box.onchange = () => {
+      localStorage.setItem(`verse-${today}`, box.checked ? "yes" : "no");
+      if (box.checked) {
+        alert("🎉 Great job memorizing today's verse!");
+      }
+    };
+  </script>
 
 </body>
+
 </html>

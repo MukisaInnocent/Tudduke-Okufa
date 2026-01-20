@@ -1,206 +1,269 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kids | Tudduke Okufa Ministry</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kids | Tudduke Okufa Ministry</title>
 
-<style>
-:root{
-  --brand:#b30000;
-  --bg:#f4f4f4;
-  --card:#fff;
-  --radius:16px;
-}
-*{box-sizing:border-box;margin:0;padding:0}
+  <style>
+    :root {
+      --brand: #b30000;
+      --bg: #f4f4f4;
+      --card: #fff;
+      --radius: 16px;
+    }
 
-body{
-  font-family:Arial,sans-serif;
-  background:var(--bg);
-  color:#333;
-}
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
 
-/* HEADER */
-header{
-  position:fixed;
-  top:0;left:0;right:0;
-  height:80px;
-  background:var(--brand);
-  color:#fff;
-  display:flex;
-  align-items:center;
-  padding:0 20px;
-  z-index:1002;
-}
-.menu-toggle{
-  font-size:1.8rem;
-  background:none;
-  border:none;
-  color:#fff;
-  cursor:pointer;
-  margin-right:16px;
-}
-.header-text h1{font-size:1.6rem}
-.header-text p{font-size:.85rem;opacity:.9}
+    body {
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: #333;
+    }
 
-/* SIDEBAR */
-aside{
-  position:fixed;
-  top:0;left:-260px;
-  width:260px;
-  height:100vh;
-  background:#fff;
-  padding:90px 20px;
-  transition:.3s;
-  z-index:1001;
-}
-aside.active{left:0}
-aside a{
-  display:block;
-  padding:14px 16px;
-  margin-bottom:12px;
-  border-radius:14px;
-  text-decoration:none;
-  color:var(--brand);
-  font-weight:bold;
-  box-shadow:0 4px 8px rgba(0,0,0,.08);
-}
+    /* HEADER */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 80px;
+      background: var(--brand);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      z-index: 1002;
+    }
 
-/* OVERLAY */
-.overlay{
-  position:fixed;inset:0;
-  background:rgba(0,0,0,.35);
-  opacity:0;
-  pointer-events:none;
-  transition:.2s;
-}
-.overlay.active{opacity:1;pointer-events:auto}
+    .menu-toggle {
+      font-size: 1.8rem;
+      background: none;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      margin-right: 16px;
+    }
 
-/* HERO */
-.hero{
-  margin-top:80px;
-  background:linear-gradient(135deg,#ffebee,#fff);
-  padding:50px 20px;
-  text-align:center;
-}
-.hero h2{color:var(--brand);margin-bottom:10px}
+    .header-text h1 {
+      font-size: 1.6rem
+    }
 
-/* CARDS */
-.cards{
-  max-width:1000px;
-  margin:40px auto;
-  padding:0 20px;
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:20px;
-}
-.card-link{
-  text-decoration:none;
-  color:inherit;
-}
-.card{
-  background:#fff;
-  padding:24px;
-  border-radius:var(--radius);
-  text-align:center;
-  box-shadow:0 6px 16px rgba(0,0,0,.1);
-  cursor:pointer;
-  transition:.2s;
-}
-.card:hover{
-  transform:translateY(-5px);
-}
-.card h3{color:var(--brand);margin-bottom:10px}
+    .header-text p {
+      font-size: .85rem;
+      opacity: .9
+    }
 
-/* FOOTER */
-footer{
-  background:#111;
-  color:#ccc;
-  text-align:center;
-  padding:20px;
-}
-</style>
+    /* SIDEBAR */
+    aside {
+      position: fixed;
+      top: 0;
+      left: -260px;
+      width: 260px;
+      height: 100vh;
+      background: #fff;
+      padding: 90px 20px;
+      transition: .3s;
+      z-index: 1001;
+    }
+
+    aside.active {
+      left: 0
+    }
+
+    aside a {
+      display: block;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      border-radius: 14px;
+      text-decoration: none;
+      color: var(--brand);
+      font-weight: bold;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, .08);
+    }
+
+    /* OVERLAY */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .35);
+      opacity: 0;
+      pointer-events: none;
+      transition: .2s;
+    }
+
+    .overlay.active {
+      opacity: 1;
+      pointer-events: auto
+    }
+
+    /* HERO */
+    .hero {
+      margin-top: 80px;
+      background: linear-gradient(135deg, #ffebee, #fff);
+      padding: 50px 20px;
+      text-align: center;
+    }
+
+    .hero h2 {
+      color: var(--brand);
+      margin-bottom: 10px
+    }
+
+    /* CARDS */
+    .cards {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .card-link {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .card {
+      background: #fff;
+      padding: 24px;
+      border-radius: var(--radius);
+      text-align: center;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, .1);
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card h3 {
+      color: var(--brand);
+      margin-bottom: 10px
+    }
+
+    /* DESKTOP SIDEBAR */
+    @media (min-width: 1024px) {
+      aside#sidebar {
+        left: 0;
+        box-shadow: none;
+        border-right: 1px solid #ddd;
+      }
+
+      .menu-toggle {
+        display: none;
+      }
+
+      header {
+        padding-left: 280px;
+      }
+
+      .hero,
+      .cards,
+      footer {
+        margin-left: 260px;
+        width: auto;
+      }
+
+      .overlay {
+        display: none !important;
+      }
+    }
+
+    /* FOOTER */
+    footer {
+      background: #111;
+      color: #ccc;
+      text-align: center;
+      padding: 20px;
+    }
+  </style>
 </head>
 
 <body>
 
-<header>
-  <button class="menu-toggle" id="menu">☰</button>
-  <div class="header-text">
-    <h1>TUDDUKE OKUFA</h1>
-    <p>Preparing People for the Second Coming of Jesus Christ</p>
-  </div>
-</header>
-
-<aside id="sidebar">
-  <a href="index.html">Kids Home</a>
-  <a href="videos.html">Kids Videos</a>
-  <a href="quiz.html">Bible Quiz</a>
-  <a href="memory-verses.html">Memory Verses</a>
-  <a href="children-sermon.html">Children Sermons</a>
-  <a href="weekly-lesson.html">Weekly Lessons</a>
-  <a href="parents.html">Parents & Teachers</a>
-  <a href="../index.html">⬅️🏠 Home Page</a>
-</aside>
-
-<div class="overlay" id="overlay"></div>
-
-<section class="hero">
-  <h2>Welcome to Tudduke Okufa Kids</h2>
-  <p>Helping children grow in faith, love, and obedience to God.</p>
-</section>
-
-<section class="cards">
-
-  <a href="videos.html" class="card-link">
-    <div class="card">
-      <h3>Kids Videos</h3>
-      <p>Bible stories and Christian teachings made simple.</p>
+  <header>
+    <button class="menu-toggle" id="menu">☰</button>
+    <div class="header-text">
+      <h1>TUDDUKE OKUFA</h1>
+      <p>Preparing People for the Second Coming of Jesus Christ</p>
     </div>
-  </a>
+  </header>
 
-  <a href="quiz.html" class="card-link">
-    <div class="card">
-      <h3>Bible Quiz</h3>
-      <p>Fun questions to help children learn the Bible.</p>
-    </div>
-  </a>
+  <aside id="sidebar">
+    <a href="index.html">Kids Home</a>
+    <a href="videos.html">Kids Videos</a>
+    <a href="quiz.html">Bible Quiz</a>
+    <a href="memory-verses.html">Memory Verses</a>
+    <a href="children-sermon.html">Children Sermons</a>
+    <a href="weekly-lesson.html">Weekly Lessons</a>
+    <a href="parents.html">Parents & Teachers</a>
+    <a href="../index.html">⬅️🏠 Home Page</a>
+  </aside>
 
-  <a href="memory-verses.html" class="card-link">
-    <div class="card">
-      <h3>Memory Verses</h3>
-      <p>Easy verses to memorize daily.</p>
-    </div>
-  </a>
+  <div class="overlay" id="overlay"></div>
 
-  <a href="children-sermon.html" class="card-link">
-    <div class="card">
-      <h3>Children Sermons</h3>
-      <p>Short sermons specially prepared for children.</p>
-    </div>
-  </a>
+  <section class="hero">
+    <h2>Welcome to Tudduke Okufa Kids</h2>
+    <p>Helping children grow in faith, love, and obedience to God.</p>
+  </section>
 
-</section>
+  <section class="cards">
 
-<footer>© 2025 Tudduke Okufa Ministry</footer>
+    <a href="videos.html" class="card-link">
+      <div class="card">
+        <h3>Kids Videos</h3>
+        <p>Bible stories and Christian teachings made simple.</p>
+      </div>
+    </a>
 
-<script>
-const sidebar=document.getElementById("sidebar");
-const overlay=document.getElementById("overlay");
-document.getElementById("menu").onclick=()=>{
-  sidebar.classList.toggle("active");
-  overlay.classList.toggle("active");
-};
-overlay.onclick=close;
-sidebar.querySelectorAll("a").forEach(a=>a.onclick=close);
-function close(){
-  sidebar.classList.remove("active");
-  overlay.classList.remove("active");
-}
-</script>
+    <a href="quiz.html" class="card-link">
+      <div class="card">
+        <h3>Bible Quiz</h3>
+        <p>Fun questions to help children learn the Bible.</p>
+      </div>
+    </a>
+
+    <a href="memory-verses.html" class="card-link">
+      <div class="card">
+        <h3>Memory Verses</h3>
+        <p>Easy verses to memorize daily.</p>
+      </div>
+    </a>
+
+    <a href="children-sermon.html" class="card-link">
+      <div class="card">
+        <h3>Children Sermons</h3>
+        <p>Short sermons specially prepared for children.</p>
+      </div>
+    </a>
+
+  </section>
+
+  <footer>© 2025 Tudduke Okufa Ministry</footer>
+
+  <script>
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+    document.getElementById("menu").onclick = () => {
+      sidebar.classList.toggle("active");
+      overlay.classList.toggle("active");
+    };
+    overlay.onclick = close;
+    sidebar.querySelectorAll("a").forEach(a => a.onclick = close);
+    function close() {
+      sidebar.classList.remove("active");
+      overlay.classList.remove("active");
+    }
+  </script>
 
 </body>
+
 </html>
-
-
-

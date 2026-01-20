@@ -1,269 +1,351 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bible Quiz | Tudduke Okufa Kids</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bible Quiz | Tudduke Okufa Kids</title>
 
-<style>
-:root{
-  --brand:#b30000;
-  --bg:#f4f4f4;
-  --card:#fff;
-  --radius:16px;
-}
+  <style>
+    :root {
+      --brand: #b30000;
+      --bg: #f4f4f4;
+      --card: #fff;
+      --radius: 16px;
+    }
 
-/* RESET */
-*{box-sizing:border-box;margin:0;padding:0}
+    /* RESET */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
 
-body{
-  font-family:Arial,sans-serif;
-  background:var(--bg);
-  color:#333;
-}
+    body {
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: #333;
+    }
 
-/* ===== HEADER ===== */
-header{
-  position:fixed;
-  top:0;left:0;right:0;
-  height:80px;
-  background:var(--brand);
-  color:#fff;
-  display:flex;
-  align-items:center;
-  padding:0 20px;
-  z-index:1002;
-}
+    /* ===== HEADER ===== */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 80px;
+      background: var(--brand);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      z-index: 1002;
+    }
 
-.menu-toggle{
-  font-size:1.8rem;
-  background:none;
-  border:none;
-  color:#fff;
-  cursor:pointer;
-  margin-right:16px;
-}
+    .menu-toggle {
+      font-size: 1.8rem;
+      background: none;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      margin-right: 16px;
+    }
 
-header h1{font-size:1.5rem}
-header p{font-size:.85rem;opacity:.9}
+    header h1 {
+      font-size: 1.5rem
+    }
 
-/* ===== SIDEBAR ===== */
-aside{
-  position:fixed;
-  top:0;
-  left:-260px;
-  width:260px;
-  height:100vh;
-  background:#fff;
-  padding:90px 20px 20px;
-  transition:left .3s ease;
-  z-index:1001;
-}
+    header p {
+      font-size: .85rem;
+      opacity: .9
+    }
 
-aside.active{left:0}
+    /* ===== SIDEBAR ===== */
+    aside {
+      position: fixed;
+      top: 0;
+      left: -260px;
+      width: 260px;
+      height: 100vh;
+      background: #fff;
+      padding: 90px 20px 20px;
+      transition: left .3s ease;
+      z-index: 1001;
+    }
 
-aside a{
-  display:block;
-  padding:14px 16px;
-  margin-bottom:12px;
-  border-radius:14px;
-  text-decoration:none;
-  color:var(--brand);
-  font-weight:bold;
-  box-shadow:0 4px 8px rgba(0,0,0,.08);
-}
+    aside.active {
+      left: 0
+    }
 
-/* ===== OVERLAY ===== */
-.overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.35);
-  opacity:0;
-  pointer-events:none;
-  transition:.2s;
-  z-index:1000;
-}
-.overlay.active{
-  opacity:1;
-  pointer-events:auto;
-}
+    aside a {
+      display: block;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      border-radius: 14px;
+      text-decoration: none;
+      color: var(--brand);
+      font-weight: bold;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, .08);
+    }
 
-/* ===== MAIN ===== */
-.container{
-  max-width:700px;
-  margin:120px auto 40px;
-  padding:0 20px;
-  text-align:center;
-}
+    /* ===== OVERLAY ===== */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .35);
+      opacity: 0;
+      pointer-events: none;
+      transition: .2s;
+      z-index: 1000;
+    }
 
-h2{color:var(--brand);margin-bottom:16px}
+    .overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
 
-/* ===== QUIZ CARD ===== */
-.quiz-card{
-  background:var(--card);
-  padding:30px;
-  border-radius:var(--radius);
-  box-shadow:0 6px 16px rgba(0,0,0,.1);
-  animation:fadeUp .6s ease;
-}
+    /* ===== MAIN ===== */
+    .container {
+      max-width: 700px;
+      margin: 120px auto 40px;
+      padding: 0 20px;
+      text-align: center;
+    }
 
-.quiz-card h3{
-  margin-bottom:20px;
-}
+    h2 {
+      color: var(--brand);
+      margin-bottom: 16px
+    }
 
-.options{
-  display:grid;
-  gap:12px;
-}
+    /* ===== QUIZ CARD ===== */
+    .quiz-card {
+      background: var(--card);
+      padding: 30px;
+      border-radius: var(--radius);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, .1);
+      animation: fadeUp .6s ease;
+    }
 
-.options button{
-  padding:12px;
-  border:none;
-  border-radius:14px;
-  cursor:pointer;
-  font-weight:bold;
-  background:#eee;
-  transition:.2s;
-}
+    .quiz-card h3 {
+      margin-bottom: 20px;
+    }
 
-.options button:hover{
-  background:#ddd;
-}
+    .options {
+      display: grid;
+      gap: 12px;
+    }
 
-.options button.correct{
-  background:#4caf50;
-  color:#fff;
-}
+    .options button {
+      padding: 12px;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      font-weight: bold;
+      background: #eee;
+      transition: .2s;
+    }
 
-.options button.wrong{
-  background:#f44336;
-  color:#fff;
-}
+    .options button:hover {
+      background: #ddd;
+    }
 
-/* ===== SCORE ===== */
-.score{
-  margin-top:20px;
-  font-size:1.2rem;
-  font-weight:bold;
-}
+    .options button.correct {
+      background: #4caf50;
+      color: #fff;
+    }
 
-/* ===== FOOTER ===== */
-footer{
-  background:#111;
-  color:#ccc;
-  text-align:center;
-  padding:20px;
-  margin-top:40px;
-}
+    .options button.wrong {
+      background: #f44336;
+      color: #fff;
+    }
 
-/* ===== ANIMATIONS ===== */
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(10px)}
-  to{opacity:1;transform:translateY(0)}
-}
-</style>
+    /* ===== SCORE ===== */
+    .score {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    /* DESKTOP SIDEBAR */
+    @media (min-width: 1024px) {
+      aside#sidebar {
+        left: 0;
+        box-shadow: none;
+        border-right: 1px solid #ddd;
+      }
+
+      .menu-toggle {
+        display: none;
+      }
+
+      header {
+        padding-left: 280px;
+      }
+
+      .container,
+      footer {
+        margin-left: 260px;
+        width: auto;
+      }
+
+      .overlay {
+        display: none !important;
+      }
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: #111;
+      color: #ccc;
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+    }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<!-- HEADER -->
-<header>
-  <button class="menu-toggle" id="menuToggle">☰</button>
-  <div>
-    <h1>TUDDUKE OKUFA</h1>
-    <p>Preparing People for the Second Coming of Jesus Christ</p>
+  <!-- HEADER -->
+  <header>
+    <button class="menu-toggle" id="menuToggle">☰</button>
+    <div>
+      <h1>TUDDUKE OKUFA</h1>
+      <p>Preparing People for the Second Coming of Jesus Christ</p>
+    </div>
+  </header>
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <a href="index.html">Kids Home</a>
+    <a href="videos.html">Kids Videos</a>
+    <a href="quiz.html">Bible Quiz</a>
+    <a href="memory-verses.html">Memory Verses</a>
+    <a href="children-sermon.html">Children Sermons</a>
+  </aside>
+
+  <div class="overlay" id="overlay"></div>
+
+  <!-- MAIN -->
+  <div class="container">
+    <h2>Kids Bible Quiz</h2>
+
+    <div class="quiz-card">
+      <h3 id="question"></h3>
+      <div class="options" id="options"></div>
+      <div class="score">⭐ Score: <span id="score">0</span></div>
+    </div>
   </div>
-</header>
 
-<!-- SIDEBAR -->
-<aside id="sidebar">
-  <a href="index.html">Kids Home</a>
-  <a href="videos.html">Kids Videos</a>
-  <a href="quiz.html">Bible Quiz</a>
-  <a href="memory-verses.html">Memory Verses</a>
-  <a href="children-sermon.html">Children Sermons</a>
-</aside>
+  <footer>© 2025 Tudduke Okufa Ministry</footer>
 
-<div class="overlay" id="overlay"></div>
+  <script>
+    /* ===== SIDEBAR ===== */
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+    const toggle = document.getElementById("menuToggle");
 
-<!-- MAIN -->
-<div class="container">
-  <h2>Kids Bible Quiz</h2>
+    toggle.onclick = () => {
+      sidebar.classList.toggle("active");
+      overlay.classList.toggle("active");
+    };
+    overlay.onclick = closeSidebar;
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") closeSidebar();
+    });
+    sidebar.querySelectorAll("a").forEach(a => a.onclick = closeSidebar);
 
-  <div class="quiz-card">
-    <h3 id="question"></h3>
-    <div class="options" id="options"></div>
-    <div class="score">⭐ Score: <span id="score">0</span></div>
-  </div>
-</div>
+    function closeSidebar() {
+      sidebar.classList.remove("active");
+      overlay.classList.remove("active");
+    }
 
-<footer>© 2025 Tudduke Okufa Ministry</footer>
+    /* ===== QUIZ DATA ===== */
+    let quizQuestions = [];
+    let currentIndex = 0;
+    let score = 0;
 
-<script>
-/* ===== SIDEBAR ===== */
-const sidebar=document.getElementById("sidebar");
-const overlay=document.getElementById("overlay");
-const toggle=document.getElementById("menuToggle");
+    const question = document.getElementById("question");
+    const options = document.getElementById("options");
+    const scoreEl = document.getElementById("score");
 
-toggle.onclick=()=>{
-  sidebar.classList.toggle("active");
-  overlay.classList.toggle("active");
-};
-overlay.onclick=closeSidebar;
-document.addEventListener("keydown",e=>{
-  if(e.key==="Escape")closeSidebar();
-});
-sidebar.querySelectorAll("a").forEach(a=>a.onclick=closeSidebar);
+    /* LOAD QUIZ QUESTIONS FROM BACKEND */
+    async function loadQuizQuestions() {
+      try {
+        const res = await fetch('/api/kids/quiz');
+        if (!res.ok) throw new Error('Failed to fetch quiz questions');
+        quizQuestions = await res.json();
 
-function closeSidebar(){
-  sidebar.classList.remove("active");
-  overlay.classList.remove("active");
-}
+        if (quizQuestions.length === 0) {
+          question.textContent = "No quiz questions available yet. Check back soon!";
+          options.innerHTML = "";
+          return;
+        }
 
-/* ===== QUIZ DATA ===== */
-const quiz=[
- {q:"Who built the ark?",o:["Moses","Noah","David"],a:1},
- {q:"Who was swallowed by a big fish?",o:["Jonah","Peter","Paul"],a:0},
- {q:"Who was Jesus’ mother?",o:["Martha","Mary","Elizabeth"],a:1},
- {q:"How many days did God take to create the world?",o:["5","6","7"],a:1},
- {q:"Who defeated Goliath?",o:["Saul","David","Solomon"],a:1}
-];
+        loadQuestion();
+      } catch (err) {
+        console.error('Error loading quiz:', err);
+        question.textContent = "Failed to load quiz. Please try again later.";
+        options.innerHTML = "";
+      }
+    }
 
-let index=0;
-let score=0;
+    function loadQuestion() {
+      if (quizQuestions.length === 0) return;
 
-const question=document.getElementById("question");
-const options=document.getElementById("options");
-const scoreEl=document.getElementById("score");
+      options.innerHTML = "";
+      const q = quizQuestions[currentIndex];
+      question.textContent = q.question;
 
-function loadQuestion(){
-  options.innerHTML="";
-  const q=quiz[index];
-  question.textContent=q.q;
-  q.o.forEach((opt,i)=>{
-    const btn=document.createElement("button");
-    btn.textContent=opt;
-    btn.onclick=()=>checkAnswer(btn,i===q.a);
-    options.appendChild(btn);
-  });
-}
+      const optionsList = [q.option1, q.option2, q.option3];
+      optionsList.forEach((opt, i) => {
+        const btn = document.createElement("button");
+        btn.textContent = opt;
+        btn.onclick = () => checkAnswer(btn, i === (q.correctAnswer - 1));
+        options.appendChild(btn);
+      });
+    }
 
-function checkAnswer(btn,correct){
-  if(correct){
-    btn.classList.add("correct");
-    score++;
-    scoreEl.textContent=score;
-  }else{
-    btn.classList.add("wrong");
-  }
-  setTimeout(()=>{
-    index=(index+1)%quiz.length;
-    loadQuestion();
-  },1000);
-}
+    function checkAnswer(btn, correct) {
+      // Disable all buttons
+      options.querySelectorAll("button").forEach(b => b.disabled = true);
 
-loadQuestion();
-</script>
+      if (correct) {
+        btn.classList.add("correct");
+        score++;
+        scoreEl.textContent = score;
+      } else {
+        btn.classList.add("wrong");
+        // Highlight correct answer
+        const correctBtn = options.querySelectorAll("button")[quizQuestions[currentIndex].correctAnswer - 1];
+        if (correctBtn !== btn) {
+          correctBtn.classList.add("correct");
+        }
+      }
+
+      setTimeout(() => {
+        currentIndex = (currentIndex + 1) % quizQuestions.length;
+        loadQuestion();
+      }, 2000);
+    }
+
+    // Load quiz on page load
+    loadQuizQuestions();
+  </script>
 
 </body>
+
 </html>

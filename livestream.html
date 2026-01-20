@@ -1,286 +1,334 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Live Stream | Tudduke Okufa</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Stream | Tudduke Okufa</title>
 
-<style>
-:root{
-  --brand:#b30000;
-  --bg:#0d0d0d;
-  --card:#1a1a1a;
-  --radius:16px;
-  --glass:rgba(255,255,255,0.08);
-}
+  <style>
+    :root {
+      --brand: #b30000;
+      --bg: #0d0d0d;
+      --card: #1a1a1a;
+      --radius: 16px;
+      --glass: rgba(255, 255, 255, 0.08);
+    }
 
-/* RESET */
-*{margin:0;padding:0;box-sizing:border-box}
+    /* RESET */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
 
-body{
-  font-family:Arial, sans-serif;
-  background:var(--bg);
-  color:#fff;
-  overflow-x:hidden;
-}
+    body {
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: #fff;
+      overflow-x: hidden;
+    }
 
-/* HEADER */
-header{
-  position:fixed;
-  top:0;left:0;right:0;
-  height:80px;
-  background:var(--brand);
-  display:flex;
-  align-items:center;
-  padding:0 20px;
-  z-index:1002;
-  box-shadow:0 2px 8px rgba(0,0,0,.4);
-}
+    /* HEADER */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 80px;
+      background: var(--brand);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      z-index: 1002;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .4);
+    }
 
-.menu-toggle{
-  font-size:1.9rem;
-  background:none;
-  border:none;
-  color:#fff;
-  cursor:pointer;
-  margin-right:18px;
-}
+    .menu-toggle {
+      font-size: 1.9rem;
+      background: none;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      margin-right: 18px;
+    }
 
-.header-text h1{
-  font-size:1.7rem;
-  font-weight:900;
-  letter-spacing:1px;
-}
-.header-text p{
-  font-size:.9rem;
-  opacity:.95;
-}
+    .header-text h1 {
+      font-size: 1.7rem;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
 
-/* SIDEBAR */
-aside#sidebar{
-  position:fixed;
-  top:0;
-  left:-260px;
-  width:260px;
-  height:100vh;
-  background:#fff;
-  padding:90px 20px 20px;
-  border-right:1px solid #ddd;
-  transition:left .3s ease;
-  z-index:1001;
-}
-aside#sidebar.active{left:0}
+    .header-text p {
+      font-size: .9rem;
+      opacity: .95;
+    }
 
-aside a{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:14px 16px;
-  margin-bottom:14px;
-  background:#fff;
-  border-radius:var(--radius);
-  text-decoration:none;
-  color:var(--brand);
-  font-weight:bold;
-  box-shadow:0 4px 10px rgba(0,0,0,.1);
-  transition:.25s ease;
-}
-aside a:hover{
-  transform:translateX(6px);
-}
+    /* SIDEBAR */
+    aside#sidebar {
+      position: fixed;
+      top: 0;
+      left: -260px;
+      width: 260px;
+      height: 100vh;
+      background: #fff;
+      padding: 90px 20px 20px;
+      border-right: 1px solid #ddd;
+      transition: left .3s ease;
+      z-index: 1001;
+    }
 
-/* OVERLAY */
-.overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.45);
-  opacity:0;
-  pointer-events:none;
-  transition:.25s;
-  z-index:1000;
-}
-.overlay.active{
-  opacity:1;
-  pointer-events:auto;
-}
+    aside#sidebar.active {
+      left: 0
+    }
 
-/* MAIN */
-main{
-  margin-top:110px;
-  padding:20px;
-  max-width:1100px;
-  margin-inline:auto;
-  text-align:center;
-}
+    aside a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+      background: #fff;
+      border-radius: var(--radius);
+      text-decoration: none;
+      color: var(--brand);
+      font-weight: bold;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, .1);
+      transition: .25s ease;
+    }
 
-main h2{
-  margin-bottom:20px;
-  font-size:1.8rem;
-  font-weight:700;
-}
+    aside a:hover {
+      transform: translateX(6px);
+    }
 
-/* VIDEO WRAPPER */
-.video-wrapper{
-  position:relative;
-  background:var(--glass);
-  backdrop-filter:blur(12px);
-  padding:14px;
-  border-radius:var(--radius);
-  box-shadow:0 10px 40px rgba(0,0,0,.6);
-}
+    /* OVERLAY */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .45);
+      opacity: 0;
+      pointer-events: none;
+      transition: .25s;
+      z-index: 1000;
+    }
 
-/* LIVE BADGE */
-.live-badge{
-  position:absolute;
-  top:18px;
-  left:18px;
-  background:var(--brand);
-  padding:6px 14px;
-  border-radius:20px;
-  font-weight:bold;
-  font-size:.9rem;
-  display:flex;
-  align-items:center;
-  gap:6px;
-  box-shadow:0 0 12px rgba(255,0,0,.7);
-  z-index:10;
-  animation:pulse 1.4s infinite;
-}
+    .overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
 
-@keyframes pulse{
-  0%{box-shadow:0 0 6px rgba(255,0,0,.6)}
-  50%{box-shadow:0 0 14px rgba(255,0,0,1)}
-  100%{box-shadow:0 0 6px rgba(255,0,0,.6)}
-}
+    /* MAIN */
+    main {
+      margin-top: 110px;
+      padding: 20px;
+      max-width: 1100px;
+      margin-inline: auto;
+      text-align: center;
+    }
 
-/* VIDEO */
-.video-container{
-  position:relative;
-  padding-bottom:56.25%;
-  height:0;
-  overflow:hidden;
-  border-radius:var(--radius);
-}
-.video-container iframe{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  border:none;
-}
+    main h2 {
+      margin-bottom: 20px;
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
 
-/* FOOTER */
-footer{
-  margin-top:40px;
-  padding:20px;
-  background:#000;
-  text-align:center;
-  color:#aaa;
-}
+    /* VIDEO WRAPPER */
+    .video-wrapper {
+      position: relative;
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      padding: 14px;
+      border-radius: var(--radius);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, .6);
+    }
 
-/* MOBILE */
-@media(max-width:600px){
-  .header-text p{display:none}
-  aside#sidebar{width:230px}
-}
-</style>
+    /* LIVE BADGE */
+    .live-badge {
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      background: var(--brand);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: .9rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 0 12px rgba(255, 0, 0, .7);
+      z-index: 10;
+      animation: pulse 1.4s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 6px rgba(255, 0, 0, .6)
+      }
+
+      50% {
+        box-shadow: 0 0 14px rgba(255, 0, 0, 1)
+      }
+
+      100% {
+        box-shadow: 0 0 6px rgba(255, 0, 0, .6)
+      }
+    }
+
+    /* VIDEO */
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: var(--radius);
+    }
+
+    .video-container iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* FOOTER */
+    footer {
+      margin-top: 40px;
+      padding: 20px;
+      background: #000;
+      text-align: center;
+      color: #aaa;
+    }
+
+    /* MOBILE */
+    @media(max-width:600px) {
+      .header-text p {
+        display: none
+      }
+
+      aside#sidebar {
+        width: 230px
+      }
+    }
+
+    /* DESKTOP SIDEBAR */
+    @media (min-width: 1024px) {
+      aside#sidebar {
+        left: 0;
+        box-shadow: none;
+        border-right: 1px solid #ddd;
+      }
+
+      .menu-toggle {
+        display: none;
+      }
+
+      header {
+        padding-left: 280px;
+      }
+
+      main {
+        margin-left: 280px;
+        margin-right: auto;
+        width: auto;
+        /* margin-top: 110px inherited from base style */
+      }
+
+      .overlay {
+        display: none !important;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<header>
-  <button class="menu-toggle" id="menuToggle">☰</button>
-  <div class="header-text">
-    <h1>TUDDUKE OKUFA</h1>
-    <p>Preparing People for the Second Coming of Jesus Christ</p>
-  </div>
-</header>
-
-<aside id="sidebar">
-  <a href="index.html"><i data-feather="home"></i>Home</a>
-  <a href="videos.html"><i data-feather="video"></i>Videos</a>
-  <a href="sermons.html"><i data-feather="book-open"></i>Sermons</a>
-  <a href="donate.html"><i data-feather="heart"></i>Donate</a>
-  <a href="livestream.html"><i data-feather="tv"></i>Live</a>
-</aside>
-
-<div class="overlay" id="overlay"></div>
-
-<main>
-  <h2>You’re watching Tudduke Okufa Television</h2>
-
-  <div class="video-wrapper">
-    <div class="live-badge">🔴 LIVE</div>
-
-    <div class="video-container">
-      <iframe
-        id="liveFrame"
-        width="800"
-        height="450"
-        src=""
-        title="YouTube Live Stream"
-        frameborder="0"
-        allow="autoplay; encrypted-media; picture-in-picture"
-        allowfullscreen>
-      </iframe>
+  <header>
+    <button class="menu-toggle" id="menuToggle">☰</button>
+    <div class="header-text">
+      <h1>TUDDUKE OKUFA</h1>
+      <p>Preparing People for the Second Coming of Jesus Christ</p>
     </div>
-  </div>
-</main>
+  </header>
 
-<footer>
-  © 2025 Tudduke Okufa Ministry
-</footer>
+  <aside id="sidebar">
+    <a href="index.html"><i data-feather="home"></i>Home</a>
+    <a href="videos.html"><i data-feather="video"></i>Videos</a>
+    <a href="sermons.html"><i data-feather="book-open"></i>Sermons</a>
+    <a href="donate.html"><i data-feather="heart"></i>Donate</a>
+    <a href="livestream.html"><i data-feather="tv"></i>Live</a>
+  </aside>
 
-<script src="https://unpkg.com/feather-icons"></script>
+  <div class="overlay" id="overlay"></div>
 
-<script>
-const sidebar=document.getElementById("sidebar");
-const overlay=document.getElementById("overlay");
-const toggleBtn=document.getElementById("menuToggle");
+  <main>
+    <h2>You’re watching Tudduke Okufa Television</h2>
 
-toggleBtn.addEventListener("click",()=>{
-  sidebar.classList.toggle("active");
-  overlay.classList.toggle("active");
-});
-overlay.addEventListener("click",closeSidebar);
-document.addEventListener("keydown",e=>{
-  if(e.key==="Escape")closeSidebar();
-});
-sidebar.querySelectorAll("a").forEach(link=>{
-  link.addEventListener("click",closeSidebar);
-});
-function closeSidebar(){
-  sidebar.classList.remove("active");
-  overlay.classList.remove("active");
-}
+    <div class="video-wrapper">
+      <div class="live-badge">🔴 LIVE</div>
 
-feather.replace();
+      <div class="video-container">
+        <iframe id="liveFrame" width="800" height="450" src="" title="YouTube Live Stream" frameborder="0"
+          allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+  </main>
 
-/* === YouTube Live Stream Auto Embed === */
-const API_KEY = "AIzaSyDkSgTK7TuY4Pglpk3vPB9yYaR6Wmf4uiI"; // replace with your YouTube API key
-const CHANNEL_ID = "UCDsOIE3HRX412EbbPzW6XxQ"; // replace with your channel ID
-const liveFrame = document.getElementById("liveFrame");
+  <footer>
+    © 2025 Tudduke Okufa Ministry
+  </footer>
 
-async function checkLiveStream() {
-  const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&eventType=live&type=video&key=${API_KEY}`;
-  
-  try {
-    const response = await fetch(url);
-    const data = await response.json();
+  <script src="https://unpkg.com/feather-icons"></script>
 
-    if (data.items && data.items.length > 0) {
-      const liveVideoId = data.items[0].id.videoId;
-      liveFrame.src = `https://www.youtube.com/embed/${liveVideoId}?autoplay=1&mute=1&rel=0`;
-    } if (data.items && data.items.length > 0) {
-  const liveVideoId = data.items[0].id.videoId;
-  liveFrame.src = `https://www.youtube.com/embed/${liveVideoId}?autoplay=1&mute=1&rel=0`;
-  document.querySelector(".live-badge").style.display = "flex"; // show badge
-}   else {
-  // Hide the live badge
-  document.querySelector(".live-badge").style.display = "none";
+  <script>
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+    const toggleBtn = document.getElementById("menuToggle");
 
-  // Show offline message instead of video
-  document.querySelector(".video-container").innerHTML = `
+    toggleBtn.addEventListener("click", () => {
+      sidebar.classList.toggle("active");
+      overlay.classList.toggle("active");
+    });
+    overlay.addEventListener("click", closeSidebar);
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") closeSidebar();
+    });
+    sidebar.querySelectorAll("a").forEach(link => {
+      link.addEventListener("click", closeSidebar);
+    });
+    function closeSidebar() {
+      sidebar.classList.remove("active");
+      overlay.classList.remove("active");
+    }
+
+    feather.replace();
+
+    /* === YouTube Live Stream Auto Embed === */
+    const API_KEY = "AIzaSyDkSgTK7TuY4Pglpk3vPB9yYaR6Wmf4uiI"; // replace with your YouTube API key
+    const CHANNEL_ID = "UCDsOIE3HRX412EbbPzW6XxQ"; // replace with your channel ID
+    const liveFrame = document.getElementById("liveFrame");
+
+    async function checkLiveStream() {
+      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&eventType=live&type=video&key=${API_KEY}`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.items && data.items.length > 0) {
+          const liveVideoId = data.items[0].id.videoId;
+          liveFrame.src = `https://www.youtube.com/embed/${liveVideoId}?autoplay=1&mute=1&rel=0`;
+        } if (data.items && data.items.length > 0) {
+          const liveVideoId = data.items[0].id.videoId;
+          liveFrame.src = `https://www.youtube.com/embed/${liveVideoId}?autoplay=1&mute=1&rel=0`;
+          document.querySelector(".live-badge").style.display = "flex"; // show badge
+        } else {
+          // Hide the live badge
+          document.querySelector(".live-badge").style.display = "none";
+
+          // Show offline message instead of video
+          document.querySelector(".video-container").innerHTML = `
     <div style="
       display:flex;
       align-items:center;
@@ -296,19 +344,20 @@ async function checkLiveStream() {
       Please check back later for our next live stream.
     </div>
   `;
-}
-  } catch (error) {
-    console.error("Error fetching live stream:", error);
-    liveFrame.src = "https://www.youtube.com/embed/nZL_mL-cBy4?rel=0"; // fallback video
-  }
-}
+        }
+      } catch (error) {
+        console.error("Error fetching live stream:", error);
+        liveFrame.src = "https://www.youtube.com/embed/nZL_mL-cBy4?rel=0"; // fallback video
+      }
+    }
 
-// Run once on load
-checkLiveStream();
+    // Run once on load
+    checkLiveStream();
 
-// Refresh every 5 minutes
-setInterval(checkLiveStream, 300000);
-</script>
+    // Refresh every 5 minutes
+    setInterval(checkLiveStream, 300000);
+  </script>
 
 </body>
+
 </html>
