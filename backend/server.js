@@ -133,14 +133,16 @@ app.post('/api/auth/register', async (req, res) => {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user (Role default to 'kid' if not specified, or 'teacher' via secret code in frontend if implemented)
-    // For MVP, we allow role to be passed.
-    const userRole = role === 'teacher' ? 'teacher' : 'kid';
+    // Create user (Role default to 'kid' if not specified)
+    // We allow 'teacher' and 'preacher' roles for the Ministry Portal.
+    let userRole = 'kid';
+    if (role === 'teacher') userRole = 'teacher';
+    if (role === 'preacher') userRole = 'preacher';
+    if (role === 'admin') userRole = 'admin';
 
     const user = await User.create({
       fullname,
       email,
-      password: hashedPassword,
       password: hashedPassword,
       roles: userRole,
       isSubscribed: req.body.isSubscribed || false

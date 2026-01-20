@@ -54,16 +54,20 @@ The server will start on `http://localhost:3000`
 - **Sermons (Main)**: [http://localhost:3000/sermons.html](http://localhost:3000/sermons.html)
 - **Kids Section**: [http://localhost:3000/kids/index.html](http://localhost:3000/kids/index.html) (Fun, animated interface)
 
-### 2. ✝️ Preacher Dashboard (Main Sermons)
-*For managing main sermons (not kids).*
-- **URL**: [http://localhost:3000/preacher-dashboard.html](http://localhost:3000/preacher-dashboard.html)
-- **Action**: Login -> Add/Edit/Delete Sermons.
-- **Account**: You can register a new account at `kids/auth.html` (it shares the auth system).
+### 2. ✝️ Preacher/Staff Ministry Portal
+*For Ministry Leaders and Admins.*
+- **Portal Login**: [http://localhost:3000/login.html](http://localhost:3000/login.html)
+  - This is the new dedicated entry point for Preachers and Admins.
+- **Roles**:
+  - **Preacher**: Can manage main sermons. Redirects to `preacher-dashboard.html`.
+  - **Admin**: Can manage finances and donations. Redirects to `admin.html`.
 
-### 3. 👩‍🏫 Kids Teacher Dashboard
-*For managing children's sermons/lessons.*
-- **URL**: [http://localhost:3000/kids/teacher-dashboard.html](http://localhost:3000/kids/teacher-dashboard.html)
-- **Auth**: [http://localhost:3000/kids/auth.html](http://localhost:3000/kids/auth.html)
+### 3. 👩‍🏫 Kids Zone (for Children & Teachers)
+- **Kids Login**: [http://localhost:3000/kids/auth.html](http://localhost:3000/kids/auth.html)
+  - Designed for children to access their profile.
+  - Teachers can also login here (legacy support).
+- **Teacher Dashboard**: [http://localhost:3000/kids/teacher-dashboard.html](http://localhost:3000/kids/teacher-dashboard.html)
+  - Accessible via **Portal Login** OR **Kids Login**.
 - **Features**:
   - **Register**: Sign up as a "Teacher". **Check "Subscribe"** to test subscriptions.
   - **View**: See only your own sermons.
@@ -80,7 +84,7 @@ The server will start on `http://localhost:3000`
 ### 5. 💰 Financial Admin
 *For viewing donations.*
 - **URL**: [http://localhost:3000/admin.html](http://localhost:3000/admin.html)
-- **PIN**: `1234` (Default for demo)
+- **Auth**: Secured via Ministry Portal (`login.html`). Must have **Admin** role.
 
 ---
 

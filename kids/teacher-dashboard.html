@@ -460,13 +460,26 @@
 
         /* Dashboard Logic */
         // AUTH CHECK
-        const token = localStorage.getItem('kidsToken');
-        const userStr = localStorage.getItem('kidsUser');
+        // Function to get valid token from either source
+        function getAuth() {
+            const mToken = localStorage.getItem('ministryToken');
+            const mUser = localStorage.getItem('ministryUser');
+            if (mToken && mUser) return { token: mToken, user: JSON.parse(mUser) };
 
-        if (!token || !userStr) {
+            const kToken = localStorage.getItem('kidsToken');
+            const kUser = localStorage.getItem('kidsUser');
+            if (kToken && kUser) return { token: kToken, user: JSON.parse(kUser) };
+
+            return null;
+        }
+
+        const auth = getAuth();
+
+        if (!auth) {
+            // Default redirect to kids auth, but maybe teacher was trying to use ministry portal?
             window.location.href = 'auth.html';
         } else {
-            const user = JSON.parse(userStr);
+            const { user } = auth;
             if (user.role !== 'teacher') {
                 alert('Access Denied: Teachers Only');
                 window.location.href = 'index.html';
@@ -474,9 +487,14 @@
             document.getElementById('teacherDisplay').textContent = user.fullname;
         }
 
+        // Global token for API calls
+        const token = auth ? auth.token : null;
+
         function logout() {
             localStorage.removeItem('kidsToken');
             localStorage.removeItem('kidsUser');
+            localStorage.removeItem('ministryToken');
+            localStorage.removeItem('ministryUser');
             window.location.href = 'auth.html';
         }
 

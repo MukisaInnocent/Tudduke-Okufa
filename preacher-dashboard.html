@@ -264,20 +264,31 @@
 
     <script>
         // AUTH CHECK
-        const token = localStorage.getItem('kidsToken'); // Reusing same token storage
-        const userStr = localStorage.getItem('kidsUser');
+        const token = localStorage.getItem('ministryToken');
+        const userStr = localStorage.getItem('ministryUser');
 
         if (!token || !userStr) {
-            window.location.href = 'kids/auth.html';
+            window.location.href = 'login.html';
         } else {
             const user = JSON.parse(userStr);
             document.getElementById('userDisplay').textContent = user.fullname;
+
+            if (user.role !== 'preacher' && user.role !== 'admin') {
+                // warning if a teacher tries to access preacher dashboard?
+                // For now, let's just allow it or maybe redirect?
+                // Implementation plan said: "Preacher -> preacher-dashboard.html"
+                // If a teacher manually navigates here, maybe we should block?
+                // Let's safe guard.
+                if (user.role === 'teacher') {
+                    window.location.href = 'kids/teacher-dashboard.html';
+                }
+            }
         }
 
         function logout() {
-            localStorage.removeItem('kidsToken');
-            localStorage.removeItem('kidsUser');
-            window.location.href = 'kids/auth.html';
+            localStorage.removeItem('ministryToken');
+            localStorage.removeItem('ministryUser');
+            window.location.href = 'login.html';
         }
 
         // LOAD SERMONS (ALL for now, or filtered if we add scope later)
