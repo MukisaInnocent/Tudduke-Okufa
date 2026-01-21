@@ -362,9 +362,21 @@
 
             <!-- FORM -->
             <form id="authForm">
-                <div class="form-group hidden" id="nameGroup">
+                <div class="form-group hidden" id="registerFields">
                     <label>Full Name</label>
-                    <input type="text" id="fullname" placeholder="Enter your name">
+                    <input type="text" id="fullname" placeholder="Enter your full name">
+
+                    <label style="margin-top: 15px;">Phone Number</label>
+                    <input type="tel" id="phoneNumber" placeholder="+256...">
+
+                    <label style="margin-top: 15px;">Guardian/Parent Name</label>
+                    <input type="text" id="guardianName" placeholder="Parent's Name">
+
+                    <label style="margin-top: 15px;">Guardian Phone Number</label>
+                    <input type="tel" id="guardianPhone" placeholder="+256...">
+
+                    <label style="margin-top: 15px;">Profile Picture (Optional)</label>
+                    <input type="file" id="profileImage" accept="image/*">
                 </div>
 
                 <div class="form-group">
@@ -385,14 +397,22 @@
                     </select>
                 </div>
 
-                <div class="form-group">
-                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                <div class="form-group hidden" id="termsGroup">
+                    <label
+                        style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer; font-size: 0.9rem;">
+                        <input type="checkbox" id="terms" style="width: auto; margin-top: 4px;">
+                        <span>I agree to the <a href="#" style="color:var(--brand);">Terms & Conditions</a> of Tudduke
+                            Okufa Ministry.</span>
+                    </label>
+
+                    <label
+                        style="display: flex; align-items: center; gap: 10px; cursor: pointer; margin-top: 10px; font-size: 0.9rem;">
                         <input type="checkbox" id="regSubscribe" checked style="width: auto;">
                         <span>Subscribe to email updates and newsletters</span>
                     </label>
                 </div>
 
-                <button type="submit" class="auth-btn">Join Ministry</button>
+                <button type="submit" class="auth-btn" id="submitBtn">Login</button>
             </form>
 
             <div class="toggle-text">
@@ -450,11 +470,13 @@
             document.getElementById('submitBtn').textContent = isLogin ? 'Login' : 'Create Account';
 
             // Toggle Fields
-            document.getElementById('nameGroup').classList.toggle('hidden', isLogin);
+            document.getElementById('registerFields').classList.toggle('hidden', isLogin);
             document.getElementById('roleGroup').classList.toggle('hidden', isLogin);
+            document.getElementById('termsGroup').classList.toggle('hidden', isLogin);
 
-            // Add required attribute to name only on register
+            // Add/Remove required attributes
             document.getElementById('fullname').required = !isLogin;
+            document.getElementById('terms').required = !isLogin;
         }
 
         document.getElementById('authForm').addEventListener('submit', async (e) => {
@@ -466,21 +488,45 @@
             errorMsg.style.display = 'none';
 
             const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
-            const body = { email, password };
-
-            if (!isLogin) {
-                body.fullname = document.getElementById('fullname').value;
-                body.role = document.getElementById('role').value;
-                body.isSubscribed = document.getElementById('regSubscribe').checked;
-            }
 
             try {
-                const res = await fetch(endpoint, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(body)
-                });
+                let options = {};
 
+                if (isLogin) {
+                    options = {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, password })
+                    };
+                } else {
+                    // Registration (FormData for File Upload)
+                    const formData = new FormData();
+                    formData.append('email', email);
+                    formData.append('password', password);
+                    formData.append('fullname', document.getElementById('fullname').value);
+                    formData.append('role', document.getElementById('role').value);
+                    formData.append('phoneNumber', document.getElementById('phoneNumber').value);
+                    formData.append('guardianName', document.getElementById('guardianName').value);
+                    formData.append('guardianPhone', document.getElementById('guardianPhone').value);
+                    formData.append('isSubscribed', document.getElementById('regSubscribe').checked);
+
+                    const fileInput = document.getElementById('profileImage');
+                    if (fileInput.files[0]) {
+                        formData.append('profileImage', fileInput.files[0]);
+                    }
+
+                    // Check terms
+                    if (!document.getElementById('terms').checked) {
+                        throw new Error("You must agree to the Terms & Conditions.");
+                    }
+
+                    options = {
+                        method: 'POST',
+                        body: formData // No Content-Type header (browser sets boundary)
+                    };
+                }
+
+                const res = await fetch(endpoint, options);
                 const data = await res.json();
 
                 if (!data.success && !data.token) {

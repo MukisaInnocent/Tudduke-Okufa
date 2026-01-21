@@ -128,6 +128,34 @@
             border-radius: 4px;
             cursor: pointer;
         }
+
+        /* Mobile Responsive */
+        @media (max-width: 600px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .refresh-btn {
+                width: 100%;
+            }
+
+            .tabs {
+                flex-wrap: wrap;
+            }
+
+            .tab {
+                flex: 1;
+                text-align: center;
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
     </style>
 </head>
 
@@ -150,44 +178,48 @@
         <!-- USERS PANEL -->
         <div id="users" class="panel active">
             <h2>User Database</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                        <th>Subscribed?</th>
-                        <th>Joined</th>
-                    </tr>
-                </thead>
-                <tbody id="userTable">
-                    <tr>
-                        <td colspan="6">Loading...</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Subscribed?</th>
+                            <th>Joined</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTable">
+                        <tr>
+                            <td colspan="6">Loading...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <!-- ACTIVITY PANEL -->
         <div id="activity" class="panel">
             <h2>Recent Activity (Last 100)</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Time</th>
-                        <th>Action</th>
-                        <th>User ID</th>
-                        <th>IP Address</th>
-                        <th>Details</th>
-                    </tr>
-                </thead>
-                <tbody id="activityTable">
-                    <tr>
-                        <td colspan="5">Loading...</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Action</th>
+                            <th>User ID</th>
+                            <th>IP Address</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody id="activityTable">
+                        <tr>
+                            <td colspan="5">Loading...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -210,7 +242,11 @@
         async function loadData() {
             // Load Users
             try {
-                const res = await fetch('/api/admin/users');
+                const res = await fetch('/api/admin/users', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!res.ok) throw new Error('Failed to load users');
+
                 const users = await res.json();
                 const userBody = document.getElementById('userTable');
 
@@ -223,7 +259,11 @@
 
             // Load Activity
             try {
-                const res = await fetch('/api/admin/activity');
+                const res = await fetch('/api/admin/activity', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!res.ok) throw new Error('Failed to load activity');
+
                 const logs = await res.json();
                 const logBody = document.getElementById('activityTable');
 

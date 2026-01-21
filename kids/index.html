@@ -366,7 +366,26 @@
       sidebar.classList.remove("active");
       overlay.classList.remove("active");
     }
+
+    /* Check Login State */
+    const userStr = localStorage.getItem('kidsUser');
+    if (userStr) {
+      const user = JSON.parse(userStr);
+      const heroSection = document.querySelector('.hero');
+
+      let profileHtml = '';
+      if (user.profileImage) {
+        profileHtml = `<img src="${user.profileImage}" alt="Profile" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 15px; border: 3px solid var(--brand);">`;
+      }
+
+      heroSection.innerHTML = `
+            ${profileHtml}
+            <h2>Welcome, ${user.fullname}!</h2>
+            <p>We are so happy to have you here.</p>
+        `;
+    }
   </script>
+  <script src="auth-helper.js"></script>
 
 </body>
 

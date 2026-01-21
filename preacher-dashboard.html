@@ -183,6 +183,54 @@
         .hidden {
             display: none;
         }
+
+        /* Responsive Mobile */
+        @media (max-width: 600px) {
+            .header-text h1 {
+                font-size: 1.2rem;
+            }
+
+            .header-text p {
+                display: none;
+            }
+
+            .dash-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .dash-header div {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                gap: 10px;
+            }
+
+            .dash-header .btn {
+                width: 100%;
+                text-align: center;
+                margin: 0 !important;
+            }
+
+            .form-cols {
+                grid-template-columns: 1fr;
+            }
+
+            .sermon-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .actions {
+                width: 100%;
+                display: flex;
+                justify-content: flex-end;
+                border-top: 1px solid #eee;
+                padding-top: 10px;
+            }
+        }
     </style>
 </head>
 

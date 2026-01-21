@@ -137,12 +137,35 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
+// Multer Setup
+const multer = require('multer');
+const fs = require('fs');
+
+// Ensure uploads dir exists
+const uploadDir = path.join(__dirname, '../uploads/profiles');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, uploadDir);
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ storage: storage });
+
 /* ===== AUTH ROUTES ===== */
 
 // Register
-app.post('/api/auth/register', async (req, res) => {
+app.post('/api/auth/register', upload.single('profileImage'), async (req, res) => {
   try {
-    const { fullname, email, password, role } = req.body;
+    // req.body contains text fields, req.file contains file
+    const { fullname, email, password, role, phoneNumber, guardianName, guardianPhone, isSubscribed } = req.body;
 
     // Check if user exists
     const existingUser = await User.findOne({ where: { email } });
@@ -151,19 +174,28 @@ app.post('/api/auth/register', async (req, res) => {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user (Role default to 'kid' if not specified)
-    // We allow 'teacher' and 'preacher' roles for the Ministry Portal.
+    // Determine Role
     let userRole = 'kid';
     if (role === 'teacher') userRole = 'teacher';
     if (role === 'preacher') userRole = 'preacher';
     if (role === 'admin') userRole = 'admin';
+
+    // Image Path (relative to root)
+    let profileImagePath = null;
+    if (req.file) {
+      profileImagePath = '/uploads/profiles/' + req.file.filename;
+    }
 
     const user = await User.create({
       fullname,
       email,
       password: hashedPassword,
       roles: userRole,
-      isSubscribed: req.body.isSubscribed || false
+      phoneNumber,
+      guardianName,
+      guardianPhone,
+      profileImage: profileImagePath,
+      isSubscribed: isSubscribed === 'true' || isSubscribed === true // Handle potential string from FormData
     });
 
     await ActivityLog.create({
@@ -179,7 +211,6 @@ app.post('/api/auth/register', async (req, res) => {
       fullname: user.fullname,
       email: user.email,
       roles: user.roles,
-      isSubscribed: user.isSubscribed,
       registerdate: user.createdAt
     });
 
@@ -225,7 +256,14 @@ app.post('/api/auth/login', async (req, res) => {
       req.io.emit('activity_log', log);
     }).catch(console.error);
 
-    res.json({ success: true, token, user: { userid: user.userid, fullname: user.fullname, role: user.roles } });
+    res.json({
+      success: true, token, user: {
+        userid: user.userid,
+        fullname: user.fullname,
+        role: user.roles,
+        profileImage: user.profileImage
+      }
+    });
   } catch (err) {
     console.error('Login Error:', err);
     res.status(500).json({ error: 'Login failed' });
@@ -592,6 +630,36 @@ app.get('/api/donations', async (req, res) => {
   } catch (err) {
     console.error('❌ Donations fetch error:', err);
     res.status(500).json({ error: 'Failed to fetch donations' });
+  }
+});
+
+app.get('/api/admin/users', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'admin') return res.sendStatus(403);
+
+  try {
+    const users = await User.findAll({
+      attributes: { exclude: ['password'] },
+      order: [['createdAt', 'DESC']]
+    });
+    res.json(users);
+  } catch (err) {
+    console.error('Fetch Users Error:', err);
+    res.status(500).json({ error: 'Failed to fetch users' });
+  }
+});
+
+app.get('/api/admin/activity', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'admin') return res.sendStatus(403);
+
+  try {
+    const logs = await ActivityLog.findAll({
+      order: [['createdAt', 'DESC']],
+      limit: 100
+    });
+    res.json(logs);
+  } catch (err) {
+    console.error('Fetch Activity Error:', err);
+    res.status(500).json({ error: 'Failed to fetch activity' });
   }
 });
 

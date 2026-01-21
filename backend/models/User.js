@@ -29,6 +29,23 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: 'User'
       },
+
+      phoneNumber: {
+        type: DataTypes.STRING(20),
+        allowNull: true
+      },
+      guardianName: {
+        type: DataTypes.STRING(100),
+        allowNull: true
+      },
+      guardianPhone: {
+        type: DataTypes.STRING(20),
+        allowNull: true
+      },
+      profileImage: {
+        type: DataTypes.STRING(255),
+        allowNull: true
+      },
       isSubscribed: {
         type: DataTypes.BOOLEAN,
         defaultValue: false
