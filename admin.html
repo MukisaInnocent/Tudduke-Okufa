@@ -97,41 +97,107 @@
             background: #900;
         }
 
-        /* ===== DASHBOARD ===== */
+        /* SIDEBAR (Desktop) */
+        aside.admin-sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 260px;
+            height: 100vh;
+            background: var(--card);
+            border-right: 1px solid var(--border);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+        }
+
+        .sidebar-brand {
+            font-size: 1.5rem;
+            color: var(--brand);
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            transition: 0.2s;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: rgba(179, 0, 0, 0.1);
+            color: var(--brand);
+        }
+
+        .nav-links a i {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* DASHBOARD CONTENT adjustment */
         .dashboard {
             display: none;
             /* Hidden until login */
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+            margin-left: 260px;
+            /* Offset for sidebar */
+            padding: 40px;
+            width: calc(100% - 260px);
         }
 
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 0;
             margin-bottom: 30px;
-            border-bottom: 1px solid var(--border);
+            /* Border bottom removed for smoother UI with sidebar */
+            border-bottom: none;
         }
 
         header h1 {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
         }
 
-        header button {
+        /* Mobile Responsive */
+        @media (max-width: 1024px) {
+            aside.admin-sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+
+            aside.admin-sidebar.active {
+                transform: translateX(0);
+            }
+
+            .dashboard {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
+            }
+
+            .menu-toggle {
+                display: block !important;
+            }
+        }
+
+        .menu-toggle {
+            display: none;
             background: none;
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        header button:hover {
-            border-color: var(--text);
+            border: none;
+            font-size: 1.5rem;
             color: var(--text);
+            cursor: pointer;
+            margin-right: 15px;
         }
 
         /* STATS */
@@ -333,13 +399,35 @@
 
 <body>
 
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            Tudduke Admin
+        </div>
+        <nav class="nav-links">
+            <a href="#" class="active"><i data-feather="home"></i> Dashboard</a>
+            <a href="activity-dashboard.html"><i data-feather="users"></i> Users & Activity</a>
+            <a href="preacher-dashboard.html"><i data-feather="book-open"></i> Sermons Manager</a>
+            <a href="kids/teacher-dashboard.html"><i data-feather="smile"></i> Kids Ministry</a>
+            <a href="index.html" style="margin-top: 20px; border-top: 1px solid var(--border); padding-top: 20px;"><i
+                    data-feather="external-link"></i> Main Website</a>
+        </nav>
+    </aside>
+
     <!-- DASHBOARD (Protected by Auth) -->
     <div class="dashboard" id="dashboard">
         <header>
-            <h1>Tudduke Okufa Ministry Dashboard</h1>
+            <div style="display:flex; align-items:center;">
+                <button class="menu-toggle"
+                    onclick="document.getElementById('sidebar').classList.toggle('active')">☰</button>
+                <h1>Dashboard Overview</h1>
+            </div>
             <div style="display: flex; gap: 10px;">
-                <button onclick="toggleTheme()" id="themeBtn">☀️ Light Mode</button>
-                <button onclick="logout()">Logout</button>
+                <button onclick="toggleTheme()" id="themeBtn"
+                    style="background:none; border: 1px solid var(--border); padding: 8px 16px; border-radius: 6px; color:var(--text); cursor:pointer;">☀️
+                    Light Mode</button>
+                <button onclick="logout()"
+                    style="background:var(--brand); border:none; color:white; padding: 8px 16px; border-radius: 6px; cursor:pointer;">Logout</button>
             </div>
         </header>
 
@@ -382,28 +470,15 @@
         </div>
     </div>
 
-    <!-- FOOTER -->
-    <footer class="site-footer">
-        <div class="footer-content">
-            <div class="footer-brand">
-                <h3>Tudduke Okufa Ministry</h3>
-                <p class="leader-text">Led by Servant Kiviri John Mark</p>
-            </div>
+    <!-- FOOTER REMOVED from main view to clean up dashboard -->
 
-            <div class="footer-dev">
-                <p>Developed with excellence by</p>
-                <a href="#" class="dev-link">Innotech Solutions Uganda</a>
-            </div>
-        </div>
-
-        <div class="footer-bottom">
-            <p>&copy; <span id="year"></span> Tudduke Okufa. All Rights Reserved.</p>
-        </div>
-    </footer>
-
+    <script src="https://unpkg.com/feather-icons"></script>
     <script>
+        /* Icons */
+        feather.replace();
+
         /* Dynamic Year */
-        document.getElementById("year").textContent = new Date().getFullYear();
+        // document.getElementById("year").textContent = new Date().getFullYear();
 
         /* ===== AUTH ===== */
         // Replaced PIN with Token Auth

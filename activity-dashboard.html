@@ -19,6 +19,19 @@
             padding: 20px;
         }
 
+        .back-nav {
+            margin-bottom: 20px;
+        }
+
+        .back-nav a {
+            text-decoration: none;
+            color: var(--brand);
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -121,6 +134,9 @@
 <body>
 
     <div class="container">
+        <div class="back-nav">
+            <a href="admin.html">&larr; Back to Admin Dashboard</a>
+        </div>
         <header>
             <h1>System Activity</h1>
             <button class="refresh-btn" onclick="loadData()">Refresh Data</button>
@@ -177,6 +193,20 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
+        // AUTH CHECK
+        const token = localStorage.getItem('ministryToken');
+        const userStr = localStorage.getItem('ministryUser');
+
+        if (!token || !userStr) {
+            window.location.href = 'login.html';
+        } else {
+            const user = JSON.parse(userStr);
+            if (user.role !== 'admin') {
+                alert('Access Denied: Admins Only');
+                window.location.href = 'login.html';
+            }
+        }
+
         async function loadData() {
             // Load Users
             try {
