@@ -54,6 +54,21 @@ const QuizQuestion = require('./QuizQuestion')(sequelize, require('sequelize').D
 const Donation = require('./Donation')(sequelize, require('sequelize').DataTypes);
 const User = require('./User')(sequelize, require('sequelize').DataTypes);
 const ActivityLog = require('./ActivityLog')(sequelize, require('sequelize').DataTypes);
+const SermonComment = require('./SermonComment')(sequelize);
+const SermonLike = require('./SermonLike')(sequelize);
+
+// ASSOCIATIONS
+User.hasMany(SermonComment, { foreignKey: 'userId' });
+SermonComment.belongsTo(User, { foreignKey: 'userId' });
+
+Sermon.hasMany(SermonComment, { foreignKey: 'sermonId', onDelete: 'CASCADE' });
+SermonComment.belongsTo(Sermon, { foreignKey: 'sermonId' });
+
+User.belongsToMany(Sermon, { through: SermonLike, foreignKey: 'userId' });
+Sermon.belongsToMany(User, { through: SermonLike, foreignKey: 'sermonId' });
+
+Sermon.hasMany(SermonLike, { foreignKey: 'sermonId' });
+SermonLike.belongsTo(Sermon, { foreignKey: 'sermonId' });
 
 module.exports = {
   sequelize,
@@ -65,5 +80,7 @@ module.exports = {
   QuizQuestion,
   Donation,
   User,
-  ActivityLog
+  ActivityLog,
+  SermonComment,
+  SermonLike
 };

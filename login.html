@@ -5,16 +5,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ministry Portal | Tudduke Okufa</title>
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/feather-icons"></script>
 
     <style>
         :root {
-            --brand: #b30000;
-            --brand-dark: #8a0000;
+            --brand: #c60000;
+            --brand-glow: rgba(198, 0, 0, 0.4);
+            --bg: #0a0a0a;
+            --surface: #141414;
+            --surface-2: #1f1f1f;
+            --text: #ffffff;
+            --text-muted: #a0a0a0;
+            --border: rgba(255, 255, 255, 0.1);
+            --glass: rgba(255, 255, 255, 0.05);
+            --radius: 12px;
+            --font-main: 'Outfit', sans-serif;
+
+            --input-bg: #2a2a2a;
+        }
+
+        [data-theme="light"] {
             --bg: #f4f4f4;
-            --card: #fff;
-            --radius: 8px;
-            --text: #333;
+            --surface: #ffffff;
+            --surface-2: #f0f0f0;
+            --text: #1a1a1a;
+            --text-muted: #666666;
+            --border: rgba(0, 0, 0, 0.1);
+            --glass: rgba(0, 0, 0, 0.05);
+
+            --input-bg: #f0f0f0;
         }
 
         * {
@@ -24,35 +47,41 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Outfit', sans-serif;
             background: var(--bg);
             color: var(--text);
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            transition: background 0.3s, color 0.3s;
         }
 
         /* HEADER */
         header {
-            background: var(--brand);
-            color: #fff;
-            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            /* Glassy feel */
+            padding: 20px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
         }
 
         .header-content {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         .header-content h1 {
             font-size: 1.2rem;
-            font-weight: 600;
+            font-weight: 700;
             letter-spacing: 0.5px;
+            color: var(--text);
+        }
+
+        .header-content i {
+            color: var(--brand);
         }
 
         /* MAIN */
@@ -65,11 +94,12 @@
         }
 
         .auth-container {
-            background: var(--card);
+            background: var(--surface);
+            border: 1px solid var(--border);
             border-radius: var(--radius);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
             padding: 40px;
             text-align: center;
         }
@@ -77,18 +107,18 @@
         .auth-container h2 {
             margin-bottom: 25px;
             color: var(--brand);
-            font-size: 1.6rem;
+            font-size: 1.8rem;
         }
 
         .tabs {
             display: flex;
             margin-bottom: 30px;
-            border-bottom: 2px solid #eee;
+            border-bottom: 2px solid var(--border);
         }
 
         .tab {
             flex: 1;
-            padding: 12px;
+            padding: 14px;
             cursor: pointer;
             font-weight: 600;
             color: #888;
@@ -101,6 +131,10 @@
             margin-bottom: -2px;
         }
 
+        .tab:hover {
+            color: var(--text);
+        }
+
         .form-group {
             margin-bottom: 20px;
             text-align: left;
@@ -111,16 +145,18 @@
             margin-bottom: 8px;
             font-weight: 500;
             font-size: 0.9rem;
-            color: #555;
+            color: var(--text);
+            opacity: 0.9;
         }
 
         input,
         select {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            /* More angular standard styling */
+            padding: 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--input-bg);
+            color: var(--text);
             font-size: 1rem;
             transition: border-color 0.2s;
         }
@@ -129,24 +165,27 @@
         select:focus {
             border-color: var(--brand);
             outline: none;
+            box-shadow: 0 0 0 3px rgba(198, 0, 0, 0.2);
         }
 
         .btn {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             background: var(--brand);
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: background 0.2s, transform 0.2s;
             margin-top: 10px;
+            box-shadow: 0 4px 12px rgba(198, 0, 0, 0.3);
         }
 
         .btn:hover {
             background: var(--brand-dark);
+            transform: translateY(-2px);
         }
 
         .hidden {
@@ -155,10 +194,11 @@
 
         .back-link {
             display: block;
-            margin-top: 20px;
+            margin-top: 24px;
             font-size: 0.9rem;
-            color: #666;
+            color: #888;
             text-decoration: none;
+            transition: color 0.2s;
         }
 
         .back-link:hover {
@@ -167,13 +207,14 @@
         }
 
         .error-msg {
-            background: #ffe6e6;
-            color: #cc0000;
-            padding: 10px;
-            border-radius: 4px;
+            background: rgba(255, 0, 0, 0.1);
+            color: #ff5555;
+            padding: 12px;
+            border-radius: 8px;
             margin-bottom: 20px;
             font-size: 0.9rem;
             display: none;
+            border: 1px solid rgba(255, 0, 0, 0.2);
         }
 
         /* FOOTER */
@@ -181,8 +222,23 @@
             text-align: center;
             padding: 20px;
             font-size: 0.85rem;
-            color: #888;
-            border-top: 1px solid #eee;
+            color: #666;
+            background: rgba(0, 0, 0, 0.2);
+            border-top: 1px solid var(--border);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text);
+            cursor: pointer;
+            opacity: 0.8;
+            transition: 0.2s;
+        }
+
+        .theme-toggle:hover {
+            opacity: 1;
+            transform: rotate(15deg);
         }
     </style>
 </head>
@@ -192,8 +248,11 @@
     <header>
         <div class="header-content">
             <i data-feather="shield"></i>
-            <h1>TUDDUKE OKUFA MINISTRY PORTAL</h1>
+            <h1>MINISTRY PORTAL</h1>
         </div>
+        <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+            <i data-feather="moon"></i>
+        </button>
     </header>
 
     <main>
@@ -234,7 +293,7 @@
                 <button type="submit" class="btn" id="submitBtn">Access Portal</button>
             </form>
 
-            <a href="index.html" class="back-link">Return to Main Site</a>
+            <a href="index.html" class="back-link">&larr; Return to Main Site</a>
         </div>
     </main>
 
@@ -245,6 +304,25 @@
     <script>
         document.getElementById("year").textContent = new Date().getFullYear();
         feather.replace();
+
+        // --- THEME LOGIC ---
+        const themeToggle = document.getElementById('themeToggle');
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const current = document.documentElement.getAttribute('data-theme');
+            const newTheme = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+
+        function updateThemeIcon(theme) {
+            themeToggle.innerHTML = theme === 'dark' ? '<i data-feather="sun"></i>' : '<i data-feather="moon"></i>';
+            feather.replace();
+        }
 
         let isLogin = true;
 

@@ -6,292 +6,114 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bible Quiz | Tudduke Okufa Kids</title>
 
+  <!-- FONTS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
   <style>
-    :root {
-      --brand: #b30000;
-      --bg: #f4f4f4;
-      --card: #fff;
-      --radius: 16px;
-    }
-
-    /* RESET */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0
-    }
-
-    body {
-      font-family: Arial, sans-serif;
-      background: var(--bg);
-      color: #333;
-    }
-
-    /* ===== HEADER ===== */
-    header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 80px;
-      background: var(--brand);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      padding: 0 20px;
-      z-index: 1002;
-    }
-
-    .menu-toggle {
-      font-size: 1.8rem;
-      background: none;
-      border: none;
-      color: #fff;
-      cursor: pointer;
-      margin-right: 16px;
-    }
-
-    header h1 {
-      font-size: 1.5rem
-    }
-
-    header p {
-      font-size: .85rem;
-      opacity: .9
-    }
-
-    /* ===== SIDEBAR ===== */
-    aside {
-      position: fixed;
-      top: 0;
-      left: -260px;
-      width: 260px;
-      height: 100vh;
-      background: #fff;
-      padding: 90px 20px 20px;
-      transition: left .3s ease;
-      z-index: 1001;
-    }
-
-    aside.active {
-      left: 0
-    }
-
-    aside a {
-      display: block;
-      padding: 14px 16px;
-      margin-bottom: 12px;
-      border-radius: 14px;
-      text-decoration: none;
-      color: var(--brand);
-      font-weight: bold;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, .08);
-    }
-
-    /* ===== OVERLAY ===== */
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, .35);
-      opacity: 0;
-      pointer-events: none;
-      transition: .2s;
-      z-index: 1000;
-    }
-
-    .overlay.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    /* ===== MAIN ===== */
+    /* PAGE SPECIFIC STYLES */
     .container {
-      max-width: 700px;
+      max-width: 800px;
       margin: 120px auto 40px;
-      padding: 0 20px;
+      padding: 0 5%;
       text-align: center;
     }
 
+    @media (min-width: 1024px) {
+      .container {
+        margin-left: 280px;
+        width: auto;
+        max-width: none;
+        padding-right: 40px;
+      }
+
+      /* Center the inner card manually since container is now full width */
+      .quiz-wrapper {
+        max-width: 700px;
+        margin: 0 auto;
+      }
+    }
+
     h2 {
-      color: var(--brand);
-      margin-bottom: 16px
+      margin-bottom: 24px;
+      color: var(--k-brand);
+      font-size: 2.5rem;
     }
 
     /* ===== QUIZ CARD ===== */
     .quiz-card {
-      background: var(--card);
-      padding: 30px;
-      border-radius: var(--radius);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, .1);
+      background: var(--k-surface);
+      padding: 40px;
+      border-radius: var(--k-radius);
+      box-shadow: var(--k-shadow);
       animation: fadeUp .6s ease;
+      border: 1px solid rgba(0, 0, 0, 0.05);
     }
 
     .quiz-card h3 {
-      margin-bottom: 20px;
+      margin-bottom: 30px;
+      font-size: 1.4rem;
+      color: var(--k-text);
+      line-height: 1.4;
     }
 
     .options {
       display: grid;
-      gap: 12px;
+      gap: 16px;
     }
 
     .options button {
-      padding: 12px;
-      border: none;
-      border-radius: 14px;
+      padding: 16px;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      border-radius: 16px;
       cursor: pointer;
-      font-weight: bold;
-      background: #eee;
+      font-weight: 600;
+      font-family: inherit;
+      background: var(--k-bg);
+      color: var(--k-text);
       transition: .2s;
+      font-size: 1rem;
     }
 
     .options button:hover {
-      background: #ddd;
+      background: rgba(0, 0, 0, 0.05);
+      transform: translateX(5px);
     }
 
     .options button.correct {
       background: #4caf50;
       color: #fff;
+      border-color: #4caf50;
     }
 
     .options button.wrong {
       background: #f44336;
       color: #fff;
+      border-color: #f44336;
     }
 
     /* ===== SCORE ===== */
     .score {
-      margin-top: 20px;
+      margin-top: 30px;
       font-size: 1.2rem;
       font-weight: bold;
-    }
-
-    /* DESKTOP SIDEBAR */
-    @media (min-width: 1024px) {
-      aside#sidebar {
-        left: 0;
-        box-shadow: none;
-        border-right: 1px solid #ddd;
-      }
-
-      .menu-toggle {
-        display: none;
-      }
-
-      header {
-        padding-left: 280px;
-      }
-
-      .container,
-      footer {
-        margin-left: 260px;
-        width: auto;
-      }
-
-      .container {
-        max-width: none;
-        /* Let it fill */
-        padding-right: 20px;
-      }
-
-      /* Center the inner card manually since container is now full width */
-      .quiz-card {
-        max-width: 700px;
-        margin: 0 auto;
-      }
-
-      .overlay {
-        display: none !important;
-      }
-    }
-
-    /* FOOTER */
-    .site-footer {
-      background: linear-gradient(to bottom, #1a1a1a, #000);
-      color: #ccc;
-      padding: 40px 20px;
-      text-align: center;
-      border-top: 4px solid var(--brand);
-    }
-
-    .footer-content {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-      margin-bottom: 30px;
-    }
-
-    .footer-brand h3 {
-      color: white;
-      font-size: 1.5rem;
-      margin-bottom: 5px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .leader-text {
-      color: var(--brand);
-      font-weight: bold;
-      font-style: italic;
-    }
-
-    .footer-dev p {
-      margin-bottom: 5px;
-      font-size: 0.9rem;
-    }
-
-    .dev-link {
-      display: inline-block;
-      color: #fff;
-      text-decoration: none;
-      font-weight: bold;
-      background: rgba(255, 255, 255, 0.1);
-      padding: 8px 16px;
-      border-radius: 20px;
-      transition: 0.3s;
-    }
-
-    .dev-link:hover {
-      background: var(--brand);
-      transform: translateY(-3px);
-      box-shadow: 0 5px 15px rgba(179, 0, 0, 0.3);
-    }
-
-    .footer-bottom {
-      font-size: 0.85rem;
-      opacity: 0.7;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--k-brand);
       padding-top: 20px;
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
     }
 
-    @media (min-width: 768px) {
-      .footer-content {
-        flex-direction: row;
-        justify-content: space-around;
-        text-align: left;
-      }
-
-      .footer-brand {
-        align-items: flex-start;
-      }
-
-      .site-footer {
-        margin-left: 260px;
-        width: auto;
-      }
-    }
-
-    /* ===== ANIMATIONS ===== */
     @keyframes fadeUp {
       from {
         opacity: 0;
-        transform: translateY(10px)
+        transform: translateY(20px);
       }
 
       to {
         opacity: 1;
-        transform: translateY(0)
+        transform: translateY(0);
       }
     }
   </style>
@@ -301,32 +123,48 @@
 
   <!-- HEADER -->
   <header>
-    <button class="menu-toggle" id="menuToggle">☰</button>
-    <div>
-      <h1>TUDDUKE OKUFA</h1>
-      <p>Preparing People for the Second Coming of Jesus Christ</p>
+    <div class="header-left">
+      <button class="menu-toggle" id="menuToggle">
+        <i data-feather="menu"></i>
+      </button>
+      <div class="header-text">
+        <h1>TUDDUKE OKUFA</h1>
+        <p>Preparing People for the Second Coming</p>
+      </div>
     </div>
+    <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+      <i data-feather="moon"></i>
+    </button>
   </header>
 
   <!-- SIDEBAR -->
   <aside id="sidebar">
-    <a href="index.html">Kids Home</a>
-    <a href="videos.html">Kids Videos</a>
-    <a href="quiz.html">Bible Quiz</a>
-    <a href="memory-verses.html">Memory Verses</a>
-    <a href="children-sermon.html">Children Sermons</a>
+    <a href="index.html"><i data-feather="home"></i> Kids Home</a>
+    <a href="videos.html"><i data-feather="play-circle"></i> Kids Videos</a>
+    <a href="quiz.html" class="active"><i data-feather="help-circle"></i> Bible Quiz</a>
+    <a href="memory-verses.html"><i data-feather="book-open"></i> Memory Verses</a>
+    <a href="children-sermon.html"><i data-feather="mic"></i> Children Sermons</a>
+    <a href="weekly-lesson.html"><i data-feather="sun"></i> Weekly Lessons</a>
+    <a href="parents.html"><i data-feather="users"></i> Parents & Teachers</a>
+    <div style="height: 1px; background: rgba(0,0,0,0.1); margin: 10px 0;"></div>
+    <a href="auth.html" style="color: var(--k-brand); border: 1px solid var(--k-brand); justify-content: center;"><i
+        data-feather="lock"></i> Login / Join</a>
+    <a href="../index.html" style="opacity: 0.7;"><i data-feather="arrow-left"></i> Home Page</a>
   </aside>
 
   <div class="overlay" id="overlay"></div>
 
   <!-- MAIN -->
   <div class="container">
-    <h2>Kids Bible Quiz</h2>
+    <div class="quiz-wrapper">
+      <span class="hero-badge" style="margin-bottom: 10px;">Test Your Knowledge</span>
+      <h2>Kids Bible Quiz</h2>
 
-    <div class="quiz-card">
-      <h3 id="question"></h3>
-      <div class="options" id="options"></div>
-      <div class="score">⭐ Score: <span id="score">0</span></div>
+      <div class="quiz-card">
+        <h3 id="question">Loading Question...</h3>
+        <div class="options" id="options"></div>
+        <div class="score">⭐ Score: <span id="score">0</span></div>
+      </div>
     </div>
   </div>
 
@@ -340,7 +178,7 @@
 
       <div class="footer-dev">
         <p>Developed with excellence by</p>
-        <a href="#" class="dev-link">Innotech Solutions Uganda</a>
+        <a href="#" class="dev-link">InnoTech Solutions</a>
       </div>
     </div>
 
@@ -349,37 +187,18 @@
     </div>
   </footer>
 
+  <script src="auth-helper.js"></script>
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="script.js"></script>
+
   <script>
-    /* Dynamic Year */
-    document.getElementById("year").textContent = new Date().getFullYear();
-
-    /* ===== SIDEBAR ===== */
-    const sidebar = document.getElementById("sidebar");
-    const overlay = document.getElementById("overlay");
-    const toggle = document.getElementById("menuToggle");
-
-    toggle.onclick = () => {
-      sidebar.classList.toggle("active");
-      overlay.classList.toggle("active");
-    };
-    overlay.onclick = closeSidebar;
-    document.addEventListener("keydown", e => {
-      if (e.key === "Escape") closeSidebar();
-    });
-    sidebar.querySelectorAll("a").forEach(a => a.onclick = closeSidebar);
-
-    function closeSidebar() {
-      sidebar.classList.remove("active");
-      overlay.classList.remove("active");
-    }
-
     /* ===== QUIZ DATA ===== */
     let quizQuestions = [];
     let currentIndex = 0;
     let score = 0;
 
-    const question = document.getElementById("question");
-    const options = document.getElementById("options");
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
     const scoreEl = document.getElementById("score");
 
     /* LOAD QUIZ QUESTIONS FROM BACKEND */
@@ -387,65 +206,78 @@
       try {
         const res = await fetch('/api/kids/quiz');
         if (!res.ok) throw new Error('Failed to fetch quiz questions');
-        quizQuestions = await res.json();
 
-        if (quizQuestions.length === 0) {
-          question.textContent = "No quiz questions available yet. Check back soon!";
-          options.innerHTML = "";
-          return;
+        const data = await res.json();
+        if (data && data.length > 0) {
+          quizQuestions = data;
+          loadQuestion();
+        } else {
+          // Fallback if no questions
+          questionEl.textContent = "No questions available right now!";
         }
-
-        loadQuestion();
       } catch (err) {
-        console.error('Error loading quiz:', err);
-        question.textContent = "Failed to load quiz. Please try again later.";
-        options.innerHTML = "";
+        console.error("Error loading quiz:", err);
+        // Fallback or Mock data for demo
+        quizQuestions = [
+          {
+            question: "Who built the Ark?",
+            options: ["Moses", "Noah", "David", "Jesus"],
+            answer: "Noah"
+          },
+          {
+            question: "How many days did it take God to create the world?",
+            options: ["3 Days", "6 Days", "7 Days", "40 Days"],
+            answer: "6 Days"
+          }
+        ];
+        loadQuestion();
       }
     }
 
     function loadQuestion() {
-      if (quizQuestions.length === 0) return;
+      if (currentIndex >= quizQuestions.length) {
+        questionEl.innerHTML = "🎉 Quiz Completed!";
+        optionsEl.innerHTML = `<button onclick="location.reload()" style="background:var(--k-brand); color:white; border:none;">Play Again</button>`;
+        return;
+      }
 
-      options.innerHTML = "";
-      const q = quizQuestions[currentIndex];
-      question.textContent = q.question;
+      const currentQ = quizQuestions[currentIndex];
+      questionEl.textContent = currentQ.question;
+      optionsEl.innerHTML = "";
 
-      const optionsList = [q.option1, q.option2, q.option3];
-      optionsList.forEach((opt, i) => {
+      currentQ.options.forEach(opt => {
         const btn = document.createElement("button");
         btn.textContent = opt;
-        btn.onclick = () => checkAnswer(btn, i === (q.correctAnswer - 1));
-        options.appendChild(btn);
+        btn.onclick = () => checkAnswer(opt, currentQ.answer, btn);
+        optionsEl.appendChild(btn);
       });
     }
 
-    function checkAnswer(btn, correct) {
-      // Disable all buttons
-      options.querySelectorAll("button").forEach(b => b.disabled = true);
+    function checkAnswer(selected, correct, btn) {
+      const buttons = optionsEl.querySelectorAll("button");
+      buttons.forEach(b => b.disabled = true);
 
-      if (correct) {
+      if (selected === correct) {
         btn.classList.add("correct");
         score++;
         scoreEl.textContent = score;
       } else {
         btn.classList.add("wrong");
-        // Highlight correct answer
-        const correctBtn = options.querySelectorAll("button")[quizQuestions[currentIndex].correctAnswer - 1];
-        if (correctBtn !== btn) {
-          correctBtn.classList.add("correct");
-        }
+        // Highlight correct one
+        buttons.forEach(b => {
+          if (b.textContent === correct) b.classList.add("correct");
+        });
       }
 
       setTimeout(() => {
-        currentIndex = (currentIndex + 1) % quizQuestions.length;
+        currentIndex++;
         loadQuestion();
-      }, 2000);
+      }, 1500);
     }
 
-    // Load quiz on page load
+    // Start
     loadQuizQuestions();
   </script>
-  <script src="auth-helper.js"></script>
 
 </body>
 

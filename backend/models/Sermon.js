@@ -21,10 +21,16 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(1000)
       },
       examples: {
-        type: DataTypes.STRING(1000)
+        type: DataTypes.TEXT,
+        allowNull: true
+      },
+      views: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
       },
       authorid: {
-        type: DataTypes.INTEGER
+        type: DataTypes.INTEGER,
+        allowNull: false
       },
       entrytime: {
         type: DataTypes.DATE,

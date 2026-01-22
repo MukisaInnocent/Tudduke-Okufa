@@ -2,365 +2,442 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tudduke Okufa Ministry</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home | Tudduke Okufa Ministry</title>
 
+  <!-- FONTS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
   <style>
     :root {
-      --brand: #b30000;
-      --bg: #f4f4f4;
-      --text: #333;
-      --radius: 14px;
+      --brand: #c60000;
+      --brand-dark: #900000;
+      --bg: #0f0f0f;
+      --surface: #1e1e1e;
+      --text: #ffffff;
+      --text-sec: #aaaaaa;
+      --radius: 12px;
+      --surface-translucent: rgba(15, 15, 15, 0.95);
+      --border: rgba(255, 255, 255, 0.1);
+      --glass: rgba(255, 255, 255, 0.05);
     }
 
-    /* RESET */
+    /* LIGHT THEME */
+    [data-theme="light"] {
+      --bg: #f8f9fa;
+      --surface: #ffffff;
+      --text: #1a1a1a;
+      --text-sec: #666666;
+      --surface-translucent: rgba(255, 255, 255, 0.95);
+      --border: rgba(0, 0, 0, 0.1);
+      --glass: rgba(0, 0, 0, 0.05);
+    }
+
+    [data-theme="light"] .page-header {
+      background: var(--brand);
+      border-bottom: none;
+      box-shadow: 0 4px 12px rgba(198, 0, 0, 0.3);
+    }
+
+    [data-theme="light"] .page-header .brand-logo,
+    [data-theme="light"] .page-header .menu-toggle,
+    [data-theme="light"] .page-header .theme-toggle {
+      color: white !important;
+    }
+
+    [data-theme="light"] .page-header .brand-logo i {
+      fill: white !important;
+      color: white !important;
+    }
+
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
     }
 
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Outfit', sans-serif;
       background: var(--bg);
       color: var(--text);
-      line-height: 1.6;
+      overflow-x: hidden;
+      transition: background 0.3s, color 0.3s;
     }
 
     /* HEADER */
     .page-header {
-      height: 80px;
-      background: var(--brand);
-      color: white;
-      display: flex;
-      align-items: center;
-      padding: 0 20px;
       position: fixed;
       top: 0;
-      width: 100%;
-      z-index: 1002;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+      left: 0;
+      right: 0;
+      height: 70px;
+      background: var(--surface-translucent);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 1000;
+      transition: 0.3s;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
     }
 
     .menu-toggle {
-      font-size: 1.8rem;
       background: none;
       border: none;
-      color: white;
+      color: var(--text);
+      font-size: 24px;
       cursor: pointer;
-      margin-right: 16px;
+      display: none;
     }
 
-    .header-text h1 {
-      font-size: 1.6rem;
-      letter-spacing: 1px;
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: var(--text);
+      text-decoration: none;
     }
 
-    .header-text p {
-      font-size: 0.85rem;
-      opacity: 0.95;
+    .brand-logo i {
+      color: var(--brand);
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      color: var(--text);
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 50%;
+      margin-right: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .theme-toggle:hover {
+      background: var(--glass);
     }
 
     /* SIDEBAR */
     aside#sidebar {
       position: fixed;
-      top: 0;
-      left: -260px;
-      width: 260px;
-      height: 100vh;
-      background: white;
-      padding: 90px 20px 20px;
-      border-right: 1px solid #ddd;
-      transition: left 0.3s ease;
-      z-index: 1001;
-    }
-
-    aside#sidebar.active {
+      top: 71px;
       left: 0;
+      width: 250px;
+      height: calc(100vh - 71px);
+      background: var(--surface-translucent);
+      border-right: 1px solid var(--border);
+      padding: 20px;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 999;
     }
 
-    aside a {
+    .sidebar-link {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 14px 16px;
-      margin-bottom: 14px;
-      background: #fff;
-      border-radius: 14px;
+      padding: 12px 16px;
+      color: var(--text-sec);
       text-decoration: none;
-      color: var(--brand);
-      font-weight: bold;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
-      transition: transform 0.2s ease;
+      font-weight: 500;
+      border-radius: var(--radius);
+      transition: 0.2s;
+      margin-bottom: 4px;
     }
 
-    aside a:hover {
-      transform: translateY(-2px);
+    .sidebar-link:hover {
+      background: var(--glass);
+      color: var(--text);
     }
 
-    aside a i {
-      width: 22px;
-      height: 22px;
+    .sidebar-link.active {
+      background: var(--brand);
+      color: white;
     }
 
-    /* OVERLAY */
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.35);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s ease;
-      z-index: 1000;
+    .sidebar-link.active i {
+      color: white;
     }
 
-    .overlay.active {
-      opacity: 1;
-      pointer-events: auto;
+    /* MAIN CONTENT */
+    main {
+      margin-left: 250px;
+      margin-top: 70px;
+      min-height: calc(100vh - 70px);
     }
 
-    /* HERO */
+    /* HERO SECTION */
     .hero {
-      margin-top: 80px;
-      min-height: 60vh;
-      /* Use min-height for responsiveness */
-      background:
-        linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
-        url('https://images.unsplash.com/photo-1526045612212-70caf35c14df?auto=format&fit=crop&w=1200&q=60') center / cover no-repeat;
-      /* Overlay + Image */
+      position: relative;
+      height: 60vh;
+      min-height: 500px;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      color: white;
       text-align: center;
-      padding: 40px 20px;
-      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+      padding: 20px;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), var(--bg)),
+        url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+      color: white;
     }
 
-    .hero h2 {
-      font-size: 2.2rem;
-      margin-bottom: 12px;
+    .hero-content {
+      max-width: 800px;
+      z-index: 2;
+    }
+
+    .hero h1 {
+      font-size: 3.5rem;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 20px;
+      text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+
+    @media (max-width: 600px) {
+      .hero h1 {
+        font-size: 2.2rem;
+      }
     }
 
     .hero p {
-      font-size: 1.15rem;
+      font-size: 1.2rem;
+      opacity: 0.9;
       margin-bottom: 30px;
-      max-width: 700px;
+      line-height: 1.6;
     }
 
-    /* CTA BUTTONS */
-    .cta-buttons {
+    /* HERO BUTTONS */
+    .hero-btns {
       display: flex;
-      gap: 18px;
-      flex-wrap: wrap;
+      gap: 16px;
       justify-content: center;
-      width: 100%;
-      max-width: 900px;
+      flex-wrap: wrap;
     }
 
-    .cta-buttons a {
-      background: var(--brand);
-      color: white;
-      padding: 14px 24px;
-      border-radius: var(--radius);
+    .btn {
+      padding: 14px 28px;
+      border-radius: 50px;
       text-decoration: none;
-      font-weight: bold;
-      display: flex;
+      font-weight: 600;
+      transition: 0.3s;
+      display: inline-flex;
       align-items: center;
       gap: 8px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-      transition: transform 0.2s ease, background 0.2s ease;
     }
 
-    .cta-buttons a:hover {
-      background: #8a0000;
-      transform: translateY(-3px);
+    .btn-primary {
+      background: var(--brand);
+      color: white;
+      border: 2px solid var(--brand);
     }
 
-    /* CONTENT */
-    .main-content {
-      max-width: 900px;
-      margin: auto;
-      padding: 30px 20px;
+    .btn-primary:hover {
+      background: #a00000;
+      border-color: #a00000;
+      transform: translateY(-2px);
     }
 
-    .content-block {
+    .btn-outline {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(5px);
+    }
+
+    .btn-outline:hover {
       background: white;
-      padding: 30px;
-      border-radius: var(--radius);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+      color: black;
+      border-color: white;
+      transform: translateY(-2px);
     }
 
-    .content-block h2 {
+    /* SECTIONS */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 24px;
+    }
+
+    .section-header {
       text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .section-header h2 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      color: var(--text);
+    }
+
+    .section-header p {
+      color: var(--text-sec);
+    }
+
+    /* VALUES GRID */
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+    }
+
+    .value-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 30px;
+      border-radius: 16px;
+      transition: 0.3s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .value-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--brand);
+    }
+
+    .value-icon {
+      width: 60px;
+      height: 60px;
+      background: rgba(198, 0, 0, 0.1);
       color: var(--brand);
-      margin-bottom: 16px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .value-card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: var(--text);
+    }
+
+    .value-card p {
+      color: var(--text-sec);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* LATEST MEDIA ROW */
+    .media-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: center;
+      background: var(--surface);
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .media-content {
+      padding: 40px;
+    }
+
+    .media-image {
+      height: 100%;
+      min-height: 300px;
+      background: url('https://images.unsplash.com/photo-1507646227500-4d389b0012be?auto=format&fit=crop&w=800&q=80') center/cover;
     }
 
     /* FOOTER */
     .site-footer {
-      background: linear-gradient(to bottom, #1a1a1a, #000);
-      color: #ccc;
-      padding: 40px 20px;
-      text-align: center;
-      border-top: 4px solid var(--brand);
+      background: #000;
+      border-top: 1px solid var(--border);
+      padding: 60px 24px 20px;
+      margin-top: auto;
     }
 
-    .footer-content {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-      margin-bottom: 30px;
+    .footer-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 40px;
+      margin-bottom: 40px;
     }
 
-    .footer-brand h3 {
+    .footer-col h3 {
       color: white;
-      font-size: 1.5rem;
-      margin-bottom: 5px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+      margin-bottom: 20px;
+      font-size: 1.1rem;
     }
 
-    .leader-text {
-      color: var(--brand);
-      font-weight: bold;
-      font-style: italic;
-    }
-
-    .footer-dev p {
-      margin-bottom: 5px;
-      font-size: 0.9rem;
-    }
-
-    .dev-link {
-      display: inline-block;
-      color: #fff;
+    .footer-col p,
+    .footer-col a {
+      color: #888;
       text-decoration: none;
-      font-weight: bold;
-      background: rgba(255, 255, 255, 0.1);
-      padding: 8px 16px;
-      border-radius: 20px;
-      transition: 0.3s;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+      display: block;
     }
 
-    .dev-link:hover {
-      background: var(--brand);
-      transform: translateY(-3px);
-      box-shadow: 0 5px 15px rgba(179, 0, 0, 0.3);
+    .footer-col a:hover {
+      color: var(--brand);
     }
 
-    .footer-bottom {
+    .copyright {
+      text-align: center;
+      color: #555;
       font-size: 0.85rem;
-      opacity: 0.7;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      border-top: 1px solid #222;
       padding-top: 20px;
     }
 
-    @media (min-width: 768px) {
-      .footer-content {
-        flex-direction: row;
-        justify-content: space-around;
-        text-align: left;
+    /* RESPONSIVE */
+    @media (max-width: 1024px) {
+      main {
+        margin-left: 0;
       }
 
-      .footer-brand {
-        align-items: flex-start;
-      }
-    }
-
-    /* MOBILE */
-    @media (max-width: 600px) {
-      .header-text p {
-        display: none;
-      }
-
-      .hero {
-        min-height: auto;
-        padding: 60px 20px;
-      }
-
-      .hero h2 {
-        font-size: 1.6rem;
-      }
-
-      .cta-buttons {
-        flex-direction: column;
-        width: 100%;
-      }
-
-      .cta-buttons a {
-        width: 100%;
-        justify-content: center;
-        padding: 16px;
-      }
-
-      aside#sidebar {
-        width: 230px;
-      }
-
-      aside a {
-        padding: 16px;
-        font-size: 1rem;
-      }
-    }
-
-    /* DESKTOP SIDEBAR */
-    @media (min-width: 1024px) {
-
-      /* Sidebar always visible */
-      aside#sidebar {
-        left: 0;
-        box-shadow: none;
-        border-right: 1px solid #ddd;
-      }
-
-      /* Hide menu toggle */
       .menu-toggle {
-        display: none;
+        display: block;
       }
 
-      /* Shift header text slightly to align if needed, 
-     but more importantly shift content */
-      /* Shift content and Center */
-      .hero,
-      .main-content,
-      footer {
-        margin-left: 260px;
-        width: auto;
-        max-width: none;
+      aside#sidebar {
+        transform: translateX(-100%);
       }
 
-      /* Main content flex centering */
-      .main-content {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+      aside#sidebar.active {
+        transform: translateX(0);
       }
 
-      .content-block {
-        width: 100%;
-        max-width: 900px;
+      .hero h1 {
+        font-size: 2.5rem;
       }
 
-      /* Hero is already flex, just needs to ensure it spans full width */
-      .hero {
-        width: auto;
+      .media-row {
+        grid-template-columns: 1fr;
       }
 
-      /* Footer flex centering */
-      .site-footer .footer-content {
-        max-width: 1100px;
-        margin: 0 auto 30px;
-        width: 100%;
+      .media-image {
+        min-height: 250px;
       }
 
-      /* Hide overlay permanently on desktop */
-      .overlay {
-        display: none !important;
+      .site-footer {
+        padding-bottom: 80px;
       }
+
+      /* Pad for mobile nav if needed */
     }
   </style>
 </head>
@@ -369,110 +446,148 @@
 
   <!-- HEADER -->
   <header class="page-header">
-    <button class="menu-toggle" id="menuToggle">☰</button>
-    <div class="header-text">
-      <h1>TUDDUKE OKUFA</h1>
-      <p>Preparing People for the Second Coming of Jesus Christ</p>
+    <div class="header-left">
+      <button class="menu-toggle" id="menuToggle"><i data-feather="menu"></i></button>
+      <a href="index.html" class="brand-logo">
+        <i data-feather="feather"></i> TUDDUKE OKUFA
+      </a>
     </div>
+    <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+      <i data-feather="moon"></i>
+    </button>
   </header>
 
   <!-- SIDEBAR -->
   <aside id="sidebar">
-    <a href="index.html"><i data-feather="home"></i>Home</a>
-    <a href="videos.html"><i data-feather="video"></i>Videos</a>
-    <a href="sermons.html"><i data-feather="book-open"></i>Sermons</a>
-    <a href="donate.html"><i data-feather="heart"></i>Donate</a>
-    <a href="livestream.html"><i data-feather="tv"></i>Live</a>
-    <a href="kids/index.html"><i data-feather="smile"></i>Kids</a>
-    <a href="login.html" style="color: var(--brand); border: 2px solid var(--brand); margin-top: auto;"><i
-        data-feather="shield"></i>Staff Portal</a>
+    <a href="index.html" class="sidebar-link active"><i data-feather="home"></i> Home</a>
+    <a href="videos.html" class="sidebar-link"><i data-feather="play-circle"></i> Videos</a>
+    <a href="sermons.html" class="sidebar-link"><i data-feather="book-open"></i> Sermons</a>
+    <a href="donate.html" class="sidebar-link"><i data-feather="heart"></i> Donate</a>
+    <a href="livestream.html" class="sidebar-link"><i data-feather="tv"></i> Live Stream</a>
+    <a href="kids/index.html" class="sidebar-link"><i data-feather="smile"></i> Kids</a>
+    <a href="login.html" class="sidebar-link" style="margin-top:auto; color:var(--brand);"><i data-feather="shield"></i>
+      Staff Portal</a>
   </aside>
 
-  <div class="overlay" id="overlay"></div>
-
-  <!-- HERO -->
-  <section class="hero">
-    <h2>“For God so loved the world…”</h2>
-    <p>Led by Servant Kiviri John Mark</p>
-
-    <div class="cta-buttons">
-      <a href="livestream.html"><i data-feather="tv"></i> Watch Live</a>
-      <a href="sermons.html"><i data-feather="book-open"></i> Daily Sermons</a>
-      <a href="donate.html"><i data-feather="heart"></i> Support Ministry</a>
-      <a href="kids/index.html"><i data-feather="smile"></i> Kids Section</a>
-    </div>
-  </section>
-
-  <!-- CONTENT -->
-  <main class="main-content">
-    <section class="content-block">
-      <h2>Welcome to Tudduke Okufa Ministry</h2>
-      <p>
-        Tudduke Okufa Ministry is committed to preaching the Gospel and preparing believers
-        for the return of Jesus Christ our Savior. We stand firmly on the truth of Scripture
-        and the blessed hope of His soon coming.
-      </p>
+  <main>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-content">
+        <h1>Preparing for Eternity</h1>
+        <p>Welcome to Tudduke Okufa Ministry. We are dedicated to preaching the everlasting gospel and preparing hearts
+          for the Second Coming of Jesus Christ.</p>
+        <div class="hero-btns">
+          <a href="livestream.html" class="btn btn-primary"><i data-feather="tv"></i> Watch Live</a>
+          <a href="videos.html" class="btn btn-outline"><i data-feather="play"></i> Latest Sermons</a>
+        </div>
+      </div>
     </section>
+
+    <!-- MISSION VALUES -->
+    <section class="container">
+      <div class="section-header">
+        <h2>Our Mission</h2>
+        <p>Standing firm on the pillars of truth.</p>
+      </div>
+      <div class="values-grid">
+        <div class="value-card">
+          <div class="value-icon"><i data-feather="book"></i></div>
+          <h3>Biblical Truth</h3>
+          <p>We believe in the Bible as the unerring Word of God, our guide for faith and practice in these last days.
+          </p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon"><i data-feather="sun"></i></div>
+          <h3>Blessed Hope</h3>
+          <p>Proclaiming the imminent return of our Savior, seeking to awaken the world to His glory.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon"><i data-feather="users"></i></div>
+          <h3>Community</h3>
+          <p>Building a family of believers united in prayer, worship, and service to humanity.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURED MEDIA -->
+    <section class="container">
+      <div class="media-row">
+        <div class="media-image"></div>
+        <div class="media-content">
+          <span
+            style="color:var(--brand); font-weight:700; text-transform:uppercase; font-size:0.8rem; letter-spacing:1px;">Latest
+            Message</span>
+          <h2 style="font-size:2rem; margin-top:10px; margin-bottom:15px; color:var(--text);">The Signs of the Times
+          </h2>
+          <p style="color:var(--text-sec); margin-bottom:25px; line-height:1.6;">Join Servant Kiviri John Mark as he
+            expounds on the prophetic timeline and our role in the closing scenes of history.</p>
+          <a href="videos.html" class="btn btn-primary">Watch Now</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h3>Tudduke Okufa Ministry</h3>
+          <p>Preparing People for the Second Coming of Jesus Christ.</p>
+          <p>Led by Servant Kiviri John Mark.</p>
+        </div>
+        <div class="footer-col">
+          <h3>Quick Links</h3>
+          <a href="livestream.html">Live Stream</a>
+          <a href="videos.html">Sermons</a>
+          <a href="donate.html">Donate</a>
+          <a href="contact.html">Contact Us</a>
+        </div>
+        <div class="footer-col">
+          <h3>Connect</h3>
+          <p><i data-feather="map-pin" style="width:14px;"></i> Kampala, Uganda</p>
+          <p><i data-feather="mail" style="width:14px;"></i> info@tuddukeokufa.org</p>
+          <p><i data-feather="phone" style="width:14px;"></i> +256 700 000 000</p>
+        </div>
+      </div>
+      <div class="copyright">
+        &copy; <span id="year"></span> Tudduke Okufa. Developed by Innotech Solutions.
+      </div>
+    </footer>
+
   </main>
-
-  <!-- FOOTER -->
-  <!-- FOOTER -->
-  <footer class="site-footer">
-    <div class="footer-content">
-      <div class="footer-brand">
-        <h3>Tudduke Okufa Ministry</h3>
-        <p class="leader-text">Led by Servant Kiviri John Mark</p>
-      </div>
-
-      <div class="footer-dev">
-        <p>Developed with excellence by</p>
-        <a href="#" class="dev-link">Innotech Solutions Uganda</a>
-      </div>
-    </div>
-
-    <div class="footer-bottom">
-      <p style="margin-bottom: 5px;"><a href="login.html"
-          style="color: #666; text-decoration: none; font-size: 0.8rem;">Admin Portal</a></p>
-      <p>&copy; <span id="year"></span> Tudduke Okufa. All Rights Reserved.</p>
-    </div>
-  </footer>
 
   <!-- SCRIPTS -->
   <script src="https://unpkg.com/feather-icons"></script>
-
   <script>
-    /* Dynamic Year */
-    document.getElementById("year").textContent = new Date().getFullYear();
-
-    const sidebar = document.getElementById("sidebar");
-    const overlay = document.getElementById("overlay");
-    const toggleBtn = document.getElementById("menuToggle");
-    const sidebarLinks = sidebar.querySelectorAll("a");
-
-    toggleBtn.addEventListener("click", () => {
-      sidebar.classList.toggle("active");
-      overlay.classList.toggle("active");
-    });
-
-    overlay.addEventListener("click", closeSidebar);
-    document.addEventListener("keydown", e => {
-      if (e.key === "Escape") closeSidebar();
-    });
-
-    /* AUTO CLOSE ON LINK CLICK */
-    sidebarLinks.forEach(link => {
-      link.addEventListener("click", closeSidebar);
-    });
-
-    function closeSidebar() {
-      sidebar.classList.remove("active");
-      overlay.classList.remove("active");
-    }
-
     feather.replace();
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // UI Toggles
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebar = document.getElementById('sidebar');
+    const themeToggle = document.getElementById('themeToggle');
+
+    menuToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
+    });
+
+    // Theme Logic
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+
+    themeToggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const newTheme = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      updateThemeIcon(newTheme);
+    });
+
+    function updateThemeIcon(theme) {
+      themeToggle.innerHTML = theme === 'dark' ? '<i data-feather="sun"></i>' : '<i data-feather="moon"></i>';
+      feather.replace();
+    }
   </script>
-
 </body>
-
 
 </html>

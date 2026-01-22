@@ -21,7 +21,9 @@ const {
   QuizQuestion,
   Donation,
   User,
-  ActivityLog
+  ActivityLog,
+  SermonComment,
+  SermonLike
 } = require('./models');
 
 /*********************************
@@ -394,14 +396,102 @@ app.get('/api/sermons', async (req, res) => {
 
 app.get('/api/sermons/:id', async (req, res) => {
   try {
-    const sermon = await Sermon.findByPk(req.params.id);
+    const sermon = await Sermon.findByPk(req.params.id, {
+      include: [
+        {
+          model: SermonLike,
+          attributes: ['userId']
+        }
+      ]
+    });
     if (!sermon) {
       return res.status(404).json({ error: 'Sermon not found' });
     }
-    res.json(sermon);
+
+    // Calculate like Count
+    const sermonData = sermon.toJSON();
+    sermonData.likeCount = sermon.SermonLikes ? sermon.SermonLikes.length : 0;
+
+    res.json(sermonData);
   } catch (err) {
     console.error('❌ Sermon fetch error:', err);
     res.status(500).json({ error: 'Failed to fetch sermon' });
+  }
+});
+
+// Increment View
+app.post('/api/sermons/:id/view', async (req, res) => {
+  try {
+    const sermon = await Sermon.findByPk(req.params.id);
+    if (!sermon) return res.status(404).json({ error: 'Sermon not found' });
+
+    await sermon.increment('views');
+    res.json({ success: true, views: sermon.views + 1 });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'Error' });
+  }
+});
+
+// Toggle Like
+app.post('/api/sermons/:id/like', authenticateToken, async (req, res) => {
+  try {
+    const sermonId = req.params.id;
+    const userId = req.user.userid;
+
+    const existingLike = await SermonLike.findOne({ where: { sermonId, userId } });
+
+    if (existingLike) {
+      await existingLike.destroy();
+      return res.json({ success: true, liked: false });
+    } else {
+      await SermonLike.create({ sermonId, userId });
+      return res.json({ success: true, liked: true });
+    }
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'Error toggling like' });
+  }
+});
+
+// Get Comments
+app.get('/api/sermons/:id/comments', async (req, res) => {
+  try {
+    const comments = await SermonComment.findAll({
+      where: { sermonId: req.params.id },
+      include: [{ model: User, attributes: ['fullname', 'profileImage'] }],
+      order: [['createdAt', 'DESC']]
+    });
+    res.json(comments);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'Error fetching comments' });
+  }
+});
+
+// Post Comment
+app.post('/api/sermons/:id/comments', authenticateToken, async (req, res) => {
+  try {
+    const { text } = req.body;
+    if (!text) return res.status(400).json({ error: 'Comment cannot be empty' });
+
+    const comment = await SermonComment.create({
+      sermonId: req.params.id,
+      userId: req.user.userid,
+      text
+    });
+
+    // Fetch with user details to return
+    const fullComment = await SermonComment.findByPk(comment.commentid, {
+      include: [{ model: User, attributes: ['fullname', 'profileImage'] }]
+    });
+
+    req.io.emit('sermon_comment', fullComment); // Real-time
+
+    res.json({ success: true, data: fullComment });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'Error posting comment' });
   }
 });
 
@@ -630,6 +720,28 @@ app.get('/api/donations', async (req, res) => {
   } catch (err) {
     console.error('❌ Donations fetch error:', err);
     res.status(500).json({ error: 'Failed to fetch donations' });
+  }
+});
+
+// Update Donation Status (Admin)
+app.put('/api/donations/:id/status', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'admin') return res.sendStatus(403);
+
+  try {
+    const { status } = req.body;
+    const donation = await Donation.findByPk(req.params.id);
+
+    if (!donation) {
+      return res.status(404).json({ error: 'Donation not found' });
+    }
+
+    donation.status = status;
+    await donation.save();
+
+    res.json({ success: true, data: donation });
+  } catch (err) {
+    console.error('❌ Donation Update Error:', err);
+    res.status(500).json({ error: 'Failed to update donation status' });
   }
 });
 

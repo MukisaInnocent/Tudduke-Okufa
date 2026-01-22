@@ -6,12 +6,104 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Videos | Tudduke Okufa</title>
 
+  <!-- FONTS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --brand: #b30000;
-      --bg: #f4f4f4;
-      --text: #333;
-      --radius: 14px;
+      --brand: #c60000;
+      /* Ministry Red */
+      --brand-dark: #900000;
+      --bg: #0f0f0f;
+      --surface: #1e1e1e;
+      --text: #ffffff;
+      --text-sec: #aaaaaa;
+      --radius: 12px;
+
+      /* New Variables (Dark Default) */
+      --surface-translucent: rgba(15, 15, 15, 0.95);
+      --border: rgba(255, 255, 255, 0.1);
+      --hover-bg: rgba(255, 255, 255, 0.1);
+      --input-bg: #121212;
+    }
+
+    /* LIGHT THEME */
+    [data-theme="light"] {
+      --bg: #f8f9fa;
+      --surface: #ffffff;
+      --text: #1a1a1a;
+      --text-sec: #666666;
+
+      /* Light overrides */
+      --surface-translucent: rgba(255, 255, 255, 0.95);
+      --border: rgba(0, 0, 0, 0.1);
+      --hover-bg: rgba(0, 0, 0, 0.05);
+      --input-bg: #ffffff;
+    }
+
+    /* LIGHT THEME HEADER OVERRIDES (Ministry Brand Style) */
+    [data-theme="light"] .page-header {
+      background: var(--brand);
+      border-bottom: none;
+      box-shadow: 0 4px 12px rgba(198, 0, 0, 0.3);
+    }
+
+    [data-theme="light"] .page-header .brand-logo,
+    [data-theme="light"] .page-header .menu-toggle,
+    [data-theme="light"] .page-header .theme-toggle {
+      color: white !important;
+    }
+
+    [data-theme="light"] .page-header .brand-logo i {
+      fill: white !important;
+      color: white !important;
+    }
+
+    /* Light Theme override for search input */
+    [data-theme="light"] .header-search input {
+      background: rgba(0, 0, 0, 0.05);
+      /* Softer gray */
+      color: var(--text);
+    }
+
+    /* Keep local overrides that are layout specific */
+
+    [data-theme="light"] .menu-toggle:hover,
+    [data-theme="light"] .theme-toggle:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Light Theme Search */
+    [data-theme="light"] .header-search input {
+      background: rgba(255, 255, 255, 0.95);
+      border: none;
+      color: #333;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    [data-theme="light"] .header-search input:focus {
+      background: #ffffff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    /* THEME TOGGLE BTN */
+    .theme-toggle {
+      background: none;
+      border: none;
+      color: var(--text);
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 50%;
+      margin-right: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .theme-toggle:hover {
+      background: rgba(128, 128, 128, 0.2);
     }
 
     /* RESET */
@@ -22,62 +114,109 @@
     }
 
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Outfit', sans-serif;
       background: var(--bg);
       color: var(--text);
-      line-height: 1.6;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* SCROLLBAR */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #444;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #666;
     }
 
     /* HEADER */
     .page-header {
-      height: 80px;
-      background: var(--brand);
-      color: white;
+      height: 60px;
+      background: var(--surface-translucent);
+      backdrop-filter: blur(10px);
       display: flex;
       align-items: center;
-      padding: 0 16px;
+      padding: 0 24px;
       position: fixed;
       top: 0;
       width: 100%;
       z-index: 1002;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.3s, border-color 0.3s;
     }
 
     .menu-toggle {
-      font-size: 1.7rem;
+      font-size: 1.5rem;
       background: none;
       border: none;
-      color: white;
+      color: var(--text);
       cursor: pointer;
-      margin-right: 12px;
+      margin-right: 20px;
+      padding: 8px;
+      border-radius: 50%;
     }
 
-    .page-header h1 {
+    .menu-toggle:hover {
+      background: var(--hover-bg);
+    }
+
+    .brand-logo {
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--text);
       flex: 1;
-      text-align: center;
-      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-search {
+      flex: 2;
+      display: flex;
+      justify-content: center;
     }
 
     .header-search input {
-      padding: 8px 16px;
-      border-radius: 20px;
-      border: none;
-      width: 240px;
-      max-width: 60vw;
-      text-align: center;
+      padding: 10px 20px;
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      background: var(--input-bg);
+      color: var(--text);
+      width: 100%;
+      max-width: 500px;
+      font-family: inherit;
+    }
+
+    .header-search input:focus {
+      outline: none;
+      border-color: #1c62b9;
+      /* Keep blue accent for focus */
     }
 
     /* SIDEBAR */
     aside#sidebar {
       position: fixed;
-      top: 0;
+      top: 60px;
+      /* Below header */
       left: -260px;
-      width: 260px;
-      height: 100vh;
-      background: #fff;
-      padding: 90px 20px 20px;
-      border-right: 1px solid #ddd;
-      transition: left 0.3s ease;
+      width: 240px;
+      height: calc(100vh - 60px);
+      background: var(--bg);
+      padding: 20px 12px;
+      overflow-y: auto;
+      transition: left 0.2s ease, background 0.3s;
       z-index: 1001;
     }
 
@@ -88,35 +227,41 @@
     aside a {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 14px 16px;
-      margin-bottom: 14px;
-      background: white;
-      border-radius: var(--radius);
+      gap: 20px;
+      padding: 12px 16px;
+      margin-bottom: 4px;
+      border-radius: 10px;
       text-decoration: none;
-      color: var(--brand);
-      font-weight: bold;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
-      transition: transform 0.2s ease;
+      color: var(--text);
+      font-size: 0.95rem;
+      font-weight: 400;
+      transition: background 0.2s, color 0.2s;
     }
 
     aside a:hover {
-      transform: translateY(-2px);
+      background: var(--hover-bg);
     }
 
-    aside a i {
-      width: 22px;
-      height: 22px;
+    aside a.active-link {
+      background: var(--brand);
+      color: white !important;
+      font-weight: 500;
+      box-shadow: 0 4px 12px rgba(198, 0, 0, 0.3);
+    }
+
+    aside a.active-link i {
+      color: white;
+      /* Force white icon */
     }
 
     /* OVERLAY */
     .overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.35);
+      background: rgba(0, 0, 0, 0.5);
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.2s ease;
+      transition: opacity 0.2s;
       z-index: 1000;
     }
 
@@ -125,200 +270,351 @@
       pointer-events: auto;
     }
 
-    /* VIDEO GRID */
-    .video-row {
-      margin: 110px 20px 30px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 24px;
-      justify-content: center;
+    /* ===== MAIN CONTENT ===== */
+    .main-content {
+      margin-top: 80px;
+      /* Header space */
+      padding: 0 24px;
+      transition: margin-left 0.2s;
     }
 
-    .video-container {
-      flex: 1 1 300px;
-      max-width: 380px;
-    }
-
-    .thumb {
+    /* HERO / FEATURED (YouTube Channel Banner Style) */
+    .featured-banner {
+      width: 100%;
+      height: 300px;
+      border-radius: var(--radius);
+      overflow: hidden;
       position: relative;
+      margin-bottom: 30px;
+      cursor: pointer;
+      display: none;
+      /* Hidden until loaded */
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .featured-bg {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.6;
+      transition: transform 0.5s;
+    }
+
+    .featured-banner:hover .featured-bg {
+      transform: scale(1.02);
+    }
+
+    .featured-content {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 40px;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+      color: white;
+      /* Always white text on image */
+    }
+
+    .featured-tag {
+      background: var(--brand);
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      display: inline-block;
+    }
+
+    .featured-content h2 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      line-height: 1.1;
+    }
+
+    .featured-play-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: white;
+      color: black;
+      padding: 10px 24px;
+      border-radius: 24px;
+      font-weight: 600;
+      margin-top: 15px;
+      transition: background 0.2s;
+      border: none;
       cursor: pointer;
     }
 
-    .thumb img {
-      width: 100%;
-      display: block;
-      border-radius: 12px;
+    .featured-play-btn:hover {
+      background: #ddd;
     }
 
-    .play-btn {
-      position: absolute;
+    /* GRID LAYOUT */
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px 16px;
+      /* Row Gap, Column Gap */
+      margin-bottom: 60px;
+    }
+
+    .video-card {
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      /* Removed erroneous group property */
+    }
+
+    .thumb-container {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      aspect-ratio: 16/9;
+      margin-bottom: 12px;
+    }
+
+    .thumb-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s;
+      opacity: 0.9;
+    }
+
+    .video-card:hover .thumb-container img {
+      transform: scale(1.03);
+      opacity: 1;
+    }
+
+    .card-info {
+      display: flex;
+      gap: 12px;
+    }
+
+    .card-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #ccc;
+      flex-shrink: 0;
+    }
+
+    .card-text {
+      flex: 1;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+      line-height: 1.3;
+      color: var(--text);
+      /* CRITICAL FIX: Use variable for theme switching */
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-meta {
+      font-size: 0.85rem;
+      color: var(--text-sec);
+    }
+
+    /* MODAL (THEATER MODE) - YOUTUBE WATCH LAYOUT */
+    .modal-overlay {
+      position: fixed;
       inset: 0;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 2000;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 60px;
-      color: white;
-      background: rgba(0, 0, 0, 0.35);
-      border-radius: 12px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      overflow-y: auto;
+      /* Allow scrolling entire page if needed */
+      padding: 0;
     }
 
-    .video-container iframe {
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-content {
       width: 100%;
-      height: 215px;
+      height: 100%;
+      /* Full screen overlay feel */
+      background: #0f0f0f;
+      /* YouTube Dark BG */
+      display: flex;
+      justify-content: center;
+      overflow-y: auto;
+    }
+
+    /* THEATER GRID */
+    .watch-grid {
+      display: grid;
+      grid-template-columns: 1fr 350px;
+      /* Video | Sidebar */
+      gap: 24px;
+      max-width: 1600px;
+      width: 95%;
+      margin-top: 20px;
+      padding-bottom: 40px;
+    }
+
+    /* MAIN COLUMN */
+    .watch-main {
+      min-width: 0;
+      /* Prevent grid blowout */
+    }
+
+    .video-wrapper {
+      position: relative;
+      padding-bottom: 56.25%;
+      /* 16:9 */
+      height: 0;
+      background: #000;
       border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .watch-info h1 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: white;
+    }
+
+    .watch-desc {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      color: #eee;
+      margin-top: 15px;
+      white-space: pre-wrap;
+    }
+
+    /* SIDEBAR COLUMN */
+    .watch-sidebar {
+      padding-top: 0;
+    }
+
+    .rec-video-card {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      cursor: pointer;
+    }
+
+    .rec-video-card:hover .rec-thumb {
+      opacity: 0.8;
+    }
+
+    .rec-thumb {
+      width: 168px;
+      height: 94px;
+      border-radius: 8px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .rec-info h4 {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: white;
+      margin-bottom: 4px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .rec-info p {
+      font-size: 0.8rem;
+      color: #aaa;
+    }
+
+    .close-modal {
+      position: fixed;
+      top: 10px;
+      right: 20px;
+      color: #aaa;
+      font-size: 30px;
+      background: none;
       border: none;
+      cursor: pointer;
+      z-index: 2005;
     }
 
-    .video-container h3 {
-      font-size: 14px;
-      margin-top: 10px;
-      text-align: center;
+    .close-modal:hover {
+      color: white;
     }
 
-    /* MOBILE */
-    @media (max-width: 600px) {
-      .page-header h1 {
-        font-size: 1.3rem;
+    /* RESPONSIVE */
+    @media (max-width: 1000px) {
+      .watch-grid {
+        grid-template-columns: 1fr;
+        /* Stack */
       }
 
-      .header-search input {
-        width: 180px;
+      /* Mobile adjustments for sidebar items if needed */
+      .rec-video-card {
+        width: 100%;
       }
 
-      aside#sidebar {
-        width: 230px;
-      }
-
-      aside a {
-        padding: 16px;
-        font-size: 1rem;
-      }
-    }
-
-    /* DESKTOP SIDEBAR */
-    @media (min-width: 1024px) {
-
-      /* Sidebar always visible */
-      aside#sidebar {
-        left: 0;
-        box-shadow: none;
-        border-right: 1px solid #ddd;
-      }
-
-      /* Hide menu toggle */
-      .menu-toggle {
-        display: none;
-      }
-
-      /* Adjust header padding so content doesn't overlap sidebar area */
-      .page-header {
-        padding-left: 280px;
-      }
-
-      /* Shift video grid */
-      .video-row {
-        margin-left: 280px;
-        margin-right: 20px;
-        /* Maintain top margin 110px from original */
-        margin-top: 110px;
-      }
-
-      /* Hide overlay */
-      .overlay {
-        display: none !important;
+      .rec-thumb {
+        width: 140px;
+        height: 78px;
       }
     }
 
     /* FOOTER */
     .site-footer {
-      background: linear-gradient(to bottom, #1a1a1a, #000);
-      color: #ccc;
-      padding: 40px 20px;
+      border-top: 1px solid #333;
+      padding: 40px;
       text-align: center;
-      border-top: 4px solid var(--brand);
-    }
-
-    .footer-content {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-      margin-bottom: 30px;
-    }
-
-    .footer-brand h3 {
-      color: white;
-      font-size: 1.5rem;
-      margin-bottom: 5px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .leader-text {
-      color: var(--brand);
-      font-weight: bold;
-      font-style: italic;
-    }
-
-    .footer-dev p {
-      margin-bottom: 5px;
+      color: #666;
       font-size: 0.9rem;
+      margin-top: auto;
     }
 
-    .dev-link {
-      display: inline-block;
-      color: #fff;
-      text-decoration: none;
-      font-weight: bold;
-      background: rgba(255, 255, 255, 0.1);
-      padding: 8px 16px;
-      border-radius: 20px;
-      transition: 0.3s;
-    }
-
-    .dev-link:hover {
-      background: var(--brand);
-      transform: translateY(-3px);
-      box-shadow: 0 5px 15px rgba(179, 0, 0, 0.3);
-    }
-
-    .footer-bottom {
-      font-size: 0.85rem;
-      opacity: 0.7;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      padding-top: 20px;
-    }
-
-    @media (min-width: 768px) {
-      .footer-content {
-        flex-direction: row;
-        justify-content: space-around;
-        text-align: left;
+    /* DESKTOP RESPONSIVE */
+    @media (min-width: 1024px) {
+      aside#sidebar {
+        left: 0;
+        background: transparent;
       }
 
-      .footer-brand {
-        align-items: flex-start;
+      .menu-toggle {
+        display: none;
       }
 
-      /* Ensure footer content shifts on desktop and centers */
-      .site-footer {
-        margin-left: 260px;
-        width: auto;
+      .main-content {
+        margin-left: 240px;
       }
 
-      .site-footer .footer-content {
-        max-width: 1100px;
-        margin: 0 auto 30px;
-        width: 100%;
-      }
-
-      /* Relax video row constraints to allow better centering */
-      .video-row {
-        margin-left: 280px;
-        margin-right: 20px;
-        margin-top: 110px;
-        /* It is already flex centered, but let's ensure it doesn't get too wide on 4k */
-        max-width: 1600px;
+      .page-header {
+        padding-left: 260px;
       }
     }
   </style>
@@ -328,168 +624,371 @@
 
   <!-- HEADER -->
   <header class="page-header">
-    <button class="menu-toggle" id="menuToggle">☰</button>
-    <h1>Sermon Videos</h1>
-    <div class="header-search">
-      <input type="text" id="searchInput" placeholder="Search sermons...">
+    <button class="menu-toggle" id="menuToggle"><i data-feather="menu"></i></button>
+    <div class="brand-logo">
+      <i data-feather="youtube" style="color:var(--brand); fill:var(--brand);"></i> Tudduke Okufa
     </div>
+    <div class="header-search">
+      <input type="text" id="searchInput" placeholder="Search">
+    </div>
+
+    <!-- THEME TOGGLE -->
+    <button class="theme-toggle" id="themeBtn" title="Toggle Theme">
+      <i data-feather="sun"></i>
+    </button>
+    <div style="flex:1;"></div> <!-- Spacer -->
   </header>
 
   <!-- SIDEBAR -->
   <aside id="sidebar">
     <a href="index.html"><i data-feather="home"></i>Home</a>
-    <a href="videos.html"><i data-feather="video"></i>Videos</a>
+    <a href="videos.html" class="active-link"><i data-feather="play-circle"></i>Videos</a>
     <a href="sermons.html"><i data-feather="book-open"></i>Sermons</a>
     <a href="donate.html"><i data-feather="heart"></i>Donate</a>
-    <a href="livestream.html"><i data-feather="tv"></i>Live</a>
+    <a href="livestream.html"><i data-feather="cast"></i>Live</a>
   </aside>
 
   <div class="overlay" id="overlay"></div>
 
-  <!-- VIDEOS -->
-  <section class="video-row" id="videos">
-    <p>Loading sermons...</p>
-  </section>
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
 
-  <!-- FOOTER -->
-  <footer class="site-footer">
-    <div class="footer-content">
-      <div class="footer-brand">
-        <h3>Tudduke Okufa Ministry</h3>
-        <p class="leader-text">Led by Servant Kiviri John Mark</p>
-      </div>
-
-      <div class="footer-dev">
-        <p>Developed with excellence by</p>
-        <a href="#" class="dev-link">Innotech Solutions Uganda</a>
+    <!-- HERO BANNER (Clicking opens latest) -->
+    <div class="featured-banner" id="heroBanner">
+      <img src="" class="featured-bg" id="heroBg">
+      <div class="featured-content">
+        <span class="featured-tag">Latest Upload</span>
+        <h2 id="heroTitle">Loading...</h2>
+        <button class="featured-play-btn"><i data-feather="play" style="width:16px;"></i> Play Now</button>
       </div>
     </div>
 
-    <div class="footer-bottom">
-      <p>&copy; <span id="year"></span> Tudduke Okufa. All Rights Reserved.</p>
+    <!-- VIDEO GRID -->
+    <div class="video-grid" id="videoGrid">
+      <!-- Skeletons injected via JS -->
     </div>
-  </footer>
+
+    <footer class="site-footer">
+      &copy; <span id="year"></span> Tudduke Okufa.
+    </footer>
+  </div>
+
+  <!-- THEATER MODAL -->
+  <div class="modal-overlay" id="videoModal">
+    <button class="close-modal" id="closeModal">&times;</button>
+    <div class="modal-content">
+      <div class="watch-grid">
+        <!-- MAIN CONTENT -->
+        <div class="watch-main">
+          <div class="video-wrapper">
+            <div id="playerContainer"></div>
+          </div>
+          <div class="watch-info">
+            <h1 id="mTitle">Video Title</h1>
+            <div id="modalMeta"></div> <!-- Views/Likes -->
+            <div class="watch-desc" id="mDesc">Description</div>
+
+            <!-- COMMENTS -->
+            <div id="modalComments" style="margin-top:30px;"></div>
+          </div>
+        </div>
+
+        <!-- SIDEBAR (RECOMMMENDED) -->
+        <div class="watch-sidebar">
+          <h3 style="color:white; margin-bottom:15px; font-size:1.1rem;">Up Next</h3>
+          <div id="watchSidebarList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- SCRIPTS -->
   <script src="https://www.youtube.com/iframe_api"></script>
   <script src="https://unpkg.com/feather-icons"></script>
 
   <script>
-    /* Dynamic Year */
     document.getElementById("year").textContent = new Date().getFullYear();
 
     /* ============ CONFIG ============ */
     const API_KEY = "AIzaSyDkSgTK7TuY4Pglpk3vPB9yYaR6Wmf4uiI";
     const CHANNEL_ID = "UCDsOIE3HRX412EbbPzW6XxQ";
+    const UPLOADS_ID = "UUDsOIE3HRX412EbbPzW6XxQ";
 
     /* ============ ELEMENTS ============ */
-    const container = document.getElementById("videos");
+    const grid = document.getElementById("videoGrid");
     const searchInput = document.getElementById("searchInput");
     const sidebar = document.getElementById("sidebar");
     const overlay = document.getElementById("overlay");
     const toggleBtn = document.getElementById("menuToggle");
     const sidebarLinks = sidebar.querySelectorAll("a");
+    const themeBtn = document.getElementById("themeBtn");
+
+    // Theme Logic
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+
+    themeBtn.onclick = () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+      updateThemeIcon(next);
+    };
+
+    function updateThemeIcon(theme) {
+      // If theme is light, show Moon (to switch to dark), else Sun
+      const icon = theme === 'light' ? 'moon' : 'sun';
+      themeBtn.innerHTML = `<i data-feather="${icon}"></i>`;
+      feather.replace();
+    }
+
+    // Modal Elements
+    const modal = document.getElementById("videoModal");
+    const closeModal = document.getElementById("closeModal");
+    const modalTitle = document.getElementById("mTitle");
+    const modalDesc = document.getElementById("mDesc");
+    const heroBanner = document.getElementById("heroBanner");
 
     /* ============ STATE ============ */
     let allVideos = [];
-    let activePlayer = null;
+    let ytPlayer = null; // Single player instance for modal
 
-    /* ============ SIDEBAR ============ */
+    /* ============ LOADING SKELETONS ============ */
+    function showSkeletons() {
+      grid.innerHTML = Array(12).fill(0).map(() => `
+            <div style="opacity:0.5; animation:pulse 1s infinite alternate;">
+                <div style="background:#333; aspect-ratio:16/9; border-radius:12px; margin-bottom:10px;"></div>
+                <div style="height:20px; width:80%; background:#333; border-radius:4px; margin-bottom:6px;"></div>
+                <div style="height:14px; width:40%; background:#333; border-radius:4px;"></div>
+            </div>
+        `).join('');
+    }
+    showSkeletons();
+
+    /* ============ FETCH DATA (ALL PAGES) ============ */
+    async function init() {
+      try {
+        let nextPageToken = '';
+        let isFirstPage = true;
+
+        do {
+          const res = await fetch(
+            `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${UPLOADS_ID}&key=${API_KEY}&pageToken=${nextPageToken}`
+          );
+          const data = await res.json();
+
+          if (!data.items) {
+            if (isFirstPage) throw new Error("API Error");
+            break;
+          }
+
+          const newVideos = data.items;
+          allVideos = [...allVideos, ...newVideos];
+
+          // Render immediately on first batch for speed
+          if (isFirstPage && allVideos.length > 0) {
+            setupHero(allVideos[0]);
+            renderGrid(allVideos); // Render first 50
+            isFirstPage = false;
+          } else {
+            // Update grid with new batch
+            renderGrid(allVideos);
+          }
+
+          nextPageToken = data.nextPageToken;
+
+        } while (nextPageToken); // Continue until no more pages
+
+        if (allVideos.length === 0) {
+          grid.innerHTML = "<p>No videos found.</p>";
+        }
+
+      } catch (e) {
+        console.error(e);
+        if (allVideos.length === 0) {
+          grid.innerHTML = "<p style='color:red;'>Failed to load videos.</p>";
+        }
+      }
+    }
+    init();
+
+    /* ============ RENDER LOGIC ============ */
+    function setupHero(video) {
+      const snippet = video.snippet;
+      document.getElementById('heroBg').src = snippet.thumbnails.maxres?.url || snippet.thumbnails.high.url;
+      document.getElementById('heroTitle').textContent = snippet.title;
+      heroBanner.style.display = "block";
+
+      // Hero click opens modal
+      heroBanner.onclick = () => openTheaterMode(snippet.resourceId.videoId, snippet.title, snippet.description);
+    }
+
+    function renderGrid(videos) {
+      grid.innerHTML = "";
+
+      videos.forEach(v => {
+        const snippet = v.snippet;
+        const id = snippet.resourceId.videoId;
+        const title = snippet.title;
+        const date = new Date(snippet.publishedAt).toLocaleDateString();
+        const thumb = snippet.thumbnails.medium.url;
+
+        const card = document.createElement('div');
+        card.className = 'video-card';
+        card.onclick = () => openTheaterMode(id, title, snippet.description);
+
+        card.innerHTML = `
+                <div class="thumb-container">
+                    <img src="${thumb}" loading="lazy" alt="${title}">
+                </div>
+                <div class="card-info">
+                    <div class="card-avatar"></div> <!-- Placeholder for channel avatar -->
+                    <div class="card-text">
+                        <div class="card-title">${title}</div>
+                        <div class="card-meta">${date} • Tudduke Okufa</div>
+                    </div>
+                </div>
+            `;
+        grid.appendChild(card);
+      });
+
+      feather.replace();
+    }
+
+    /* ============ THEATER MODE (MODAL) ============ */
+    async function openTheaterMode(videoId, title, desc) {
+      modal.classList.add("active");
+      document.body.style.overflow = 'hidden'; // Prevent background scroll
+
+      modalTitle.textContent = title;
+      // Linkify description URLs
+      const linkedDesc = desc.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color:#3ea6ff;">$1</a>');
+      modalDesc.innerHTML = `<p>${linkedDesc.replace(/\n/g, '<br>')}</p>`;
+
+      // Reset Stats & Comments while loading
+      const metaContainer = document.getElementById('modalMeta');
+      if (metaContainer) metaContainer.innerHTML = '<span style="color:#aaa;">Loading stats...</span>';
+
+      const commentsContainer = document.getElementById('modalComments');
+      if (commentsContainer) commentsContainer.innerHTML = '<div style="padding:20px; text-align:center; color:#aaa;">Loading comments...</div>';
+
+      // --- POPULATE SIDEBAR (RECOMMENDED) ---
+      const sidebarList = document.getElementById('watchSidebarList');
+      if (sidebarList) {
+        // Filter out current video, take top 10
+        const recs = allVideos.filter(v => v.snippet.resourceId.videoId !== videoId).slice(0, 10);
+
+        sidebarList.innerHTML = recs.map(v => {
+          const s = v.snippet;
+          return `
+                <div class="rec-video-card" onclick="openTheaterMode('${s.resourceId.videoId}', '${s.title.replace(/'/g, "\\'")}', '${s.description.replace(/\n/g, ' ').replace(/'/g, "\\'")}')">
+                    <img src="${s.thumbnails.medium.url}" class="rec-thumb" loading="lazy">
+                    <div class="rec-info">
+                        <h4>${s.title}</h4>
+                        <p>${s.channelTitle}</p>
+                    </div>
+                </div>
+             `;
+        }).join('');
+      }
+
+      // 1. Load Player
+      if (ytPlayer) {
+        ytPlayer.loadVideoById(videoId);
+      } else {
+        if (window.YT && window.YT.Player) {
+          ytPlayer = new YT.Player('playerContainer', {
+            height: '100%',
+            width: '100%',
+            videoId: videoId,
+            playerVars: { 'autoplay': 1, 'rel': 0 },
+          });
+        }
+      }
+
+      // 2. Fetch Statistics (Views, Likes)
+      try {
+        const statsRes = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=statistics&id=${videoId}&key=${API_KEY}`);
+        const statsData = await statsRes.json();
+
+        if (statsData.items && statsData.items.length > 0) {
+          const stats = statsData.items[0].statistics;
+          const views = parseInt(stats.viewCount).toLocaleString();
+          const likes = parseInt(stats.likeCount).toLocaleString();
+
+          metaContainer.innerHTML = `
+                <div style="display:flex; gap:20px; color:#aaa; font-size:0.9rem; margin-bottom:10px;">
+                    <span style="display:flex; align-items:center; gap:6px;"><i data-feather="eye"></i> ${views} views</span>
+                    <span style="display:flex; align-items:center; gap:6px;"><i data-feather="thumbs-up"></i> ${likes} likes</span>
+                </div>
+            `;
+          feather.replace();
+        }
+      } catch (e) { console.error("Stats fetch failed", e); }
+
+      // 3. Fetch Comments
+      try {
+        const commentsRes = await fetch(`https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=${videoId}&maxResults=10&key=${API_KEY}`);
+        const commentsData = await commentsRes.json();
+
+        if (commentsData.items) {
+          const commentsHtml = commentsData.items.map(item => {
+            const c = item.snippet.topLevelComment.snippet;
+            return `
+                    <div style="display:flex; gap:12px; margin-bottom:20px;">
+                        <img src="${c.authorProfileImageUrl}" style="width:40px; height:40px; border-radius:50%;">
+                        <div>
+                            <div style="font-weight:bold; font-size:0.9rem; color:var(--text); margin-bottom:4px;">${c.authorDisplayName}</div>
+                            <div style="font-size:0.9rem; color:#ccc;">${c.textDisplay}</div>
+                        </div>
+                    </div>
+                `;
+          }).join('');
+
+          commentsContainer.innerHTML = `
+                <h3 style="color:white; font-size:1.1rem; margin-bottom:20px; border-top:1px solid #333; padding-top:20px;">
+                    ${commentsData.items.length} Comments
+                </h3>
+                ${commentsHtml}
+            `;
+        } else {
+          commentsContainer.innerHTML = '<div style="padding:20px; color:#aaa;">Comments are disabled for this video.</div>';
+        }
+      } catch (e) {
+        console.error("Comments fetch failed", e);
+        commentsContainer.innerHTML = '<div style="padding:20px; color:#aaa;">Failed to load comments.</div>';
+      }
+    }
+
+    // Helper to create containers if they don't exist yet (idempotent)
+    // Deprecated helpers: Handled in HTML structure now.
+
+    // Close Logic
+    function closeTheater() {
+      modal.classList.remove("active");
+      document.body.style.overflow = ''; // Restore scroll
+      if (ytPlayer) {
+        ytPlayer.stopVideo(); // Stop playback
+      }
+    }
+
+    closeModal.onclick = closeTheater;
+    modal.onclick = (e) => {
+      if (e.target === modal) closeTheater(); // Click outside to close
+    };
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeTheater();
+    });
+
+    /* ============ SIDEBAR LOGIC ============ */
     toggleBtn.addEventListener("click", () => {
       sidebar.classList.toggle("active");
       overlay.classList.toggle("active");
     });
-
-    overlay.addEventListener("click", closeSidebar);
-    document.addEventListener("keydown", e => {
-      if (e.key === "Escape") closeSidebar();
-    });
-
-    sidebarLinks.forEach(link => {
-      link.addEventListener("click", closeSidebar);
-    });
-
-    function closeSidebar() {
+    overlay.addEventListener("click", () => {
       sidebar.classList.remove("active");
       overlay.classList.remove("active");
-    }
-
-    /* ============ LOAD VIDEOS ============ */
-    async function loadAllVideos() {
-      try {
-        const channelRes = await fetch(
-          `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${CHANNEL_ID}&key=${API_KEY}`
-        );
-        const channelData = await channelRes.json();
-        const uploadsId = channelData.items[0].contentDetails.relatedPlaylists.uploads;
-
-        let pageToken = "";
-        allVideos = [];
-
-        do {
-          const res = await fetch(
-            `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${uploadsId}&pageToken=${pageToken}&key=${API_KEY}`
-          );
-          const data = await res.json();
-          allVideos.push(...data.items);
-          pageToken = data.nextPageToken || "";
-        } while (pageToken);
-
-        renderVideos(allVideos);
-      } catch {
-        container.innerHTML = "<p style='color:red'>Failed to load sermons.</p>";
-      }
-    }
-
-    /* ============ RENDER ============ */
-    function renderVideos(videos) {
-      container.innerHTML = "";
-      if (!videos.length) {
-        container.innerHTML = "<p>No videos found.</p>";
-        return;
-      }
-
-      videos.forEach(v => {
-        const id = v.snippet.resourceId.videoId;
-        const title = v.snippet.title;
-
-        const div = document.createElement("div");
-        div.className = "video-container";
-        div.innerHTML = `
-      <div class="thumb" data-id="${id}">
-        <img src="https://i.ytimg.com/vi/${id}/hqdefault.jpg" loading="lazy">
-        <div class="play-btn">▶</div>
-      </div>
-      <h3>${title}</h3>
-    `;
-        container.appendChild(div);
-      });
-    }
-
-    /* ============ PLAY ============ */
-    container.addEventListener("click", e => {
-      const thumb = e.target.closest(".thumb");
-      if (!thumb) return;
-
-      const videoId = thumb.dataset.id;
-      const iframe = document.createElement("iframe");
-      iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1`;
-      iframe.allowFullscreen = true;
-
-      thumb.replaceWith(iframe);
-
-      new YT.Player(iframe, {
-        events: {
-          onStateChange: e => {
-            if (e.data === YT.PlayerState.PLAYING) {
-              if (activePlayer && activePlayer !== e.target) {
-                activePlayer.pauseVideo();
-              }
-              activePlayer = e.target;
-            }
-          }
-        }
-      });
     });
 
     /* ============ SEARCH ============ */
@@ -498,17 +997,13 @@
       clearTimeout(timer);
       timer = setTimeout(() => {
         const q = searchInput.value.toLowerCase();
-        renderVideos(allVideos.filter(v =>
-          v.snippet.title.toLowerCase().includes(q)
-        ));
-      }, 200);
+        if (q.trim() === '') renderGrid(allVideos);
+        else renderGrid(allVideos.filter(v => v.snippet.title.toLowerCase().includes(q)));
+      }, 300);
     });
 
-    /* INIT */
-    loadAllVideos();
-    feather.replace();
   </script>
-
+  <script src="kids/auth-helper.js"></script>
 </body>
 
 </html>

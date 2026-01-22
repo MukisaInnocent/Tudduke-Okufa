@@ -7,22 +7,36 @@
     <title>Admin Dashboard | Tudduke Okufa</title>
     <style>
         :root {
-            --brand: #b30000;
-            --bg: #0d0d0d;
-            --card: #1a1a1a;
-            --text: #e0e0e0;
+            --brand: #c60000;
+            --brand-glow: rgba(198, 0, 0, 0.4);
+            --bg: #0a0a0a;
+            --surface: #141414;
+            --surface-2: #1f1f1f;
+            --text: #ffffff;
             --text-muted: #a0a0a0;
+            --border: rgba(255, 255, 255, 0.1);
+            --glass: rgba(255, 255, 255, 0.05);
+            --radius: 12px;
+            --font-main: 'Outfit', sans-serif;
+
+            /* Admin Specifics */
+            --card: #141414;
+            /* Map to surface */
             --success: #2e7d32;
             --warning: #ed6c02;
-            --border: #333;
         }
 
         [data-theme="light"] {
             --bg: #f4f4f4;
-            --card: #ffffff;
-            --text: #333333;
+            --surface: #ffffff;
+            --surface-2: #f0f0f0;
+            --text: #1a1a1a;
             --text-muted: #666666;
-            --border: #ddd;
+            --border: rgba(0, 0, 0, 0.1);
+            --glass: rgba(0, 0, 0, 0.05);
+
+            /* Admin Specifics */
+            --card: #ffffff;
         }
 
         * {
@@ -198,6 +212,29 @@
             color: var(--text);
             cursor: pointer;
             margin-right: 15px;
+        }
+
+        /* ===== BADGES ===== */
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-success {
+            background: rgba(46, 125, 50, 0.2);
+            color: #4caf50;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .badge-pending {
+            background: rgba(237, 108, 2, 0.2);
+            color: #ff9800;
+            border: 1px solid rgba(255, 152, 0, 0.3);
         }
 
         /* STATS */
@@ -430,7 +467,7 @@
     <!-- SIDEBAR -->
     <aside class="admin-sidebar" id="sidebar">
         <div class="sidebar-brand">
-            Tudduke Admin
+            Tudduke Okufa Admin
         </div>
         <nav class="nav-links">
             <a href="#" class="active"><i data-feather="home"></i> Dashboard</a>
@@ -451,9 +488,10 @@
                 <h1>Dashboard Overview</h1>
             </div>
             <div style="display: flex; gap: 10px;">
-                <button onclick="toggleTheme()" id="themeBtn"
-                    style="background:none; border: 1px solid var(--border); padding: 8px 16px; border-radius: 6px; color:var(--text); cursor:pointer;">☀️
-                    Light Mode</button>
+                <button class="theme-toggle" id="themeToggle" title="Toggle Theme"
+                    style="background:transparent; border:none; color:var(--text); cursor:pointer; padding:8px;">
+                    <i data-feather="moon"></i>
+                </button>
                 <button onclick="logout()"
                     style="background:var(--brand); border:none; color:white; padding: 8px 16px; border-radius: 6px; cursor:pointer;">Logout</button>
             </div>
@@ -487,7 +525,8 @@
                             <th>Donor</th>
                             <th>Amount</th>
                             <th>Method</th>
-                            <th class="hide-mobile">Details</th>
+                            <th>Status</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -505,9 +544,6 @@
         /* Icons */
         feather.replace();
 
-        /* Dynamic Year */
-        // document.getElementById("year").textContent = new Date().getFullYear();
-
         /* ===== AUTH ===== */
         // Replaced PIN with Token Auth
         const token = localStorage.getItem('ministryToken');
@@ -519,11 +555,14 @@
             const user = JSON.parse(userStr);
             if (user.role !== 'admin') {
                 alert('Access Denied: Admins Only');
-                window.location.href = 'login.html'; // Or dashboard if we had a general one
+                window.location.href = 'login.html';
             } else {
                 // Auth Success
                 document.getElementById('dashboard').style.display = 'block';
                 loadData();
+
+                // Auto-Refresh every 30 seconds
+                setInterval(loadData, 30000);
             }
         }
 
@@ -538,6 +577,8 @@
 
         async function loadData() {
             try {
+                // Fetch with auth header if we add protection later for GET, 
+                // currently GET /api/donations is public but usually admin reads all fields
                 const res = await fetch('/api/donations');
                 const data = await res.json();
                 allDonations = data;
@@ -545,7 +586,6 @@
                 calculateStats(data);
             } catch (err) {
                 console.error("Failed to load data", err);
-                alert("Failed to load donation data. Is the backend running?");
             }
         }
 
@@ -562,16 +602,66 @@
                 const date = new Date(d.createdAt).toLocaleDateString();
                 const amount = `${d.currency} ${parseFloat(d.amount).toLocaleString()}`;
 
+                // Status Badge Logic
+                let statusBadge = '';
+                if (d.status === 'completed') {
+                    statusBadge = `<span class="badge badge-success">Completed</span>`;
+                } else if (d.status === 'pending') {
+                    statusBadge = `<span class="badge badge-pending">Pending</span>`;
+                } else {
+                    statusBadge = `<span class="badge" style="background:rgba(255,255,255,0.1)">${d.status || 'unknown'}</span>`;
+                }
+
+                // Action Buttons
+                let actions = '';
+                if (d.status !== 'completed') {
+                    actions = `<button onclick="markCompleted(${d.donationid})" style="background:none; border:1px solid var(--success); color:var(--success); border-radius:4px; padding:4px 8px; cursor:pointer;" title="Confirm Payment"><i data-feather="check" style="width:14px; height:14px;"></i> Verify</button>`;
+                } else {
+                    actions = `<span style="color:var(--text-muted); font-size:0.8rem;"><i data-feather="check-circle" style="width:14px; height:14px;"></i> Verified</span>`;
+                }
+
                 const tr = document.createElement("tr");
                 tr.innerHTML = `
-          <td style="color: #888;">${date}</td>
-          <td style="font-weight: bold;">${d.name}</td>
-          <td style="color: var(--success); font-weight: bold;">${amount}</td>
-          <td>${d.paymentMethod}</td>
-          <td class="hide-mobile" style="color: #888; font-size: 0.85rem;">${d.paymentDetails || '-'}</td>
-        `;
+                  <td style="color: var(--text-muted);">${date}</td>
+                  <td style="font-weight: bold;">
+                    ${d.name}
+                    <div style="font-size:0.75rem; color:var(--text-muted); font-weight:normal;">${d.email || ''}</div>
+                  </td>
+                  <td style="color: var(--success); font-weight: bold;">${amount}</td>
+                  <td>
+                    ${d.paymentMethod}
+                    <div style="font-size:0.75rem; color:var(--text-muted); max-width:150px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${d.paymentDetails}">${d.paymentDetails || ''}</div>
+                  </td>
+                  <td>${statusBadge}</td>
+                  <td>${actions}</td>
+                `;
                 tbody.appendChild(tr);
             });
+            feather.replace();
+        }
+
+        async function markCompleted(id) {
+            if (!confirm('Are you sure you want to mark this donation as verified/completed?')) return;
+
+            try {
+                const res = await fetch(`/api/donations/${id}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ status: 'completed' })
+                });
+
+                if (res.ok) {
+                    loadData(); // Refresh
+                } else {
+                    alert('Failed to update status');
+                }
+            } catch (e) {
+                console.error(e);
+                alert('Error updating status');
+            }
         }
 
         function calculateStats(data) {
@@ -595,33 +685,28 @@
             const term = document.getElementById("search").value.toLowerCase();
             const filtered = allDonations.filter(d =>
                 d.name.toLowerCase().includes(term) ||
-                d.paymentMethod.toLowerCase().includes(term)
+                d.paymentMethod.toLowerCase().includes(term) ||
+                (d.status && d.status.toLowerCase().includes(term))
             );
             renderData(filtered);
         }
         /* ===== THEME ===== */
-        const themeBtn = document.getElementById("themeBtn");
-        const html = document.documentElement;
+        const themeToggle = document.getElementById("themeToggle");
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
 
-        // Load saved theme
-        const savedTheme = localStorage.getItem("adminTheme") || "dark";
-        setTheme(savedTheme);
+        themeToggle.addEventListener('click', () => {
+            const current = document.documentElement.getAttribute('data-theme');
+            const newTheme = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
 
-        function toggleTheme() {
-            const current = html.getAttribute("data-theme");
-            const newTheme = current === "light" ? "dark" : "light";
-            setTheme(newTheme);
-        }
-
-        function setTheme(theme) {
-            if (theme === "light") {
-                html.setAttribute("data-theme", "light");
-                themeBtn.textContent = "🌙 Dark Mode";
-            } else {
-                html.removeAttribute("data-theme");
-                themeBtn.textContent = "☀️ Light Mode";
-            }
-            localStorage.setItem("adminTheme", theme);
+        function updateThemeIcon(theme) {
+            themeToggle.innerHTML = theme === 'dark' ? '<i data-feather="sun"></i>' : '<i data-feather="moon"></i>';
+            feather.replace();
         }
     </script>
 
