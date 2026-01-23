@@ -204,9 +204,15 @@
     /* LOAD QUIZ QUESTIONS FROM BACKEND */
     async function loadQuizQuestions() {
       // API Base Logic
-      const API_BASE = (window.location.protocol === 'file:' || window.location.port !== '3000')
-        ? 'http://localhost:3000'
-        : '';
+      const getApiBase = () => {
+        const { hostname, protocol, port } = window.location;
+        if (protocol === 'file:') return 'http://localhost:3000';
+        if ((hostname === 'localhost' || hostname === '127.0.0.1') && port !== '3000') {
+          return 'http://localhost:3000';
+        }
+        return '';
+      };
+      const API_BASE = getApiBase();
 
       try {
         const res = await fetch(`${API_BASE}/api/kids/quiz`);
@@ -285,7 +291,15 @@
 
     async function submitQuizResult(score, total) {
       if (!isLoggedIn()) return; // check auth-helper
-      const API_BASE = (window.location.protocol === 'file:' || window.location.port !== '3000') ? 'http://localhost:3000' : '';
+      const getApiBase = () => {
+        const { hostname, protocol, port } = window.location;
+        if (protocol === 'file:') return 'http://localhost:3000';
+        if ((hostname === 'localhost' || hostname === '127.0.0.1') && port !== '3000') {
+          return 'http://localhost:3000';
+        }
+        return '';
+      };
+      const API_BASE = getApiBase();
 
       try {
         const res = await fetch(`${API_BASE}/api/kids/quiz/submit`, {

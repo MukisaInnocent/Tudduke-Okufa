@@ -271,9 +271,15 @@
     let currentLesson = null;
 
     // API Base Logic
-    const API_BASE = (window.location.protocol === 'file:' || window.location.port !== '3000')
-      ? 'http://localhost:3000'
-      : '';
+    const getApiBase = () => {
+      const { hostname, protocol, port } = window.location;
+      if (protocol === 'file:') return 'http://localhost:3000';
+      if ((hostname === 'localhost' || hostname === '127.0.0.1') && port !== '3000') {
+        return 'http://localhost:3000';
+      }
+      return '';
+    };
+    const API_BASE = getApiBase();
 
     async function loadWeeklyLesson() {
       try {
@@ -320,33 +326,31 @@
 
     async function loadQuiz() {
       try {
-        try {
-          const res = await fetch(`${API_BASE}/api/kids/quiz`);
-          if (!res.ok) throw new Error('Failed to fetch quiz');
-          const questions = await res.json();
+        const res = await fetch(`${API_BASE}/api/kids/quiz`);
+        if (!res.ok) throw new Error('Failed to fetch quiz');
+        const questions = await res.json();
 
-          if (questions.length === 0) {
-            document.getElementById('quizContent').innerHTML = '<p>No quiz questions available yet.</p>';
-            return;
-          }
+        if (questions.length === 0) {
+          document.getElementById('quizContent').innerHTML = '<p>No quiz questions available yet.</p>';
+          return;
+        }
 
-          // Use first question for now
-          const q = questions[0];
-          document.getElementById('quizContent').innerHTML = `
+        // Use first question for now
+        const q = questions[0];
+        document.getElementById('quizContent').innerHTML = `
       <p style="font-weight:600; margin-bottom:15px; font-size:1.1rem;">1. ${q.question}</p>
       <label><input type="radio" name="q1" value="0"> ${q.option1}</label>
       <label><input type="radio" name="q1" value="1"> ${q.option2}</label>
       <label><input type="radio" name="q1" value="2"> ${q.option3}</label>
       <input type="hidden" id="correctAnswer" value="${q.correctAnswer - 1}">
     `;
-        } catch (err) {
-          console.error('Error loading quiz:', err);
-          document.getElementById('quizContent').innerHTML = '<p>Quiz questions will be available soon.</p>';
-        }
+      } catch (err) {
+        console.error('Error loading quiz:', err);
+        document.getElementById('quizContent').innerHTML = '<p>Quiz questions will be available soon.</p>';
       }
 
-    /* LESSON COMPLETE */
-    document.getElementById("completeLesson").onclick = () => {
+      /* LESSON COMPLETE */
+      document.getElementById("completeLesson").onclick = () => {
         document.getElementById("quizBox").style.display = "block";
         document.getElementById("lessonBox").style.display = "none";
         setTimeout(() => {

@@ -317,9 +317,15 @@
         const userStr = localStorage.getItem('ministryUser');
 
         // API Base Logic
-        const API_BASE = (window.location.protocol === 'file:' || window.location.port !== '3000')
-            ? 'http://localhost:3000'
-            : '';
+        const getApiBase = () => {
+            const { hostname, protocol, port } = window.location;
+            if (protocol === 'file:') return 'http://localhost:3000';
+            if ((hostname === 'localhost' || hostname === '127.0.0.1') && port !== '3000') {
+                return 'http://localhost:3000';
+            }
+            return '';
+        };
+        const API_BASE = getApiBase();
 
         if (!token || !userStr) {
             window.location.href = 'login.html';
@@ -348,29 +354,29 @@
         // LOAD SERMONS (ALL for now, or filtered if we add scope later)
         async function loadSermons() {
             // Fetch MY sermons only (Protected Route)
-            const res = await fetch(`${API_BASE}/api/sermons/my`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            const sermons = await res.json();
-            const sermons = await res.json();
+            try {
+                const res = await fetch(`${API_BASE}/api/sermons/my`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const sermons = await res.json();
 
-            // Decode token payload to get ID if not in userStr
-            const user = JSON.parse(userStr);
-            // We don't have user.id in the localStorage object stored in login:
-            // Login returns: { success: true, token, user: { fullname: user.fullname, role: user.roles } }
-            // Use JWT decode to get ID? Or updated Login to return ID.
-            // I'll assume I can't easily get ID without decoding.
-            // Actually, I can fix the Login route to return ID.
+                // Decode token payload to get ID if not in userStr
+                const user = JSON.parse(userStr);
+                // We don't have user.id in the localStorage object stored in login:
+                // Login returns: { success: true, token, user: { fullname: user.fullname, role: user.roles } }
+                // Use JWT decode to get ID? Or updated Login to return ID.
+                // I'll assume I can't easily get ID without decoding.
+                // Actually, I can fix the Login route to return ID.
 
-            // FOR NOW: I will just render them. Edit/Delete will fail if not owner.
+                // FOR NOW: I will just render them. Edit/Delete will fail if not owner.
 
-            const list = document.getElementById('sermonList');
-            if (sermons.length === 0) {
-                list.innerHTML = '<p style="text-align: center; color: #888;">No sermons yet.</p>';
-                return;
-            }
+                const list = document.getElementById('sermonList');
+                if (sermons.length === 0) {
+                    list.innerHTML = '<p style="text-align: center; color: #888;">No sermons yet.</p>';
+                    return;
+                }
 
-            list.innerHTML = sermons.map(s => `
+                list.innerHTML = sermons.map(s => `
                     <div class="sermon-item">
                         <div class="sermon-info">
                             <h4>${s.title}</h4>
@@ -383,11 +389,11 @@
                         </div>
                     </div>
                 `).join('');
-            feather.replace();
+                feather.replace();
 
-        } catch (err) {
-            console.error(err);
-        }
+            } catch (err) {
+                console.error(err);
+            }
         }
 
         // ADD / UPDATE
