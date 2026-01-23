@@ -509,7 +509,7 @@
         <div class="tabs">
             <button class="tab active" onclick="switchTab('users')">All Users</button>
             <button class="tab" onclick="switchTab('pending')" id="tab-pending">Pending Users</button>
-            <button class="tab" onclick="switchTab('content')" id="tab-content">Pending Content</button>
+            <button class="tab" onclick="switchTab('content')" id="tab-content">Content Manager</button>
             <button class="tab" onclick="switchTab('activity')">Activity Logs</button>
         </div>
 
@@ -560,13 +560,23 @@
         <!-- CONTENT PANEL -->
         <div id="content" class="panel">
             <div style="padding:20px;">
-                <h3 style="margin-top:0;">Teacher Resources</h3>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                    <h3 style="margin:0;">Teacher Resources</h3>
+                    <select id="contentFilter" onchange="renderContent()"
+                        style="padding:8px; border-radius:6px; border:1px solid var(--border-light);">
+                        <option value="all" selected>View All</option>
+                        <option value="pending">Pending Review</option>
+                        <option value="approved">Approved / Live</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                </div>
                 <div class="table-container">
                     <table>
                         <thead>
                             <tr>
                                 <th>Title</th>
                                 <th>Type</th>
+                                <th>Status</th>
                                 <th>Uploader</th>
                                 <th>Date</th>
                                 <th>Action</th>
@@ -574,7 +584,7 @@
                         </thead>
                         <tbody id="resourceTable">
                             <tr>
-                                <td colspan="5" style="text-align:center;">Loading...</td>
+                                <td colspan="6" style="text-align:center;">Loading...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -586,6 +596,7 @@
                         <thead>
                             <tr>
                                 <th>Title</th>
+                                <th>Status</th>
                                 <th>Date</th>
                                 <th>Created By</th>
                                 <th>Action</th>
@@ -593,7 +604,27 @@
                         </thead>
                         <tbody id="eventTable">
                             <tr>
-                                <td colspan="4" style="text-align:center;">Loading...</td>
+                                <td colspan="5" style="text-align:center;">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3 style="margin-top:30px;">Preacher Sermons</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Status</th>
+                                <th>Preacher</th>
+                                <th>Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sermonTable">
+                            <tr>
+                                <td colspan="5" style="text-align:center;">Loading...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -648,97 +679,101 @@
         }
 
         async function loadData() {
-            // Load Users
+            // Trigger all loads in parallel
+            loadUsers();
+            loadActivity();
+            loadContent();
+        }
+
+        async function loadUsers() {
             try {
                 const res = await fetch(`${API_BASE}/api/admin/users`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
-
                 const users = await res.json();
+
                 const userBody = document.getElementById('userTable');
                 const pendingBody = document.getElementById('pendingTable');
 
-                // Filter Pending Logic: Unverified Teachers or Preachers
-                const pendingUsers = users.filter(u => !u.isVerified && (u.roles === 'teacher' || u.roles === 'preacher'));
-
                 // Update Stats
+                const pendingUsers = users.filter(u => !u.isVerified && (u.roles === 'teacher' || u.roles === 'preacher'));
                 document.getElementById('stat-total').textContent = users.length;
                 document.getElementById('stat-pending').textContent = pendingUsers.length;
 
-                // Update Tab Count
+                // Update Tab Badge
                 const pendingTab = document.getElementById('tab-pending');
                 pendingTab.innerHTML = `Pending ${pendingUsers.length > 0 ? `<span style="background:var(--danger); color:white; padding:2px 6px; border-radius:10px; font-size:0.7em; margin-left:4px;">${pendingUsers.length}</span>` : ''}`;
 
-                if (users.length === 0) {
-                    userBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No users found.</td></tr>';
-                } else {
-                    userBody.innerHTML = users.map(u => createUserRow(u)).join('');
-                }
+                // Render Tables
+                userBody.innerHTML = users.length ? users.map(u => createUserRow(u)).join('') : '<tr><td colspan="5" style="text-align:center;">No users found.</td></tr>';
 
-                if (pendingUsers.length === 0) {
-                    pendingBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:40px; color:var(--text-muted);">No pending approvals! All caught up. ✨</td></tr>';
-                } else {
-                    pendingBody.innerHTML = pendingUsers.map(u => createPendingRow(u)).join('');
-                }
+                pendingBody.innerHTML = pendingUsers.length ? pendingUsers.map(u => createPendingRow(u)).join('') : '<tr><td colspan="5" style="text-align:center; padding:40px; color:var(--text-muted);">No pending approvals! All caught up. ✨</td></tr>';
+            } catch (e) { console.error("Users Load Error:", e); }
+        }
 
-            } catch (e) {
-                console.error(e);
-            }
-
-            // Load Activity
+        async function loadActivity() {
             try {
                 const res = await fetch(`${API_BASE}/api/admin/activity`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
-
                 const logs = await res.json();
-                const logBody = document.getElementById('activityTable');
 
                 document.getElementById('stat-activity').textContent = logs.length;
+                const logBody = document.getElementById('activityTable');
+                logBody.innerHTML = logs.length ? logs.map(l => createLogRow(l)).join('') : '<tr><td colspan="4">No activity recorded yet.</td></tr>';
+            } catch (e) { console.error("Activity Load Error:", e); }
+        }
 
-                if (logs.length === 0) {
-                    logBody.innerHTML = '<tr><td colspan="4">No activity recorded yet.</td></tr>';
-                } else {
-                    logBody.innerHTML = logs.map(l => createLogRow(l)).join('');
-                }
-            } catch (e) { console.error(e); }
-
-            // Load Content (Resources & Events)
+        async function loadContent() {
             try {
-                const [resRes, resEvt] = await Promise.all([
+                const [resRes, resEvt, resSermons] = await Promise.all([
                     fetch(`${API_BASE}/api/teacher/resources`, { headers: { 'Authorization': `Bearer ${token}` } }),
-                    fetch(`${API_BASE}/api/teacher/schedule`, { headers: { 'Authorization': `Bearer ${token}` } })
+                    fetch(`${API_BASE}/api/teacher/schedule`, { headers: { 'Authorization': `Bearer ${token}` } }),
+                    fetch(`${API_BASE}/api/admin/sermons`, { headers: { 'Authorization': `Bearer ${token}` } })
                 ]);
 
                 const resources = await resRes.json();
                 const events = await resEvt.json();
+                const sermons = await resSermons.json();
 
-                // Filter Pending
-                const pendingRes = resources.filter(r => r.status === 'pending');
-                const pendingEvt = events.filter(e => e.status === 'pending');
-                const totalPendingContent = pendingRes.length + pendingEvt.length;
+                // Check pending counts for badge
+                const pRes = resources.filter(r => r.status === 'pending').length;
+                const pEvt = events.filter(e => e.status === 'pending').length;
+                const pSerm = sermons.filter(s => s.status === 'pending').length;
+                const totalPending = pRes + pEvt + pSerm;
 
-                // Update Tab Badge
-                const contentTab = document.getElementById('tab-content');
-                contentTab.innerHTML = `Pending Content ${totalPendingContent > 0 ? `<span style="background:var(--danger); color:white; padding:2px 6px; border-radius:10px; font-size:0.7em; margin-left:4px;">${totalPendingContent}</span>` : ''}`;
+                const tabLabel = `Content Manager ${totalPending > 0 ? `<span style="background:var(--danger); color:white; padding:2px 6px; border-radius:10px; font-size:0.7em; margin-left:4px;">${totalPending}</span>` : ''}`;
+                document.getElementById('tab-content').innerHTML = tabLabel;
 
-                // Render Resources
-                const resBody = document.getElementById('resourceTable');
-                if (pendingRes.length === 0) {
-                    resBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:15px; color:var(--text-muted);">No pending resources.</td></tr>';
-                } else {
-                    resBody.innerHTML = pendingRes.map(r => createResourceRow(r)).join('');
-                }
+                // Setup global data for filtering
+                window.allResources = resources;
+                window.allEvents = events;
+                window.allSermons = sermons;
 
-                // Render Events
-                const evtBody = document.getElementById('eventTable');
-                if (pendingEvt.length === 0) {
-                    evtBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:15px; color:var(--text-muted);">No pending events.</td></tr>';
-                } else {
-                    evtBody.innerHTML = pendingEvt.map(e => createEventRow(e)).join('');
-                }
-
+                renderContent(); // Initial Render
             } catch (e) { console.error("Content Load Error:", e); }
+        }
+
+        function renderContent() {
+            const filter = document.getElementById('contentFilter').value;
+
+            // Helpers
+            const filterFn = (item) => filter === 'all' ? true : item.status === filter;
+
+            // Render Resources
+            const rBody = document.getElementById('resourceTable');
+            const rFiltered = (window.allResources || []).filter(filterFn);
+            rBody.innerHTML = rFiltered.length ? rFiltered.map(r => createResourceRow(r)).join('') : '<tr><td colspan="6" style="text-align:center;">No matching resources.</td></tr>';
+
+            // Render Events
+            const eBody = document.getElementById('eventTable');
+            const eFiltered = (window.allEvents || []).filter(filterFn);
+            eBody.innerHTML = eFiltered.length ? eFiltered.map(e => createEventRow(e)).join('') : '<tr><td colspan="5" style="text-align:center;">No matching events.</td></tr>';
+
+            // Render Sermons
+            const sBody = document.getElementById('sermonTable');
+            const sFiltered = (window.allSermons || []).filter(filterFn);
+            sBody.innerHTML = sFiltered.length ? sFiltered.map(s => createSermonRow(s)).join('') : '<tr><td colspan="5" style="text-align:center;">No matching sermons.</td></tr>';
         }
 
         async function verifyUser(id) {
@@ -824,7 +859,7 @@
                     <td>${new Date(u.registerdate).toLocaleDateString()}</td>
                     <td>
                         <button class="btn-sm btn-approve" onclick="verifyUser('${u.userid}')">
-                            <i data-feather="check" style="width:14px; height:14px; vertical-align:middle;"></i> Approve
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; margin-right:4px;"><polyline points="20 6 9 17 4 12"></polyline></svg> Approve
                         </button>
                     </td>
                 </tr>
@@ -842,33 +877,63 @@
             `;
         }
 
+        function getStatusBadge(status) {
+            if (status === 'approved') return '<span class="badge badge-verified">Approved</span>';
+            if (status === 'rejected') return '<span class="badge" style="background:#fff5f5; color:#e53e3e;">Rejected</span>';
+            return '<span class="badge badge-pending">Pending</span>';
+        }
+
         function createResourceRow(r) {
-            // uploader is aliased or just included user
-            const uploaderName = r.uploader ? r.uploader.fullname : (r.uploadedBy || 'Unknown');
+            const uploadedBy = r.uploader ? r.uploader.fullname : (r.uploadedBy || 'Unknown');
             return `
                 <tr>
                     <td><strong>${r.title}</strong></td>
                     <td><span class="badge" style="background:#edf2f7; color:#4a5568;">${r.type}</span></td>
-                    <td>${uploaderName}</td>
+                    <td>${getStatusBadge(r.status)}</td>
+                    <td>${uploadedBy}</td>
                     <td>${new Date(r.createdAt).toLocaleDateString()}</td>
                     <td>
-                        <button class="btn-sm btn-approve" onclick="verifyContent('resource', '${r.resourceId}', 'approved')">Approve</button>
-                        <button class="btn-sm" style="background:#fff5f5; color:var(--danger);" onclick="verifyContent('resource', '${r.resourceId}', 'rejected')">Reject</button>
+                        <a href="${r.fileUrl}" target="_blank" class="btn-sm" style="color:var(--brand-primary); text-decoration:none; margin-right:5px;">View</a>
+                        <button class="btn-sm btn-approve" onclick="verifyContent('resource', '${r.id}', 'approved')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; margin-right:4px;"><polyline points="20 6 9 17 4 12"></polyline></svg> Approve
+                        </button>
+                        <button class="btn-sm" style="background:#fff5f5; color:var(--danger);" onclick="verifyContent('resource', '${r.id}', 'rejected')">Reject</button>
                     </td>
                 </tr>
             `;
         }
 
         function createEventRow(e) {
-            const creator = e.User ? e.User.fullname : (e.createdBy || 'Unknown'); // Depending on server reference
+            const creator = e.creator ? e.creator.fullname : (e.createdBy || 'Unknown');
             return `
                 <tr>
                     <td><strong>${e.title}</strong><br><small style="color:var(--text-muted);">${e.description || ''}</small></td>
+                    <td>${getStatusBadge(e.status)}</td>
                     <td>${new Date(e.eventDate).toLocaleString()}</td>
                     <td>${creator}</td>
                     <td>
-                        <button class="btn-sm btn-approve" onclick="verifyContent('event', '${e.eventId}', 'approved')">Approve</button>
+                        <button class="btn-sm btn-approve" onclick="verifyContent('event', '${e.eventId}', 'approved')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; margin-right:4px;"><polyline points="20 6 9 17 4 12"></polyline></svg> Approve
+                        </button>
                         <button class="btn-sm" style="background:#fff5f5; color:var(--danger);" onclick="verifyContent('event', '${e.eventId}', 'rejected')">Reject</button>
+                    </td>
+                </tr>
+            `;
+        }
+
+        function createSermonRow(s) {
+            const author = s.author ? s.author.fullname : 'Unknown Preacher';
+            return `
+                <tr>
+                    <td><strong>${s.title}</strong><br><small style="color:var(--text-muted);">Topic: ${s.topic || 'General'}</small></td>
+                    <td>${getStatusBadge(s.status)}</td>
+                    <td>${author}</td>
+                    <td>${new Date(s.entrytime).toLocaleDateString()}</td>
+                    <td>
+                        <button class="btn-sm btn-approve" onclick="verifyContent('sermon', '${s.sermonid}', 'approved')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; margin-right:4px;"><polyline points="20 6 9 17 4 12"></polyline></svg> Approve
+                        </button>
+                        <button class="btn-sm" style="background:#fff5f5; color:var(--danger);" onclick="verifyContent('sermon', '${s.sermonid}', 'rejected')">Reject</button>
                     </td>
                 </tr>
             `;
@@ -887,7 +952,7 @@
                     b.classList.add('active');
                 }
             });
-            feather.replace(); // Refresh icons if any loaded dynamically
+            // feather.replace(); // Removed to improve performance
         }
 
         window.addEventListener('load', () => {

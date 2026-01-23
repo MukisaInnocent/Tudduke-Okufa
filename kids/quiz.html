@@ -239,10 +239,13 @@
       }
     }
 
-    function loadQuestion() {
+    async function loadQuestion() {
       if (currentIndex >= quizQuestions.length) {
         questionEl.innerHTML = "🎉 Quiz Completed!";
         optionsEl.innerHTML = `<button onclick="location.reload()" style="background:var(--k-brand); color:white; border:none;">Play Again</button>`;
+
+        // Submit Result
+        await submitQuizResult(score, quizQuestions.length);
         return;
       }
 
@@ -278,6 +281,26 @@
         currentIndex++;
         loadQuestion();
       }, 1500);
+    }
+
+    async function submitQuizResult(score, total) {
+      if (!isLoggedIn()) return; // check auth-helper
+      const API_BASE = (window.location.protocol === 'file:' || window.location.port !== '3000') ? 'http://localhost:3000' : '';
+
+      try {
+        const res = await fetch(`${API_BASE}/api/kids/quiz/submit`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+          body: JSON.stringify({ score, total })
+        });
+        if (res.ok) {
+          // Maybe show notification
+          console.log("Score Saved!");
+        }
+      } catch (e) { console.error(e); }
     }
 
     // Start

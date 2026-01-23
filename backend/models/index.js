@@ -63,6 +63,7 @@ const TeacherResource = require('./TeacherResource')(sequelize, require('sequeli
 const ClassEvent = require('./ClassEvent')(sequelize, require('sequelize').DataTypes);
 
 const ResourceView = require('./ResourceView')(sequelize, require('sequelize').DataTypes);
+const QuizResult = require('./QuizResult')(sequelize, require('sequelize').DataTypes);
 
 // ASSOCIATIONS
 User.hasMany(SermonComment, { foreignKey: 'userId' });
@@ -76,6 +77,9 @@ Sermon.belongsToMany(User, { through: SermonLike, foreignKey: 'sermonId' });
 
 Sermon.hasMany(SermonLike, { foreignKey: 'sermonId' });
 SermonLike.belongsTo(Sermon, { foreignKey: 'sermonId' });
+
+User.hasMany(Sermon, { foreignKey: 'authorid' });
+Sermon.belongsTo(User, { as: 'author', foreignKey: 'authorid' });
 
 // TEACHER / CLASS ASSOCIATIONS
 User.hasMany(SabbathSchoolClass, { foreignKey: 'teacherId' });
@@ -92,10 +96,16 @@ TeacherResource.belongsTo(User, { as: 'uploader', foreignKey: 'uploadedBy' });
 // Events
 SabbathSchoolClass.hasMany(ClassEvent, { foreignKey: 'classId' });
 ClassEvent.belongsTo(SabbathSchoolClass, { foreignKey: 'classId' });
+User.hasMany(ClassEvent, { foreignKey: 'createdBy' });
+ClassEvent.belongsTo(User, { as: 'creator', foreignKey: 'createdBy' });
 
 // Resource Views
 User.hasMany(ResourceView, { foreignKey: 'userId' });
 ResourceView.belongsTo(User, { foreignKey: 'userId' });
+
+// Quiz Results
+User.hasMany(QuizResult, { foreignKey: 'kidId' });
+QuizResult.belongsTo(User, { foreignKey: 'kidId' });
 
 module.exports = {
   sequelize,
@@ -113,5 +123,6 @@ module.exports = {
   SabbathSchoolClass,
   TeacherResource,
   ClassEvent,
-  ResourceView
+  ResourceView,
+  QuizResult
 };

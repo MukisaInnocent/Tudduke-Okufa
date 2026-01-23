@@ -35,6 +35,10 @@ module.exports = (sequelize, DataTypes) => {
       entrytime: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW
+      },
+      status: {
+        type: DataTypes.STRING,
+        defaultValue: 'pending' // pending, approved, rejected
       }
     },
     {

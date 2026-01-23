@@ -347,41 +347,30 @@
 
         // LOAD SERMONS (ALL for now, or filtered if we add scope later)
         async function loadSermons() {
-            try {
-                // Fetch ALL sermons for now (public route) - ideally we'd filter by author for "My Sermons"
-                // But request was "only access what he posted" so we should ideally filter.
-                // Since GET /api/sermons is public and returns all, we will filter client side or add server filter.
-                // For MVP, filtering client side based on authorid matching userid? 
-                // Wait, GET /api/sermons returns ALL. The user object has ID?
-                // The /api/auth/login returns { userid, ... }.
+            // Fetch MY sermons only (Protected Route)
+            const res = await fetch(`${API_BASE}/api/sermons/my`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const sermons = await res.json();
+            const sermons = await res.json();
 
-                // Let's rely on server enforcement for edit/delete, but list all for visibility?
-                // User Request: "let the only access what he posted" -> implies VIEWING too?
-                // I'll fetch all and filter in UI for now as quick solution, or modify backend to filter.
-                // Let's modify backend later if needed. For now show all, but highlight OWN ones.
+            // Decode token payload to get ID if not in userStr
+            const user = JSON.parse(userStr);
+            // We don't have user.id in the localStorage object stored in login:
+            // Login returns: { success: true, token, user: { fullname: user.fullname, role: user.roles } }
+            // Use JWT decode to get ID? Or updated Login to return ID.
+            // I'll assume I can't easily get ID without decoding.
+            // Actually, I can fix the Login route to return ID.
 
-                // Actually, let's just show ALL but only enable edit/delete for OWN.
+            // FOR NOW: I will just render them. Edit/Delete will fail if not owner.
 
-                const res = await fetch(`${API_BASE}/api/sermons`);
-                const sermons = await res.json();
+            const list = document.getElementById('sermonList');
+            if (sermons.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: #888;">No sermons yet.</p>';
+                return;
+            }
 
-                // Decode token payload to get ID if not in userStr
-                const user = JSON.parse(userStr);
-                // We don't have user.id in the localStorage object stored in login:
-                // Login returns: { success: true, token, user: { fullname: user.fullname, role: user.roles } }
-                // Use JWT decode to get ID? Or updated Login to return ID.
-                // I'll assume I can't easily get ID without decoding.
-                // Actually, I can fix the Login route to return ID.
-
-                // FOR NOW: I will just render them. Edit/Delete will fail if not owner.
-
-                const list = document.getElementById('sermonList');
-                if (sermons.length === 0) {
-                    list.innerHTML = '<p style="text-align: center; color: #888;">No sermons yet.</p>';
-                    return;
-                }
-
-                list.innerHTML = sermons.map(s => `
+            list.innerHTML = sermons.map(s => `
                     <div class="sermon-item">
                         <div class="sermon-info">
                             <h4>${s.title}</h4>
@@ -394,11 +383,11 @@
                         </div>
                     </div>
                 `).join('');
-                feather.replace();
+            feather.replace();
 
-            } catch (err) {
-                console.error(err);
-            }
+        } catch (err) {
+            console.error(err);
+        }
         }
 
         // ADD / UPDATE

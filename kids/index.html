@@ -13,8 +13,147 @@
     rel="stylesheet">
 
   <link rel="stylesheet" href="style.css">
-  <style>
-    /* Page Specific Overrides if needed */
+  /* Custom Styles for Content Library */
+  .content-library-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  }
+
+  .content-library-header h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--k-text) 0%, var(--k-text-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+  }
+
+  [data-theme="dark"] .content-library-header h2 {
+  background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  }
+
+  .content-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 25px;
+  }
+
+  .content-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 20px;
+  padding: 25px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  }
+
+  [data-theme="dark"] .content-card {
+  background: rgba(30, 30, 30, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  }
+
+  .content-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.9);
+  }
+
+  [data-theme="dark"] .content-card:hover {
+  background: rgba(40, 40, 40, 0.8);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  }
+
+  .card-badge-new {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+  animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+  }
+
+  .card-icon-wrapper {
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  margin-bottom: 5px;
+  }
+
+  .card-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: var(--k-text-light);
+  font-weight: 500;
+  }
+
+  .content-card h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--k-text);
+  line-height: 1.4;
+  margin: 0;
+  flex-grow: 1;
+  }
+
+  .card-action {
+  margin-top: auto;
+  padding-top: 15px;
+  border-top: 1px solid rgba(0,0,0,0.05);
+  }
+
+  [data-theme="dark"] .card-action {
+  border-top: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .btn-view {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--k-bg);
+  color: var(--k-text);
+  font-weight: 600;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: 0.2s;
+  }
+
+  .btn-view:hover {
+  background: var(--k-brand);
+  color: white;
+  }
   </style>
 </head>
 
@@ -98,6 +237,22 @@
 
   </section>
 
+  <!-- VERIFIED CONTENT SECTION -->
+  <section class="content-library" style="padding: 0 20px 80px; max-width: 1200px; margin: 0 auto;">
+    <div class="content-library-header">
+      <h2>Latest Content</h2>
+      <!-- Optional: Filter or More button here -->
+    </div>
+
+    <div class="content-grid" id="verifiedContentBody">
+      <!-- Dynamic Content Cards -->
+      <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--k-text-light);">
+        <i data-feather="loader" style="animation: spin 2s linear infinite;"></i>
+        <p style="margin-top: 10px;">Loading wonderful content...</p>
+      </div>
+    </div>
+  </section>
+
   <!-- FOOTER -->
   <footer class="site-footer">
     <div class="footer-content">
@@ -121,9 +276,10 @@
   <script src="https://unpkg.com/feather-icons"></script>
   <script src="script.js"></script>
   <script>
-    /* Check Login State (Profile Display) - Page Specific logic if needed */
-    /* For Index, we might want to show the specific greeting 'hero-badge' */
+    /* Check Login State (Profile Display) */
     const userStr = localStorage.getItem('kidsUser');
+    const token = localStorage.getItem('kidsToken');
+
     if (userStr) {
       try {
         const user = JSON.parse(userStr);
@@ -131,6 +287,111 @@
         if (badge) badge.textContent = `Welcome, ${user.firstName}!`;
       } catch (e) { }
     }
+
+    /* FETCH VERIFIED CONTENT */
+    async function loadVerifiedContent() {
+      const grid = document.getElementById('verifiedContentBody');
+      const API_BASE = (window.location.protocol === 'file:' || window.location.port !== '3000') ? 'http://localhost:3000' : '';
+
+      try {
+        const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+
+        // Fetch Resources and Schedule (Events)
+        const [resRes, resEvt] = await Promise.all([
+          fetch(`${API_BASE}/api/kids/resources`, { headers }),
+          fetch(`${API_BASE}/api/kids/schedule`, { headers })
+        ]);
+
+        const resources = resRes.ok ? await resRes.json() : [];
+        const events = resEvt.ok ? await resEvt.json() : [];
+
+        // Normalize Data
+        const normalizedResources = resources.map(r => ({
+          type: 'Resource',
+          icon: 'file-text',
+          title: r.title,
+          date: new Date(r.createdAt),
+          link: r.fileUrl,
+          color: '#3b82f6',
+          bg: '#dbeafe'
+        }));
+
+        const normalizedEvents = events.map(e => ({
+          type: 'Event',
+          icon: 'calendar',
+          title: e.title,
+          date: new Date(e.eventDate),
+          link: '#', // Events might not have a direct link yet
+          color: '#8b5cf6',
+          bg: '#f3e8ff'
+        }));
+
+        const allContent = [...normalizedResources, ...normalizedEvents].sort((a, b) => b.date - a.date);
+
+        if (allContent.length === 0) {
+          grid.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px;">
+              <div style="background: var(--k-surface); display: inline-block; padding: 30px; border-radius: 50%; margin-bottom: 20px; box-shadow: var(--k-shadow);">
+                <i data-feather="inbox" style="width: 40px; height: 40px; color: var(--k-text-light);"></i>
+              </div>
+              <h3 style="color: var(--k-text); margin-bottom: 8px;">No Content Yet</h3>
+              <p style="color: var(--k-text-light);">Check back later for new stories and events!</p>
+            </div>
+          `;
+          feather.replace();
+          return;
+        }
+
+        // Helper to check if "New" (within last 7 days)
+        const isNew = (date) => {
+          const now = new Date();
+          const diffTime = Math.abs(now - date);
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+          return diffDays <= 7;
+        };
+
+        grid.innerHTML = allContent.map(item => `
+            <div class="content-card">
+                ${isNew(item.date) ? '<div class="card-badge-new">New</div>' : ''}
+                
+                <div class="card-icon-wrapper" style="background: ${item.bg}; color: ${item.color};">
+                    <i data-feather="${item.icon}"></i>
+                </div>
+
+                <div class="card-meta">
+                    <span style="display:flex; align-items:center; gap:4px;">
+                        <i data-feather="clock" style="width:12px; height:12px;"></i> ${item.date.toLocaleDateString()}
+                    </span>
+                    <span style="width: 4px; height: 4px; background: currentColor; border-radius: 50%; opacity: 0.5;"></span>
+                    <span>${item.type}</span>
+                </div>
+
+                <h3>${item.title}</h3>
+
+                <div class="card-action">
+                    ${item.link && item.link !== '#'
+            ? `<a href="${item.link}" target="_blank" class="btn-view">View Content <i data-feather="arrow-right" style="width:16px;"></i></a>`
+            : `<button disabled class="btn-view" style="opacity:0.6; cursor:default;">Coming Soon</button>`
+          }
+                </div>
+            </div>
+        `).join('');
+
+        feather.replace();
+
+      } catch (err) {
+        console.error(err);
+        grid.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #ef4444;">
+                <i data-feather="alert-circle" style="width: 30px; height: 30px; margin-bottom: 10px;"></i>
+                <p>Unable to load content. Please refresh or try logging in.</p>
+            </div>
+        `;
+        feather.replace();
+      }
+    }
+
+    loadVerifiedContent();
   </script>
 
 </body>

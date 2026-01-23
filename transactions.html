@@ -308,6 +308,76 @@
                 display: block;
             }
         }
+
+        /* Reuse Stats Styles */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--bg-surface);
+            padding: 24px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-light);
+            transition: 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-card h3 {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin: 0 0 8px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .stat-card .value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        /* Toolbar */
+        .toolbar {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .search-box {
+            padding: 8px 12px;
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            background: var(--bg-body);
+            color: var(--text-main);
+            font-family: inherit;
+        }
+
+        .pagination-controls {
+            padding: 20px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 15px;
+            border-top: 1px solid var(--border-light);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 
@@ -351,25 +421,77 @@
             </div>
         </header>
 
+        <!-- STATS GRID -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Transactions</h3>
+                <div class="value" id="totalDonations">0</div>
+            </div>
+            <div class="stat-card">
+                <div style="display:flex; justify-content:space-between;">
+                    <h3>Total (UGX)</h3>
+                    <i data-feather="trending-up" style="color:var(--success);"></i>
+                </div>
+                <div class="value" id="totalAmountUGX">0</div>
+            </div>
+            <div class="stat-card">
+                <div style="display:flex; justify-content:space-between;">
+                    <h3>Total (USD)</h3>
+                    <i data-feather="dollar-sign" style="color:var(--success);"></i>
+                </div>
+                <div class="value" id="totalAmountUSD">$0</div>
+            </div>
+        </div>
+
         <div class="panel">
+            <div class="toolbar">
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <label style="font-size:0.9rem; color:var(--text-muted);">Show:</label>
+                    <select id="limitFilter" onchange="filterTable()" class="search-box">
+                        <option value="15">15</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="1000" selected>All</option>
+                    </select>
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <select id="statusFilter" onchange="filterTable()" class="search-box">
+                        <option value="all" selected>All Status</option>
+                        <option value="completed">Completed</option>
+                        <option value="pending">Pending</option>
+                    </select>
+                    <input type="text" id="search" class="search-box" placeholder="Search transactions..."
+                        onkeyup="filterTable()">
+                </div>
+            </div>
             <div class="table-container">
                 <table>
                     <thead>
                         <tr>
                             <th>Date</th>
                             <th>Donor Name</th>
-                            <th>Amount (UGX)</th>
-                            <th>Phone</th>
-                            <th>Reason</th>
+                            <th>Amount</th>
+                            <th>Method</th>
                             <th>Status</th>
                         </tr>
                     </thead>
                     <tbody id="dataTable">
                         <tr>
-                            <td colspan="6" style="text-align:center;">Loading...</td>
+                            <td colspan="5" style="text-align:center;">Loading...</td>
                         </tr>
                     </tbody>
                 </table>
+            </div>
+
+            <!-- PAGINATION -->
+            <div class="pagination-controls">
+                <span id="pageInfo" style="color: var(--text-muted); font-size: 0.9rem;">Page 1 of 1</span>
+                <div style="display: flex; gap: 10px;">
+                    <button id="prevBtn" onclick="changePage(-1)" disabled
+                        style="padding: 8px 16px; background: var(--bg-surface); border: 1px solid var(--border-light); color: var(--text-main); border-radius: 6px; cursor: pointer;">Previous</button>
+                    <button id="nextBtn" onclick="changePage(1)" disabled
+                        style="padding: 8px 16px; background: var(--bg-surface); border: 1px solid var(--border-light); color: var(--text-main); border-radius: 6px; cursor: pointer;">Next</button>
+                </div>
             </div>
         </div>
 
@@ -397,34 +519,90 @@
             }
         }
 
-        async function loadData() {
+        async function loadData(page = 1) {
+            const tbody = document.getElementById('dataTable');
+            const search = document.getElementById("search").value;
+            const status = document.getElementById("statusFilter").value;
+            const limit = document.getElementById("limitFilter").value;
+
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px;">Loading transactions...</td></tr>';
+
             try {
-                const res = await fetch(`${API_BASE}/api/donations`, {
+                const params = new URLSearchParams({
+                    page: page,
+                    limit: limit,
+                    search: search,
+                    status: status
+                });
+
+                const res = await fetch(`${API_BASE}/api/donations?${params}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
-                if (!res.ok) throw new Error('Failed');
 
-                const data = await res.json();
-                const tbody = document.getElementById('dataTable');
+                if (!res.ok) throw new Error(`API Error: ${res.status}`);
+                const response = await res.json();
+
+                // Handle Response
+                let data = [];
+                if (Array.isArray(response)) {
+                    data = response;
+                    currentPage = 1;
+                    totalPages = 1;
+                } else {
+                    data = response.data;
+                    currentPage = response.page;
+                    totalPages = response.totalPages;
+                }
+
+                // Update Stats
+                if (response.stats) {
+                    document.getElementById('totalDonations').innerText = response.total || 0;
+                    document.getElementById('totalAmountUGX').innerText = parseFloat(response.stats.totalUGX || 0).toLocaleString();
+                    document.getElementById('totalAmountUSD').innerText = '$' + parseFloat(response.stats.totalUSD || 0).toLocaleString();
+                }
 
                 if (data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No donations recorded yet.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px;">No transactions found.</td></tr>';
                 } else {
-                    tbody.innerHTML = data.map(d => `
+                    tbody.innerHTML = data.map(d => {
+                        const statusClass = (d.status === 'completed') ? 'background:#c6f6d5; color:#22543d;' : 'background:#feebc8; color:#744210;';
+                        return `
                         <tr>
                             <td>${new Date(d.createdAt).toLocaleDateString()}</td>
-                            <td><span style="font-weight:600">${d.donorName || 'Anonymous'}</span></td>
-                            <td>${parseInt(d.amount).toLocaleString()}</td>
-                            <td>${d.phoneNumber || '-'}</td>
-                            <td>${d.reason || 'General'}</td>
-                            <td><span class="badge-status">Received</span></td>
+                            <td>
+                                <span style="font-weight:600">${d.name || 'Anonymous'}</span><br>
+                                <small style="color:var(--text-muted);">${d.email || d.phone || ''}</small>
+                            </td>
+                            <td style="font-weight:600;">${d.currency || 'UGX'} ${parseFloat(d.amount).toLocaleString()}</td>
+                            <td>${d.paymentMethod || 'Web'}</td>
+                            <td><span class="badge-status" style="${statusClass}">${(d.status || 'pending').toUpperCase()}</span></td>
                         </tr>
-                    `).join('');
+                    `}).join('');
                 }
+
+                updatePaginationControls();
+
             } catch (e) {
                 console.error(e);
-                document.getElementById('dataTable').innerHTML = '<tr><td colspan="6" style="text-align:center; color:red;">Error loading data.</td></tr>';
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--danger); padding:20px;">Error loading data: ${e.message}</td></tr>`;
             }
+        }
+
+        function filterTable() {
+            loadData(1);
+        }
+
+        function changePage(delta) {
+            const newPage = currentPage + delta;
+            if (newPage > 0 && newPage <= totalPages) {
+                loadData(newPage);
+            }
+        }
+
+        function updatePaginationControls() {
+            document.getElementById('pageInfo').innerText = `Page ${currentPage} of ${totalPages || 1}`;
+            document.getElementById('prevBtn').disabled = currentPage <= 1;
+            document.getElementById('nextBtn').disabled = currentPage >= totalPages;
         }
 
         // --- THEME & UI LOGIC ---
@@ -453,8 +631,13 @@
         const savedTheme = localStorage.getItem('adminTheme') || 'light';
         document.documentElement.setAttribute('data-theme', savedTheme);
 
+        // Data Store
+        let currentPage = 1;
+        let totalPages = 1;
+
         window.addEventListener('DOMContentLoaded', () => {
             updateThemeIcon(savedTheme);
+            feather.replace();
             loadData();
         });
     </script>

@@ -27,7 +27,8 @@ const {
   SabbathSchoolClass,
   TeacherResource,
   ClassEvent,
-  ResourceView
+  ResourceView,
+  QuizResult
 } = require('./models');
 
 /*********************************
@@ -53,8 +54,18 @@ app.use((req, res, next) => {
 /*********************************
  * MIDDLEWARE (ORDER MATTERS)
  *********************************/
-app.use(cors());
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
+
+// Serve Static Files (Images / Videos)
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
+// Serve Frontend (HTML/CSS/JS)
+app.use(express.static(path.join(__dirname, '../')));
 
 /*********************************
  * DATABASE INIT
@@ -145,32 +156,9 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
-// Multer Setup
+// Multer Setup (Memory Storage for DB)
 const multer = require('multer');
-const fs = require('fs');
-
-// Ensure uploads dir exists
-// Ensure uploads dirs exist
-const uploadDirProfiles = path.join(__dirname, '../uploads/profiles');
-const uploadDirResources = path.join(__dirname, '../uploads/resources');
-
-if (!fs.existsSync(uploadDirProfiles)) fs.mkdirSync(uploadDirProfiles, { recursive: true });
-if (!fs.existsSync(uploadDirResources)) fs.mkdirSync(uploadDirResources, { recursive: true });
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    if (file.fieldname === 'resourceFile') {
-      cb(null, uploadDirResources);
-    } else {
-      cb(null, uploadDirProfiles);
-    }
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
-  }
-});
-
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 /* ===== AUTH ROUTES ===== */
@@ -193,9 +181,19 @@ app.post('/api/auth/register', upload.single('profileImage'), async (req, res) =
     // Verification Logic: Teachers and Preachers default to false
     const isVerified = !['teacher', 'preacher'].includes(userRole);
 
-    let profileImagePath = null;
+    // FILE HANDLING (Profile Image)
+    let profileImageUrl = null;
+    let profileData = null;
+    let profileMimeType = null;
+
     if (req.file) {
-      profileImagePath = '/uploads/profiles/' + req.file.filename;
+      profileData = req.file.buffer;
+      profileMimeType = req.file.mimetype;
+      // Preliminary URL - User ID not known yet, will update after create or just assume endpoint structure
+      // Actually simpler: Create user first without image, then update? Or insert all at once.
+      // We'll set the URL pattern: /api/public/users/:id/profile-image
+      // But we need the ID. Let's rely on the client knowing this or returning it.
+      // For now, let's just save the data.
     }
 
     const user = await User.create({
@@ -209,10 +207,17 @@ app.post('/api/auth/register', upload.single('profileImage'), async (req, res) =
       dateOfBirth,
       sex,
       address,
-      profileImage: profileImagePath,
       isSubscribed: isSubscribed === 'true' || isSubscribed === true,
-      isVerified: isVerified
+      isVerified: isVerified,
+      profileData: profileData,
+      profileMimeType: profileMimeType
     });
+
+    // Update URL now that we have ID
+    if (profileData) {
+      user.profileImage = `/api/public/users/${user.userid}/profile-image`;
+      await user.save();
+    }
 
     await ActivityLog.create({
       userId: user.userid,
@@ -409,6 +414,7 @@ app.delete('/api/kids/sermons/:id', authenticateToken, async (req, res) => {
 app.get('/api/sermons', async (req, res) => {
   try {
     const sermons = await Sermon.findAll({
+      where: { status: 'approved' },
       order: [['entrytime', 'DESC']],
       limit: 100
     });
@@ -520,6 +526,20 @@ app.post('/api/sermons/:id/comments', authenticateToken, async (req, res) => {
   }
 });
 
+// Get My Sermons (Preacher Dashboard)
+app.get('/api/sermons/my', authenticateToken, async (req, res) => {
+  try {
+    const sermons = await Sermon.findAll({
+      where: { authorid: req.user.userid },
+      order: [['entrytime', 'DESC']]
+    });
+    res.json(sermons);
+  } catch (err) {
+    console.error('Fetch My Sermons Error:', err);
+    res.status(500).json({ error: 'Failed to fetch sermons' });
+  }
+});
+
 // Create Main Sermon (Protected)
 app.post('/api/sermons', authenticateToken, async (req, res) => {
   // Ideally check if user is admin/preacher/teacher
@@ -531,7 +551,8 @@ app.post('/api/sermons', authenticateToken, async (req, res) => {
       scripture,
       explanation,
       examples,
-      authorid: req.user.userid
+      authorid: req.user.userid,
+      status: 'pending'
     });
     req.io.emit('sermon_update', { action: 'create', sermon });
     res.status(201).json({ success: true, data: sermon });
@@ -735,13 +756,56 @@ app.post('/api/donations', async (req, res) => {
   }
 });
 
+// Get Donations (Paginated & Filtered)
 app.get('/api/donations', async (req, res) => {
   try {
-    const donations = await Donation.findAll({
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const offset = (page - 1) * limit;
+
+    const search = req.query.search || '';
+    const status = req.query.status || 'all';
+
+    const { Op } = require('sequelize');
+    const whereClause = {};
+
+    // 1. Status Filter
+    if (status !== 'all') {
+      whereClause.status = status;
+    }
+
+    // 2. Search Filter (Name or Email or PaymentMethod)
+    if (search) {
+      whereClause[Op.or] = [
+        { name: { [Op.iLike]: `%${search}%` } },
+        { email: { [Op.iLike]: `%${search}%` } },
+        { paymentMethod: { [Op.iLike]: `%${search}%` } }
+      ];
+    }
+
+    // 4. Calculate Stats (Filtered)
+    const totalUGX = await Donation.sum('amount', { where: { ...whereClause, currency: 'UGX' } }) || 0;
+    const totalUSD = await Donation.sum('amount', { where: { ...whereClause, currency: 'USD' } }) || 0;
+
+    const { count, rows } = await Donation.findAndCountAll({
+      where: whereClause,
       order: [['createdAt', 'DESC']],
-      limit: 100
+      limit: limit,
+      offset: offset
     });
-    res.json(donations);
+
+    res.json({
+      success: true,
+      data: rows,
+      total: count,
+      stats: {
+        totalUGX,
+        totalUSD
+      },
+      page: page,
+      totalPages: Math.ceil(count / limit)
+    });
+
   } catch (err) {
     console.error('❌ Donations fetch error:', err);
     res.status(500).json({ error: 'Failed to fetch donations' });
@@ -991,16 +1055,63 @@ app.get('/api/kids/resources', authenticateToken, async (req, res) => {
   }
 });
 
+// SUBMIT QUIZ RESULT
+app.post('/api/kids/quiz/submit', authenticateToken, async (req, res) => {
+  try {
+    const { score, total } = req.body;
+    const result = await QuizResult.create({
+      kidId: req.user.userid,
+      score,
+      total
+    });
+
+    // Log activity
+    await ActivityLog.create({
+      userId: req.user.userid,
+      action: 'QUIZ_TAKEN',
+      details: `Scored ${score}/${total}`,
+      ipAddress: req.ip
+    });
+
+    res.status(201).json(result);
+  } catch (err) {
+    console.error('Submit Quiz Error:', err);
+    res.status(500).json({ error: 'Failed to submit quiz result' });
+  }
+});
+
+// GET QUIZ HISTORY (My Results)
+app.get('/api/kids/quiz/history', authenticateToken, async (req, res) => {
+  try {
+    const results = await QuizResult.findAll({
+      where: { kidId: req.user.userid },
+      order: [['takenAt', 'DESC']]
+    });
+    res.json(results);
+  } catch (err) {
+    console.error('Fetch Quiz History Error:', err);
+    res.status(500).json({ error: 'Failed to fetch history' });
+  }
+});
+
 // UPLOAD RESOURCE
 app.post('/api/teacher/resources', authenticateToken, upload.single('resourceFile'), async (req, res) => {
-  if (req.user.role !== 'teacher') return res.sendStatus(403);
+  if (req.user.role !== 'teacher' && req.user.role !== 'admin') return res.sendStatus(403);
 
   try {
     const { title, type, description } = req.body;
+    console.log('[DEBUG] Upload Request:', { title, type, user: req.user.userid });
+    if (req.file) console.log('[DEBUG] File received:', req.file.filename);
+    else console.log('[DEBUG] No file received');
+
+    // File Handling (Database)
     let fileUrl = '';
+    let fileData = null;
+    let mimeType = null;
 
     if (req.file) {
-      fileUrl = '/uploads/resources/' + req.file.filename;
+      fileData = req.file.buffer;
+      mimeType = req.file.mimetype;
     } else {
       return res.status(400).json({ error: 'No file uploaded' });
     }
@@ -1008,12 +1119,23 @@ app.post('/api/teacher/resources', authenticateToken, upload.single('resourceFil
     const resource = await TeacherResource.create({
       title,
       type: type || 'other',
-      fileUrl,
+      fileUrl: 'temp', // Will update after ID creation
       description,
       uploadedBy: req.user.userid,
-      status: 'pending' // Enforce pending
+      status: 'pending',
+      fileData: fileData,
+      mimeType: mimeType
     });
-    res.status(201).json(resource);
+
+    // Update URL logic
+    resource.fileUrl = `/api/public/resources/${resource.id}/file`;
+    await resource.save();
+
+    // Don't send huge buffer back in JSON
+    const resourcePlain = resource.toJSON();
+    delete resourcePlain.fileData;
+
+    res.status(201).json(resourcePlain);
   } catch (err) {
     console.error('Upload Resource Error:', err);
     res.status(500).json({ error: 'Failed to upload resource' });
@@ -1028,7 +1150,7 @@ app.get('/api/teacher/schedule', authenticateToken, async (req, res) => {
       const whereClause = req.user.role === 'admin' ? {} : { createdBy: req.user.userid };
       const events = await ClassEvent.findAll({
         where: whereClause,
-        include: [{ model: User, attributes: ['fullname', 'email'] }], // Assuming relation exists
+        include: [{ model: User, as: 'creator', attributes: ['fullname', 'email'] }], // Assuming relation exists
         order: [['eventDate', 'ASC']]
       });
       res.json(events);
@@ -1110,6 +1232,21 @@ app.post('/api/teacher/notify-parents', authenticateToken, async (req, res) => {
   }
 });
 
+// ADMIN: GET ALL SERMONS (Verified & Unverified)
+app.get('/api/admin/sermons', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'admin') return res.sendStatus(403);
+  try {
+    const sermons = await Sermon.findAll({
+      include: [{ model: User, as: 'author', attributes: ['fullname', 'email'] }],
+      order: [['entrytime', 'DESC']]
+    });
+    res.json(sermons);
+  } catch (err) {
+    console.error('Admin Sermon Fetch Error:', err);
+    res.status(500).json({ error: 'Failed to fetch sermons' });
+  }
+});
+
 // VERIFY CONTENT (ADMIN)
 app.put('/api/admin/verify-content/:type/:id', authenticateToken, async (req, res) => {
   if (req.user.role !== 'admin') return res.sendStatus(403);
@@ -1127,6 +1264,8 @@ app.put('/api/admin/verify-content/:type/:id', authenticateToken, async (req, re
       item = await TeacherResource.findByPk(id);
     } else if (type === 'event') {
       item = await ClassEvent.findByPk(id);
+    } else if (type === 'sermon') {
+      item = await Sermon.findByPk(id);
     } else {
       return res.status(400).json({ error: 'Invalid content type' });
     }
@@ -1158,6 +1297,34 @@ app.use(express.static(path.join(__dirname, '../')));
 /*********************************
  * START SERVER
  *********************************/
+
+// SERVE FILES FROM DB (Publicly Accessible if they have the link, or add auth if strict)
+app.get('/api/public/resources/:id/file', async (req, res) => {
+  try {
+    const resource = await TeacherResource.findByPk(req.params.id);
+    if (!resource || !resource.fileData) return res.status(404).send('File not found');
+
+    res.setHeader('Content-Type', resource.mimeType || 'application/octet-stream');
+    res.send(resource.fileData);
+  } catch (e) {
+    console.error(e);
+    res.status(500).send('Error serving file');
+  }
+});
+
+app.get('/api/public/users/:id/profile-image', async (req, res) => {
+  try {
+    const user = await User.findByPk(req.params.id);
+    if (!user || !user.profileData) return res.status(404).send('Image not found');
+
+    res.setHeader('Content-Type', user.profileMimeType || 'image/jpeg');
+    res.send(user.profileData);
+  } catch (e) {
+    console.error(e);
+    res.status(500).send('Error serving image');
+  }
+});
+
 server.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
 });

@@ -23,6 +23,14 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.STRING(500),
                 allowNull: true
             },
+            fileData: {
+                type: DataTypes.BLOB('long'),
+                allowNull: true
+            },
+            mimeType: {
+                type: DataTypes.STRING(50),
+                allowNull: true
+            },
             uploadedBy: {
                 type: DataTypes.INTEGER,
                 allowNull: false,

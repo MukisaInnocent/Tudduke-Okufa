@@ -58,6 +58,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(255),
         allowNull: true
       },
+      profileData: {
+        type: DataTypes.BLOB('long'),
+        allowNull: true
+      },
+      profileMimeType: {
+        type: DataTypes.STRING(50),
+        allowNull: true
+      },
 
       isSubscribed: {
         type: DataTypes.BOOLEAN,
