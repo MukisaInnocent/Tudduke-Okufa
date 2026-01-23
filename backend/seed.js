@@ -1,27 +1,60 @@
 require('dotenv').config();
-const { sequelize, Sermon, WeeklyLesson, MemoryVerse, ChildrenSermon, QuizQuestion } = require('./models');
+const { sequelize, Sermon, WeeklyLesson, MemoryVerse, ChildrenSermon, QuizQuestion, User, TeacherResource, ClassEvent, SabbathSchoolClass } = require('./models');
+const bcrypt = require('bcryptjs');
 
 async function seed() {
   try {
     console.log('🌱 Starting database seeding...');
-    
+
     // Sync database
     await sequelize.sync({ alter: true });
     console.log('✅ Database synced');
-    
+
     // Check if data already exists
     const sermonCount = await Sermon.count();
     const lessonCount = await WeeklyLesson.count();
     const verseCount = await MemoryVerse.count();
     const childrenSermonCount = await ChildrenSermon.count();
     const quizCount = await QuizQuestion.count();
-    
-    if (sermonCount > 0 || lessonCount > 0 || verseCount > 0 || childrenSermonCount > 0 || quizCount > 0) {
+
+    const userCount = await User.count();
+
+    if (userCount > 0 || sermonCount > 0 || lessonCount > 0 || verseCount > 0 || childrenSermonCount > 0 || quizCount > 0) {
       console.log('⚠️  Data already exists. Skipping seed.');
-      console.log(`   Sermons: ${sermonCount}, Lessons: ${lessonCount}, Verses: ${verseCount}, Children Sermons: ${childrenSermonCount}, Quiz Questions: ${quizCount}`);
+      // console.log ...
       process.exit(0);
     }
-    
+
+    // Seed Users (Admin/Teacher)
+    console.log('👤 Seeding users...');
+    const hashedPassword = await bcrypt.hash('password123', 10);
+
+    const adminUser = await User.create({
+      fullname: 'Admin User',
+      email: 'admin@tudduke.com',
+      password: hashedPassword,
+      roles: 'admin',
+      isVerified: true,
+      phoneNumber: '1234567890'
+    });
+
+    const teacherUser = await User.create({
+      fullname: 'Teacher Sarah',
+      email: 'teacher@tudduke.com',
+      password: hashedPassword,
+      roles: 'teacher',
+      isVerified: true,
+      phoneNumber: '0987654321'
+    });
+
+    // Create a Class for the teacher
+    const defaultClass = await SabbathSchoolClass.create({
+      name: 'Primary Class',
+      ageGroup: '6-9',
+      teacherId: teacherUser.userid
+    });
+    console.log('✅ Users & Classes seeded');
+
     // Seed Sermons
     console.log('📖 Seeding sermons...');
     await Sermon.bulkCreate([
@@ -31,7 +64,7 @@ async function seed() {
         scripture: 'Hebrews 11:1',
         explanation: 'Faith is the assurance of things hoped for, the conviction of things not seen. We must trust in God even when we cannot see the outcome.',
         examples: 'Abraham trusted God when called to leave his homeland. Noah built the ark before seeing rain. We too must trust God\'s promises.',
-        authorid: 1,
+        authorid: adminUser.userid,
         entrytime: new Date()
       },
       {
@@ -40,7 +73,7 @@ async function seed() {
         scripture: 'John 3:16',
         explanation: 'For God so loved the world that He gave His only begotten Son, that whoever believes in Him should not perish but have everlasting life.',
         examples: 'God\'s love is not based on our performance. He loves us despite our sins. We should love others as God loves us.',
-        authorid: 1,
+        authorid: adminUser.userid,
         entrytime: new Date()
       },
       {
@@ -49,12 +82,12 @@ async function seed() {
         scripture: 'Romans 15:13',
         explanation: 'May the God of hope fill you with all joy and peace in believing, so that by the power of the Holy Spirit you may abound in hope.',
         examples: 'Even in difficult times, we have hope because Christ has overcome the world. Our hope is not in circumstances but in God.',
-        authorid: 1,
+        authorid: adminUser.userid,
         entrytime: new Date()
       }
     ]);
     console.log('✅ Sermons seeded');
-    
+
     // Seed Weekly Lessons
     console.log('📚 Seeding weekly lessons...');
     await WeeklyLesson.bulkCreate([
@@ -78,7 +111,7 @@ async function seed() {
       }
     ]);
     console.log('✅ Weekly lessons seeded');
-    
+
     // Seed Memory Verses
     console.log('💭 Seeding memory verses...');
     await MemoryVerse.bulkCreate([
@@ -133,7 +166,7 @@ async function seed() {
       }
     ]);
     console.log('✅ Memory verses seeded');
-    
+
     // Seed Children Sermons
     console.log('👶 Seeding children sermons...');
     await ChildrenSermon.bulkCreate([
@@ -167,7 +200,7 @@ async function seed() {
       }
     ]);
     console.log('✅ Children sermons seeded');
-    
+
     // Seed Quiz Questions
     console.log('❓ Seeding quiz questions...');
     await QuizQuestion.bulkCreate([
@@ -227,7 +260,59 @@ async function seed() {
       }
     ]);
     console.log('✅ Quiz questions seeded');
-    
+
+    // Seed Teacher Resources
+    console.log('📂 Seeding teacher resources...');
+    await TeacherResource.bulkCreate([
+      {
+        title: 'Creation Coloring Page',
+        type: 'pdf',
+        description: 'A fun coloring page for the story of creation.',
+        fileUrl: '', // In a real app, this would be a URL
+        uploadedBy: teacherUser.userid,
+        status: 'approved',
+        createdAt: new Date()
+      },
+      {
+        title: 'Bible Heroes Lesson Plan',
+        type: 'doc',
+        description: 'Lesson plan for teaching about David and Goliath.',
+        fileUrl: '',
+        uploadedBy: teacherUser.userid,
+        status: 'approved',
+        createdAt: new Date()
+      }
+    ]);
+    console.log('✅ Teacher resources seeded');
+
+    // Seed Class Events (Schedule)
+    console.log('📅 Seeding class events...');
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const nextWeek = new Date();
+    nextWeek.setDate(nextWeek.getDate() + 7);
+
+    await ClassEvent.bulkCreate([
+      {
+        title: 'Sabbath School Picnic',
+        description: 'Join us for fun and games at the park!',
+        eventDate: tomorrow,
+        createdBy: teacherUser.userid,
+        status: 'approved',
+        classId: defaultClass.id
+      },
+      {
+        title: 'Bible Trivia Night',
+        description: 'Test your knowledge and win prizes.',
+        eventDate: nextWeek,
+        createdBy: teacherUser.userid,
+        status: 'approved',
+        classId: defaultClass.id
+      }
+    ]);
+    console.log('✅ Class events seeded');
+
     console.log('🎉 Seeding completed successfully!');
     process.exit(0);
   } catch (error) {
