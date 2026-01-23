@@ -23,7 +23,11 @@ const {
   User,
   ActivityLog,
   SermonComment,
-  SermonLike
+  SermonLike,
+  SabbathSchoolClass,
+  TeacherResource,
+  ClassEvent,
+  ResourceView
 } = require('./models');
 
 /*********************************
@@ -71,6 +75,8 @@ app.use(express.json());
 /*********************************
  * API ROUTES
  *********************************/
+
+
 
 // Contact Messages
 app.post('/api/contact', async (req, res) => {
@@ -144,14 +150,20 @@ const multer = require('multer');
 const fs = require('fs');
 
 // Ensure uploads dir exists
-const uploadDir = path.join(__dirname, '../uploads/profiles');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
+// Ensure uploads dirs exist
+const uploadDirProfiles = path.join(__dirname, '../uploads/profiles');
+const uploadDirResources = path.join(__dirname, '../uploads/resources');
+
+if (!fs.existsSync(uploadDirProfiles)) fs.mkdirSync(uploadDirProfiles, { recursive: true });
+if (!fs.existsSync(uploadDirResources)) fs.mkdirSync(uploadDirResources, { recursive: true });
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, uploadDir);
+    if (file.fieldname === 'resourceFile') {
+      cb(null, uploadDirResources);
+    } else {
+      cb(null, uploadDirProfiles);
+    }
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
@@ -166,23 +178,21 @@ const upload = multer({ storage: storage });
 // Register
 app.post('/api/auth/register', upload.single('profileImage'), async (req, res) => {
   try {
-    // req.body contains text fields, req.file contains file
-    const { fullname, email, password, role, phoneNumber, guardianName, guardianPhone, isSubscribed } = req.body;
+    const { fullname, email, password, role, phoneNumber, guardianName, guardianPhone, isSubscribed, dateOfBirth, sex, address } = req.body;
 
-    // Check if user exists
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) return res.status(400).json({ error: 'Email already exists' });
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Determine Role
     let userRole = 'kid';
     if (role === 'teacher') userRole = 'teacher';
     if (role === 'preacher') userRole = 'preacher';
     if (role === 'admin') userRole = 'admin';
 
-    // Image Path (relative to root)
+    // Verification Logic: Teachers and Preachers default to false
+    const isVerified = !['teacher', 'preacher'].includes(userRole);
+
     let profileImagePath = null;
     if (req.file) {
       profileImagePath = '/uploads/profiles/' + req.file.filename;
@@ -196,24 +206,28 @@ app.post('/api/auth/register', upload.single('profileImage'), async (req, res) =
       phoneNumber,
       guardianName,
       guardianPhone,
+      dateOfBirth,
+      sex,
+      address,
       profileImage: profileImagePath,
-      isSubscribed: isSubscribed === 'true' || isSubscribed === true // Handle potential string from FormData
+      isSubscribed: isSubscribed === 'true' || isSubscribed === true,
+      isVerified: isVerified
     });
 
     await ActivityLog.create({
       userId: user.userid,
       action: 'REGISTER',
-      details: `New user: ${user.fullname} (${userRole})`,
+      details: `New user: ${user.fullname} (${userRole}) - Verified: ${isVerified}`,
       ipAddress: req.ip
     });
 
-    // Real-time events
     req.io.emit('user_registered', {
       userid: user.userid,
       fullname: user.fullname,
       email: user.email,
       roles: user.roles,
-      registerdate: user.createdAt
+      registerdate: user.createdAt,
+      isVerified
     });
 
     req.io.emit('activity_log', {
@@ -222,6 +236,15 @@ app.post('/api/auth/register', upload.single('profileImage'), async (req, res) =
       userId: user.userid,
       details: `New user: ${user.fullname} (${userRole})`
     });
+
+    // Special message for unverified teachers
+    if (!isVerified) {
+      return res.status(201).json({
+        success: true,
+        message: 'Account created! Please wait for admin verification.',
+        pendingVerification: true
+      });
+    }
 
     res.status(201).json({ success: true, message: 'User registered successfully' });
   } catch (err) {
@@ -241,15 +264,17 @@ app.post('/api/auth/login', async (req, res) => {
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) return res.status(400).json({ error: 'Invalid email or password' });
 
-    // Generate Token
+    // Check Verification
+    if (user.isVerified === false) {
+      return res.status(403).json({ error: 'Account pending admin verification.' });
+    }
+
     const token = jwt.sign(
       { userid: user.userid, fullname: user.fullname, role: user.roles },
       JWT_SECRET,
       { expiresIn: '24h' }
     );
 
-    // Async Log
-    // Async Log
     ActivityLog.create({
       userId: user.userid,
       action: 'LOGIN',
@@ -751,7 +776,7 @@ app.get('/api/admin/users', authenticateToken, async (req, res) => {
   try {
     const users = await User.findAll({
       attributes: { exclude: ['password'] },
-      order: [['createdAt', 'DESC']]
+      order: [['registerdate', 'DESC']]
     });
     res.json(users);
   } catch (err) {
@@ -772,6 +797,349 @@ app.get('/api/admin/activity', authenticateToken, async (req, res) => {
   } catch (err) {
     console.error('Fetch Activity Error:', err);
     res.status(500).json({ error: 'Failed to fetch activity' });
+  }
+});
+
+// Verify User (Admin)
+app.put('/api/admin/users/:id/verify', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'admin') return res.sendStatus(403);
+
+  try {
+    const user = await User.findByPk(req.params.id);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    user.isVerified = true;
+    await user.save();
+
+    req.io.emit('user_verified', { userid: user.userid, isVerified: true });
+
+    res.json({ success: true, message: 'User verified successfully' });
+  } catch (err) {
+    console.error('Verify User Error:', err);
+    res.status(500).json({ error: 'Failed to verify user' });
+  }
+});
+
+/* ===== TEACHER PORTAL ROUTES ===== */
+
+
+
+// GET MY CLASSES (For a teacher) with Engagement Data
+app.get('/api/teacher/classes', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'teacher' && req.user.role !== 'admin') return res.sendStatus(403);
+
+  try {
+    // 1. Find the class(es) this teacher owns
+    const classes = await SabbathSchoolClass.findAll({
+      where: { teacherId: req.user.userid },
+      include: [
+        {
+          model: User,
+          as: 'students',
+          attributes: ['userid', 'fullname', 'dateOfBirth', 'guardianName', 'guardianPhone', 'sex'],
+          include: [
+            {
+              model: ResourceView,
+              attributes: ['resourceType', 'viewedAt'],
+              limit: 5, // Show last 5 interactions
+              order: [['viewedAt', 'DESC']]
+            }
+          ]
+        }
+      ]
+    });
+
+    res.json(classes);
+  } catch (err) {
+    console.error('Fetch Classes Error:', err);
+    res.status(500).json({ error: 'Failed to fetch classes' });
+  }
+});
+
+// CREATE CLASS (Teacher/Admin)
+app.post('/api/teacher/classes', authenticateToken, async (req, res) => {
+  // ... same as before
+  if (req.user.role !== 'teacher' && req.user.role !== 'admin') return res.sendStatus(403);
+
+  try {
+    const { name, ageGroup } = req.body;
+    const newClass = await SabbathSchoolClass.create({
+      name,
+      ageGroup,
+      teacherId: req.user.userid
+    });
+    res.status(201).json(newClass);
+  } catch (err) {
+    console.error('Create Class Error:', err);
+    res.status(500).json({ error: 'Failed to create class' });
+  }
+});
+
+// TRACK RESOURCE VIEW
+app.post('/api/resources/view', authenticateToken, async (req, res) => {
+  try {
+    const { resourceId, resourceType } = req.body;
+    await ResourceView.create({
+      userId: req.user.userid,
+      resourceId: resourceId || null,
+      resourceType: resourceType || 'unknown'
+    });
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Track View Error:', err);
+    res.status(500).json({ error: 'Failed to track view' });
+  }
+});
+
+// GET DASHBOARD STATS (TEACHER)
+app.get('/api/teacher/dashboard/stats', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'teacher' && req.user.role !== 'admin') return res.sendStatus(403);
+
+  try {
+    const { Op } = require('sequelize');
+    const today = new Date();
+
+    // 1. Students Accessing Content (Distinct students who viewed resources)
+    const activeStudentsCount = await ResourceView.count({
+      distinct: true,
+      col: 'userId'
+    });
+
+    // 2. Upcoming Classes / Events
+    const upcomingEventsCount = await ClassEvent.count({
+      where: {
+        createdBy: req.user.userid,
+        eventDate: { [Op.gte]: today }
+      }
+    });
+
+    // 3. Resources Shared by Me
+    const resourcesSharedCount = await TeacherResource.count({
+      where: { uploadedBy: req.user.userid }
+    });
+
+    // 4. Graph Data: Views per day (Last 7 days)
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    // Note: SQLite/Postgres specific date truncation might vary. 
+    // For universal compatibility in this simplified environment, we fetch recent views and group in JS.
+    const recentViews = await ResourceView.findAll({
+      where: {
+        viewedAt: { [Op.gte]: sevenDaysAgo }
+      },
+      attributes: ['viewedAt']
+    });
+
+    // Process for Graph
+    const viewsByDate = {};
+    recentViews.forEach(v => {
+      const dateStr = new Date(v.viewedAt).toLocaleDateString('en-US'); // e.g. 1/23/2025
+      viewsByDate[dateStr] = (viewsByDate[dateStr] || 0) + 1;
+    });
+
+    res.json({
+      activeStudents: activeStudentsCount,
+      upcomingClasses: upcomingEventsCount,
+      resourcesShared: resourcesSharedCount,
+      graphData: viewsByDate
+    });
+
+  } catch (err) {
+    console.error('Dashboard Stats Error:', err);
+    res.status(500).json({ error: 'Failed to fetch stats' });
+  }
+});
+
+// GET TEACHER RESOURCES (Updated for Verification)
+app.get('/api/teacher/resources', authenticateToken, async (req, res) => {
+  // Teachers/Admins see all for management
+  if (req.user.role === 'teacher' || req.user.role === 'admin') {
+    try {
+      const whereClause = req.user.role === 'admin' ? {} : { uploadedBy: req.user.userid };
+      const resources = await TeacherResource.findAll({
+        where: whereClause,
+        include: [{ model: User, attributes: ['fullname', 'email'] }],
+        order: [['createdAt', 'DESC']]
+      });
+      res.json(resources);
+    } catch (err) {
+      console.error('Fetch Resources Error:', err);
+      res.status(500).json({ error: 'Failed to fetch resources' });
+    }
+    return;
+  }
+
+  // Kids/Others see ONLY APPROVED
+  // Note: Kids might hit a different endpoint or reuse this if accessible
+  // Assuming kids might reuse this route or a similar one. 
+  // If this route is protected by `authenticateToken`, kids can access it if their token works.
+  // But strict role check was above. Let's make it more flexible:
+});
+
+// GET PUBLIC/KIDS RESOURCES (Approved Only)
+app.get('/api/kids/resources', authenticateToken, async (req, res) => {
+  try {
+    const resources = await TeacherResource.findAll({
+      where: { status: 'approved' },
+      order: [['createdAt', 'DESC']]
+    });
+    res.json(resources);
+  } catch (err) {
+    console.error('Fetch Kids Resources Error:', err);
+    res.status(500).json({ error: 'Failed to fetch resources' });
+  }
+});
+
+// UPLOAD RESOURCE
+app.post('/api/teacher/resources', authenticateToken, upload.single('resourceFile'), async (req, res) => {
+  if (req.user.role !== 'teacher') return res.sendStatus(403);
+
+  try {
+    const { title, type, description } = req.body;
+    let fileUrl = '';
+
+    if (req.file) {
+      fileUrl = '/uploads/resources/' + req.file.filename;
+    } else {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+
+    const resource = await TeacherResource.create({
+      title,
+      type: type || 'other',
+      fileUrl,
+      description,
+      uploadedBy: req.user.userid,
+      status: 'pending' // Enforce pending
+    });
+    res.status(201).json(resource);
+  } catch (err) {
+    console.error('Upload Resource Error:', err);
+    res.status(500).json({ error: 'Failed to upload resource' });
+  }
+});
+
+// GET SCHEDULE (Updated for Verification)
+app.get('/api/teacher/schedule', authenticateToken, async (req, res) => {
+  // Return all for Creator (Teacher) or Admin
+  if (req.user.role === 'teacher' || req.user.role === 'admin') {
+    try {
+      const whereClause = req.user.role === 'admin' ? {} : { createdBy: req.user.userid };
+      const events = await ClassEvent.findAll({
+        where: whereClause,
+        include: [{ model: User, attributes: ['fullname', 'email'] }], // Assuming relation exists
+        order: [['eventDate', 'ASC']]
+      });
+      res.json(events);
+    } catch (err) {
+      console.error('Fetch Schedule Error:', err);
+      res.status(500).json({ error: 'Failed to fetch schedule' });
+    }
+    return;
+  }
+});
+
+// GET PUBLIC/KIDS SCHEDULE (Approved Only)
+app.get('/api/kids/schedule', authenticateToken, async (req, res) => {
+  try {
+    const { Op } = require('sequelize');
+    const events = await ClassEvent.findAll({
+      where: {
+        status: 'approved',
+        eventDate: { [Op.gte]: new Date() }
+      },
+      order: [['eventDate', 'ASC']]
+    });
+    res.json(events);
+  } catch (err) {
+    console.error('Fetch Kids Schedule Error:', err);
+    res.status(500).json({ error: 'Failed to fetch schedule' });
+  }
+});
+
+// ADD EVENT
+app.post('/api/teacher/schedule', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'teacher') return res.sendStatus(403);
+
+  try {
+    const { title, description, eventDate, classId } = req.body;
+    const event = await ClassEvent.create({
+      title,
+      description,
+      eventDate,
+      classId: classId || null,
+      createdBy: req.user.userid
+    });
+    res.status(201).json(event);
+  } catch (err) {
+    console.error('Create Event Error:', err);
+    res.status(500).json({ error: 'Failed to create event' });
+  }
+});
+
+// SEND NOTIFICATION TO PARENTS
+app.post('/api/teacher/notify-parents', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'teacher' && req.user.role !== 'admin') return res.sendStatus(403);
+
+  try {
+    const { subject, message } = req.body;
+
+    // 1. Get all students linked to this teacher
+    const classes = await SabbathSchoolClass.findAll({
+      where: { teacherId: req.user.userid },
+      include: [{ model: User, as: 'students' }]
+    });
+
+    let guardians = new Set();
+    classes.forEach(cls => {
+      if (cls.students) {
+        cls.students.forEach(s => {
+          if (s.guardianPhone) guardians.add(s.guardianPhone);
+        });
+      }
+    });
+
+    const parentCount = guardians.size;
+    console.log(`[NOTIFICATION] Sending to ${parentCount} parents: "${subject}" - ${message}`);
+
+    res.json({ success: true, count: parentCount });
+  } catch (err) {
+    console.error('Notify Parents Error:', err);
+    res.status(500).json({ error: 'Failed to send notifications' });
+  }
+});
+
+// VERIFY CONTENT (ADMIN)
+app.put('/api/admin/verify-content/:type/:id', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'admin') return res.sendStatus(403);
+
+  try {
+    const { type, id } = req.params; // type: 'resource' or 'event'
+    const { status } = req.body; // 'approved' or 'rejected'
+
+    if (!['approved', 'rejected'].includes(status)) {
+      return res.status(400).json({ error: 'Invalid status' });
+    }
+
+    let item;
+    if (type === 'resource') {
+      item = await TeacherResource.findByPk(id);
+    } else if (type === 'event') {
+      item = await ClassEvent.findByPk(id);
+    } else {
+      return res.status(400).json({ error: 'Invalid content type' });
+    }
+
+    if (!item) return res.status(404).json({ error: 'Item not found' });
+
+    item.status = status;
+    await item.save();
+
+    res.json({ success: true, item });
+  } catch (err) {
+    console.error('Verify Content Error:', err);
+    res.status(500).json({ error: 'Failed to verify content' });
   }
 });
 

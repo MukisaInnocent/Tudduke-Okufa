@@ -575,11 +575,16 @@
         /* ===== DATA ===== */
         let allDonations = [];
 
+        // API Base Logic
+        const API_BASE = (window.location.protocol === 'file:' || window.location.port !== '3000')
+            ? 'http://localhost:3000'
+            : '';
+
         async function loadData() {
             try {
                 // Fetch with auth header if we add protection later for GET, 
                 // currently GET /api/donations is public but usually admin reads all fields
-                const res = await fetch('/api/donations');
+                const res = await fetch(`${API_BASE}/api/donations`);
                 const data = await res.json();
                 allDonations = data;
                 renderData(data);
@@ -589,62 +594,13 @@
             }
         }
 
-        function renderData(data) {
-            const tbody = document.querySelector("#donationsTable tbody");
-            tbody.innerHTML = "";
-
-            if (data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 40px; color: #666;">No donations found.</td></tr>`;
-                return;
-            }
-
-            data.forEach(d => {
-                const date = new Date(d.createdAt).toLocaleDateString();
-                const amount = `${d.currency} ${parseFloat(d.amount).toLocaleString()}`;
-
-                // Status Badge Logic
-                let statusBadge = '';
-                if (d.status === 'completed') {
-                    statusBadge = `<span class="badge badge-success">Completed</span>`;
-                } else if (d.status === 'pending') {
-                    statusBadge = `<span class="badge badge-pending">Pending</span>`;
-                } else {
-                    statusBadge = `<span class="badge" style="background:rgba(255,255,255,0.1)">${d.status || 'unknown'}</span>`;
-                }
-
-                // Action Buttons
-                let actions = '';
-                if (d.status !== 'completed') {
-                    actions = `<button onclick="markCompleted(${d.donationid})" style="background:none; border:1px solid var(--success); color:var(--success); border-radius:4px; padding:4px 8px; cursor:pointer;" title="Confirm Payment"><i data-feather="check" style="width:14px; height:14px;"></i> Verify</button>`;
-                } else {
-                    actions = `<span style="color:var(--text-muted); font-size:0.8rem;"><i data-feather="check-circle" style="width:14px; height:14px;"></i> Verified</span>`;
-                }
-
-                const tr = document.createElement("tr");
-                tr.innerHTML = `
-                  <td style="color: var(--text-muted);">${date}</td>
-                  <td style="font-weight: bold;">
-                    ${d.name}
-                    <div style="font-size:0.75rem; color:var(--text-muted); font-weight:normal;">${d.email || ''}</div>
-                  </td>
-                  <td style="color: var(--success); font-weight: bold;">${amount}</td>
-                  <td>
-                    ${d.paymentMethod}
-                    <div style="font-size:0.75rem; color:var(--text-muted); max-width:150px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${d.paymentDetails}">${d.paymentDetails || ''}</div>
-                  </td>
-                  <td>${statusBadge}</td>
-                  <td>${actions}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-            feather.replace();
-        }
+        // ... existing renderData ...
 
         async function markCompleted(id) {
             if (!confirm('Are you sure you want to mark this donation as verified/completed?')) return;
 
             try {
-                const res = await fetch(`/api/donations/${id}/status`, {
+                const res = await fetch(`${API_BASE}/api/donations/${id}/status`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',

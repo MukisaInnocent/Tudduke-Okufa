@@ -1,0 +1,79 @@
+[
+  {
+    "id": 1,
+    "name": "Mukisa Innocent",
+    "role": "kid",
+    "isVerified": true,
+    "typeOfVerified": "boolean"
+  },
+  {
+    "id": 2,
+    "name": "Mukisa Innocent",
+    "role": "teacher",
+    "isVerified": true,
+    "typeOfVerified": "boolean"
+  },
+  {
+    "id": 3,
+    "name": "Micheal Choi",
+    "role": "teacher",
+    "isVerified": true,
+    "typeOfVerified": "boolean"
+  },
+  {
+    "id": 4,
+    "name": "John Mark",
+    "role": "kid",
+    "isVerified": true,
+    "typeOfVerified": "boolean"
+  },
+  {
+    "id": 5,
+    "name": "John Mark",
+    "role": "kid",
+    "isVerified": true,
+    "typeOfVerified": "boolean"
+  },
+  {
+    "id": 6,
+    "name": "Test Preacher",
+    "role": "kid",
+    "isVerified": true,
+    "typeOfVerified": "boolean"
+  },
+  {
+    "id": 7,
+    "name": "mich1",
+    "role": "preacher",
+    "isVerified": true,
+    "typeOfVerified": "boolean"
+  },
+  {
+    "id": 8,
+    "name": "mich1",
+    "role": "admin",
+    "isVerified": true,
+    "typeOfVerified": "boolean"
+  },
+  {
+    "id": 9,
+    "name": "Innocent",
+    "role": "admin",
+    "isVerified": true,
+    "typeOfVerified": "boolean"
+  },
+  {
+    "id": 10,
+    "name": "Markline",
+    "role": "kid",
+    "isVerified": true,
+    "typeOfVerified": "boolean"
+  },
+  {
+    "id": 11,
+    "name": "jude",
+    "role": "preacher",
+    "isVerified": true,
+    "typeOfVerified": "boolean"
+  }
+]

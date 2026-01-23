@@ -57,6 +57,13 @@ const ActivityLog = require('./ActivityLog')(sequelize, require('sequelize').Dat
 const SermonComment = require('./SermonComment')(sequelize);
 const SermonLike = require('./SermonLike')(sequelize);
 
+// NEW MODELS
+const SabbathSchoolClass = require('./SabbathSchoolClass')(sequelize, require('sequelize').DataTypes);
+const TeacherResource = require('./TeacherResource')(sequelize, require('sequelize').DataTypes);
+const ClassEvent = require('./ClassEvent')(sequelize, require('sequelize').DataTypes);
+
+const ResourceView = require('./ResourceView')(sequelize, require('sequelize').DataTypes);
+
 // ASSOCIATIONS
 User.hasMany(SermonComment, { foreignKey: 'userId' });
 SermonComment.belongsTo(User, { foreignKey: 'userId' });
@@ -70,6 +77,26 @@ Sermon.belongsToMany(User, { through: SermonLike, foreignKey: 'sermonId' });
 Sermon.hasMany(SermonLike, { foreignKey: 'sermonId' });
 SermonLike.belongsTo(Sermon, { foreignKey: 'sermonId' });
 
+// TEACHER / CLASS ASSOCIATIONS
+User.hasMany(SabbathSchoolClass, { foreignKey: 'teacherId' });
+SabbathSchoolClass.belongsTo(User, { as: 'teacher', foreignKey: 'teacherId' });
+
+// Students in Class
+// SabbathSchoolClass.hasMany(User, { as: 'students', foreignKey: 'classId' });
+// User.belongsTo(SabbathSchoolClass, { as: 'class', foreignKey: 'classId' });
+
+// Resources
+User.hasMany(TeacherResource, { foreignKey: 'uploadedBy' });
+TeacherResource.belongsTo(User, { as: 'uploader', foreignKey: 'uploadedBy' });
+
+// Events
+SabbathSchoolClass.hasMany(ClassEvent, { foreignKey: 'classId' });
+ClassEvent.belongsTo(SabbathSchoolClass, { foreignKey: 'classId' });
+
+// Resource Views
+User.hasMany(ResourceView, { foreignKey: 'userId' });
+ResourceView.belongsTo(User, { foreignKey: 'userId' });
+
 module.exports = {
   sequelize,
   ContactMessage,
@@ -82,5 +109,9 @@ module.exports = {
   User,
   ActivityLog,
   SermonComment,
-  SermonLike
+  SermonLike,
+  SabbathSchoolClass,
+  TeacherResource,
+  ClassEvent,
+  ResourceView
 };

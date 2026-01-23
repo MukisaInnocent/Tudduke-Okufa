@@ -171,54 +171,221 @@
             <p id="errorMsg" class="error-msg"></p>
 
             <!-- FORM -->
+            <!-- WIZARD STYLES -->
+            <style>
+                .wizard-step {
+                    display: none;
+                    animation: fadeIn 0.4s ease;
+                }
+
+                .wizard-step.active {
+                    display: block;
+                }
+
+                @keyframes fadeIn {
+                    from {
+                        opacity: 0;
+                        transform: translateY(10px);
+                    }
+
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+
+                .role-cards {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 15px;
+                    margin-bottom: 20px;
+                }
+
+                .role-card {
+                    background: var(--k-bg);
+                    border: 2px solid rgba(0, 0, 0, 0.05);
+                    border-radius: 16px;
+                    padding: 20px;
+                    text-align: center;
+                    cursor: pointer;
+                    transition: 0.3s;
+                }
+
+                .role-card:hover {
+                    border-color: var(--k-brand);
+                    background: rgba(198, 0, 0, 0.02);
+                    transform: translateY(-3px);
+                }
+
+                .role-card.selected {
+                    border-color: var(--k-brand);
+                    background: rgba(198, 0, 0, 0.05);
+                    box-shadow: 0 4px 12px rgba(198, 0, 0, 0.15);
+                }
+
+                .role-card i {
+                    margin-bottom: 10px;
+                    color: var(--k-text-light);
+                }
+
+                .role-card.selected i {
+                    color: var(--k-brand);
+                }
+
+                .role-card h4 {
+                    font-size: 1.1rem;
+                    color: var(--k-text);
+                    margin: 0;
+                }
+
+                .progress-bar {
+                    display: flex;
+                    gap: 5px;
+                    margin-bottom: 25px;
+                }
+
+                .progress-step {
+                    flex: 1;
+                    height: 4px;
+                    background: rgba(0, 0, 0, 0.1);
+                    border-radius: 2px;
+                    transition: 0.3s;
+                }
+
+                .progress-step.active {
+                    background: var(--k-brand);
+                }
+
+                .wizard-nav {
+                    display: flex;
+                    gap: 10px;
+                    margin-top: 20px;
+                }
+            </style>
+
             <form id="authForm">
-                <div class="form-group hidden" id="registerFields">
-                    <label>Full Name</label>
-                    <input type="text" id="fullname" placeholder="Enter your full name">
-
-                    <label style="margin-top: 15px;">Phone Number</label>
-                    <input type="tel" id="phoneNumber" placeholder="+256...">
-
-                    <label style="margin-top: 15px;">Guardian/Parent Name</label>
-                    <input type="text" id="guardianName" placeholder="Parent's Name">
-
-                    <label style="margin-top: 15px;">Guardian Phone Number</label>
-                    <input type="tel" id="guardianPhone" placeholder="+256...">
+                <!-- PROGRESS BAR (Only visible in Register mode) -->
+                <div id="progressBar" class="progress-bar hidden">
+                    <div class="progress-step active" id="pStep1"></div>
+                    <div class="progress-step" id="pStep2"></div>
+                    <div class="progress-step" id="pStep3"></div>
                 </div>
 
-                <div class="form-group">
-                    <label>Email Address</label>
-                    <input type="email" id="email" required placeholder="hello@example.com">
+                <!-- LOGIN VIEW (Default) -->
+                <div id="loginView">
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="loginEmail" placeholder="hello@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="loginPassword" placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="btn-primary" id="loginBtn">Login</button>
                 </div>
 
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="password" required placeholder="••••••••">
+                <!-- REGISTER WIZARD (Hidden by default) -->
+                <div id="registerWizard" class="hidden">
+
+                    <!-- STEP 1: ROLE -->
+                    <div class="wizard-step active" id="step1">
+                        <h3 style="text-align:center; color:var(--k-brand); margin-bottom:20px;">Who are you?</h3>
+                        <div class="role-cards">
+                            <div class="role-card" onclick="selectRole('kid')" id="card-kid">
+                                <i data-feather="smile" style="width: 40px; height: 40px;"></i>
+                                <h4>I'm a Kid</h4>
+                            </div>
+                            <div class="role-card" onclick="selectRole('teacher')" id="card-teacher">
+                                <i data-feather="briefcase" style="width: 40px; height: 40px;"></i>
+                                <h4>I'm a Teacher</h4>
+                            </div>
+                        </div>
+                        <input type="hidden" id="role" value="">
+                        <div class="wizard-nav">
+                            <button type="button" class="btn-primary" onclick="nextStep(2)">Next: Details</button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 2: DETAILS -->
+                    <div class="wizard-step" id="step2">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="fullname" placeholder="Enter your full name">
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                            <div>
+                                <label>Date of Birth</label>
+                                <input type="date" id="dateOfBirth">
+                            </div>
+                            <div>
+                                <label>Sex</label>
+                                <select id="sex">
+                                    <option value="">Select...</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" id="phoneNumber" placeholder="+256...">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Address</label>
+                            <input type="text" id="address" placeholder="e.g. Kampala">
+                        </div>
+
+                        <!-- Guardian Info (Dynamic) -->
+                        <div id="guardianFields">
+                            <div class="form-group">
+                                <label>Guardian Name</label>
+                                <input type="text" id="guardianName" placeholder="Parent's Name">
+                            </div>
+                            <div class="form-group">
+                                <label>Guardian Phone</label>
+                                <input type="tel" id="guardianPhone" placeholder="+256...">
+                            </div>
+                        </div>
+
+                        <div class="wizard-nav">
+                            <button type="button" class="btn-secondary" onclick="nextStep(1)">Back</button>
+                            <button type="button" class="btn-primary" onclick="nextStep(3)">Next: Security</button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 3: SECURITY -->
+                    <div class="wizard-step" id="step3">
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" id="email" placeholder="hello@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" id="password" placeholder="Min 6 chars">
+                        </div>
+
+                        <div id="termsGroup" style="margin-top:20px;">
+                            <label style="display: flex; gap: 10px; cursor: pointer; font-size: 0.9rem;">
+                                <input type="checkbox" id="terms" style="margin-top: 4px;">
+                                <span>I agree to the <a href="#">Terms & Conditions</a></span>
+                            </label>
+                            <label
+                                style="display: flex; gap: 10px; cursor: pointer; margin-top: 10px; font-size: 0.9rem;">
+                                <input type="checkbox" id="regSubscribe" checked>
+                                <span>Subscribe to Updates</span>
+                            </label>
+                        </div>
+
+                        <div class="wizard-nav">
+                            <button type="button" class="btn-secondary" onclick="nextStep(2)">Back</button>
+                            <button type="button" class="btn-primary" id="finalSubmitBtn"
+                                onclick="submitRegister()">Create Account</button>
+                        </div>
+                    </div>
                 </div>
-
-                <div class="form-group hidden" id="roleGroup">
-                    <label>I am a...</label>
-                    <select id="role">
-                        <option value="kid">Kid</option>
-                        <option value="teacher">Teacher</option>
-                    </select>
-                </div>
-
-                <div class="form-group hidden" id="termsGroup">
-                    <label
-                        style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer; font-size: 0.9rem; font-weight: 400;">
-                        <input type="checkbox" id="terms" style="width: auto; margin-top: 4px;">
-                        <span>I agree to the <a href="#">Terms & Conditions</a> of Tudduke Okufa Ministry.</span>
-                    </label>
-
-                    <label
-                        style="display: flex; align-items: center; gap: 10px; cursor: pointer; margin-top: 10px; font-size: 0.9rem; font-weight: 400;">
-                        <input type="checkbox" id="regSubscribe" checked style="width: auto;">
-                        <span>Subscribe to Ministry Updates</span>
-                    </label>
-                </div>
-
-                <button type="submit" class="btn-primary" id="submitBtn">Login</button>
             </form>
 
             <p class="toggle-text">
@@ -254,122 +421,120 @@
     <script>
         /* AUTH LOGIC */
         let isRegister = false;
+        let pStep = 1;
+
+        // Determine API BASE for local file access vs server access
+        const API_BASE = (window.location.protocol === 'file:' || window.location.port !== '3000')
+            ? 'http://localhost:3000'
+            : '';
+
         const form = document.getElementById('authForm');
-        const submitBtn = document.getElementById('submitBtn');
-        const pageTitle = document.getElementById('pageTitle');
-        const toggleText = document.getElementById('toggleText');
-        const toggleLink = document.getElementById('toggleLink');
-        const errorMsg = document.getElementById('errorMsg');
+        // ... (existing code)
 
-        const registerFields = document.getElementById('registerFields');
-        const roleGroup = document.getElementById('roleGroup');
-        const termsGroup = document.getElementById('termsGroup');
-        const tabLogin = document.getElementById('tabLogin');
-        const tabRegister = document.getElementById('tabRegister');
-
-        function switchTab(mode) {
-            if (mode === 'register') {
-                isRegister = true;
-                pageTitle.textContent = "Join the Fun!";
-                submitBtn.textContent = "Create Account";
-                toggleText.textContent = "Already have an account?";
-                toggleLink.textContent = "Login here";
-
-                registerFields.style.display = 'block';
-                roleGroup.style.display = 'block';
-                termsGroup.style.display = 'block';
-
-                tabLogin.classList.remove('active');
-                tabRegister.classList.add('active');
-            } else {
-                isRegister = false;
-                pageTitle.textContent = "Welcome Back!";
-                submitBtn.textContent = "Login";
-                toggleText.textContent = "Don't have an account?";
-                toggleLink.textContent = "Register here";
-
-                registerFields.style.display = 'none';
-                roleGroup.style.display = 'none';
-                termsGroup.style.display = 'none';
-
-                tabRegister.classList.remove('active');
-                tabLogin.classList.add('active');
-            }
-            errorMsg.style.display = 'none';
-        }
-
-        function toggleAuthMode() {
-            switchTab(isRegister ? 'login' : 'register');
-        }
-
+        // LOGIN SUBMIT
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             errorMsg.style.display = 'none';
-            submitBtn.disabled = true;
-            submitBtn.textContent = "Processing...";
 
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+            if (isRegister) {
+                return;
+            }
+
+            const btn = document.getElementById('loginBtn');
+            btn.disabled = true;
+            btn.textContent = "Verifying...";
+
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
 
             try {
-                let endpoint = isRegister ? '/api/kids/register' : '/api/kids/login';
-                let body = { email, password };
+                const res = await fetch(`${API_BASE}/api/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
 
-                if (isRegister) {
-                    const fullname = document.getElementById('fullname').value;
-                    const role = document.getElementById('role').value;
-                    const terms = document.getElementById('terms').checked;
-                    const phoneNumber = document.getElementById('phoneNumber').value;
-                    const guardianName = document.getElementById('guardianName').value;
-                    const guardianPhone = document.getElementById('guardianPhone').value;
-                    const isSubscribed = document.getElementById('regSubscribe').checked;
-
-                    if (!terms) {
-                        throw new Error("Please agree to the Terms & Conditions");
-                    }
-
-                    body = {
-                        ...body,
-                        fullname,
-                        role,
-                        phoneNumber,
-                        guardianName,
-                        guardianPhone,
-                        isSubscribed
-                    };
-
-                    // Note: Profile image upload would need FormData, skipping for simplicity unless requested
+                if (res.ok) {
+                    localStorage.setItem('kidsToken', data.token);
+                    localStorage.setItem('kidsUser', JSON.stringify(data.user));
+                    window.location.href = data.user.role === 'teacher' ? '../teacher-dashboard.html' : 'index.html';
+                } else {
+                    throw new Error(data.error);
                 }
+            } catch (err) {
+                showError(err.message);
+                btn.disabled = false;
+                btn.textContent = "Login";
+            }
+        });
 
-                const res = await fetch(endpoint, {
+        // REGISTER SUBMIT
+        async function submitRegister() {
+            const btn = document.getElementById('finalSubmitBtn');
+            btn.disabled = true;
+            btn.textContent = "Creating Account...";
+            errorMsg.style.display = 'none';
+
+            try {
+                // Collect Data
+                const role = roleInput.value;
+                const terms = document.getElementById('terms').checked;
+                if (!terms) throw new Error("Please agree to the Terms & Conditions");
+
+                const body = {
+                    email: document.getElementById('email').value,
+                    password: document.getElementById('password').value,
+                    fullname: document.getElementById('fullname').value,
+                    role: role,
+                    phoneNumber: document.getElementById('phoneNumber').value,
+                    dateOfBirth: document.getElementById('dateOfBirth').value,
+                    sex: document.getElementById('sex').value,
+                    address: document.getElementById('address').value,
+                    guardianName: role === 'kid' ? document.getElementById('guardianName').value : null,
+                    guardianPhone: role === 'kid' ? document.getElementById('guardianPhone').value : null,
+                    isSubscribed: document.getElementById('regSubscribe').checked
+                };
+
+                if (!body.email || !body.password) throw new Error("Email and Password are required");
+
+                const res = await fetch(`${API_BASE}/api/auth/register`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(body)
                 });
 
+
                 const data = await res.json();
 
                 if (res.ok) {
-                    // Success
-                    localStorage.setItem('kidsToken', data.token);
-                    localStorage.setItem('kidsUser', JSON.stringify(data.user));
+                    if (data.pendingVerification) {
+                        showError(data.message);
+                        errorMsg.style.background = '#e8f5e9';
+                        errorMsg.style.color = '#2e7d32';
+                        btn.textContent = "Done";
+                        btn.disabled = true;
 
-                    if (data.user.role === 'teacher') {
-                        window.location.href = 'teacher-dashboard.html';
-                    } else {
-                        window.location.href = 'index.html';
+                        // Wait a bit then switch to login
+                        setTimeout(() => {
+                            alert(data.message);
+                            switchTab('login');
+                        }, 2000);
+                        return;
                     }
-                } else {
-                    throw new Error(data.error || 'Authentication failed');
-                }
 
+                    // Success
+                    alert("Account Created! You can now login.");
+                    switchTab('login');
+                } else {
+                    throw new Error(data.error || "Registration failed");
+                }
             } catch (err) {
-                errorMsg.textContent = err.message;
-                errorMsg.style.display = 'block';
-                submitBtn.disabled = false;
-                submitBtn.textContent = isRegister ? "Create Account" : "Login";
+                showError(err.message);
+                btn.disabled = false;
+                btn.textContent = "Create Account";
             }
-        });
+        }
     </script>
 
 </body>

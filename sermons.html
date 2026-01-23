@@ -536,10 +536,15 @@
     const userStr = localStorage.getItem('ministryUser');
     const user = userStr ? JSON.parse(userStr) : null;
 
+    // API Base Logic
+    const API_BASE = (window.location.protocol === 'file:' || window.location.port !== '3000')
+      ? 'http://localhost:3000'
+      : '';
+
     /* FETCH SERMONS */
     async function loadSermons() {
       try {
-        const res = await fetch("/api/sermons");
+        const res = await fetch(`${API_BASE}/api/sermons`);
         if (!res.ok) throw new Error('Failed to fetch sermons');
         const data = await res.json();
         sermonsContainer.innerHTML = "";

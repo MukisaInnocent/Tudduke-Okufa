@@ -286,6 +286,7 @@
                     <label>Role</label>
                     <select id="role">
                         <option value="preacher">Preacher</option>
+                        <option value="teacher">Teacher</option>
                         <option value="admin">Admin</option>
                     </select>
                 </div>
@@ -341,6 +342,11 @@
             document.getElementById('errorMsg').style.display = 'none';
         }
 
+        // Determine API BASE for local file access vs server access
+        const API_BASE = (window.location.protocol === 'file:' || window.location.port !== '3000')
+            ? 'http://localhost:3000'
+            : '';
+
         document.getElementById('authForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('email').value;
@@ -359,7 +365,7 @@
             }
 
             try {
-                const res = await fetch(endpoint, {
+                const res = await fetch(`${API_BASE}${endpoint}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(body)
@@ -373,8 +379,8 @@
 
                 if (isLogin) {
                     // Check if role is allowed
-                    if (data.user.role !== 'preacher' && data.user.role !== 'admin') {
-                        throw new Error('Access Denied. This portal is for Preachers and Admins only.');
+                    if (data.user.role !== 'preacher' && data.user.role !== 'admin' && data.user.role !== 'teacher') {
+                        throw new Error('Access Denied. This portal is for Staff Only (Preachers, Teachers, Admins).');
                     }
 
                     // Save token specific to Ministry Portal
@@ -386,6 +392,8 @@
                         window.location.href = 'preacher-dashboard.html';
                     } else if (data.user.role === 'admin') {
                         window.location.href = 'admin.html';
+                    } else if (data.user.role === 'teacher') {
+                        window.location.href = 'teacher-dashboard.html';
                     }
                 } else {
                     alert('Account created! Please login.');

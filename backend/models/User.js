@@ -42,13 +42,30 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(20),
         allowNull: true
       },
+      dateOfBirth: {
+        type: DataTypes.DATEONLY,
+        allowNull: true
+      },
+      sex: {
+        type: DataTypes.STRING(10), // Male, Female, Other
+        allowNull: true
+      },
+      address: {
+        type: DataTypes.STRING(255),
+        allowNull: true
+      },
       profileImage: {
         type: DataTypes.STRING(255),
         allowNull: true
       },
+
       isSubscribed: {
         type: DataTypes.BOOLEAN,
         defaultValue: false
+      },
+      isVerified: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true
       },
       registerdate: {
         type: DataTypes.DATE,

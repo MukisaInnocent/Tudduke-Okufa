@@ -203,8 +203,13 @@
 
     /* LOAD QUIZ QUESTIONS FROM BACKEND */
     async function loadQuizQuestions() {
+      // API Base Logic
+      const API_BASE = (window.location.protocol === 'file:' || window.location.port !== '3000')
+        ? 'http://localhost:3000'
+        : '';
+
       try {
-        const res = await fetch('/api/kids/quiz');
+        const res = await fetch(`${API_BASE}/api/kids/quiz`);
         if (!res.ok) throw new Error('Failed to fetch quiz questions');
 
         const data = await res.json();

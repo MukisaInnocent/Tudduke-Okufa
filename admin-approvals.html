@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Approvals | Admin</title>
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- ICONS -->
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <style>
+        :root {
+            --brand: #c60000;
+            --bg: #0a0a0a;
+            --surface: #141414;
+            --text: #ffffff;
+            --text-muted: #a0a0a0;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        [data-theme="light"] {
+            --bg: #f4f4f4;
+            --surface: #ffffff;
+            --text: #1a1a1a;
+            --text-muted: #666666;
+            --border: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            outline: none;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 20px;
+            position: fixed;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+        }
+
+        .sidebar-brand {
+            color: var(--brand);
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            transition: 0.2s;
+            font-weight: 500;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(198, 0, 0, 0.1);
+            color: var(--brand);
+        }
+
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 40px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card h2 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .item-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .approval-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        .approval-info h4 {
+            margin: 0 0 5px 0;
+            font-size: 1rem;
+        }
+
+        .approval-info p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-approve {
+            background: rgba(46, 125, 50, 0.2);
+            color: #4caf50;
+            border: 1px solid #4caf50;
+        }
+
+        .btn-approve:hover {
+            background: #4caf50;
+            color: white;
+        }
+
+        .btn-reject {
+            background: rgba(229, 62, 62, 0.2);
+            color: #e53e3e;
+            border: 1px solid #e53e3e;
+        }
+
+        .btn-reject:hover {
+            background: #e53e3e;
+            color: white;
+        }
+
+        .btn-view {
+            background: var(--surface);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-view:hover {
+            border-color: var(--text);
+        }
+
+        .badge-pending {
+            background: #fffaf0;
+            color: #d69e2e;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            border: 1px solid #fbd38d;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: 0.3s;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">Admin Portal</div>
+        <nav>
+            <a href="admin.html" class="nav-link"><i data-feather="home"></i> Dashboard</a>
+            <a href="activity-dashboard.html" class="nav-link"><i data-feather="users"></i> Users</a>
+            <a href="admin-approvals.html" class="nav-link active"><i data-feather="check-circle"></i> Approvals</a>
+            <a href="index.html" class="nav-link"><i data-feather="external-link"></i> Main Site</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="header">
+            <h1>Content Approvals</h1>
+            <button onclick="logout()"
+                style="background:var(--brand); border:none; color:white; padding: 8px 16px; border-radius: 6px; cursor:pointer;">Logout</button>
+        </header>
+
+        <div class="card">
+            <h2>Pending Resources <span class="badge-pending" id="resCount">0</span></h2>
+            <div class="item-list" id="resourceList">
+                <p style="color:var(--text-muted); text-align:center;">Loading...</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Pending Events <span class="badge-pending" id="evtCount">0</span></h2>
+            <div class="item-list" id="eventList">
+                <p style="color:var(--text-muted); text-align:center;">Loading...</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        feather.replace();
+        const token = localStorage.getItem('ministryToken');
+        const userStr = localStorage.getItem('ministryUser');
+
+        if (!token || !userStr || JSON.parse(userStr).role !== 'admin') {
+            window.location.href = 'login.html';
+        }
+
+        async function loadData() {
+            try {
+                // Load Resources
+                const resRes = await fetch('/api/teacher/resources', { headers: { 'Authorization': `Bearer ${token}` } });
+                const resources = await resRes.json();
+
+                // Load Events
+                const resEvt = await fetch('/api/teacher/schedule', { headers: { 'Authorization': `Bearer ${token}` } });
+                const events = await resEvt.json();
+
+                renderResources(resources.filter(r => r.status === 'pending'));
+                renderEvents(events.filter(e => e.status === 'pending'));
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function renderResources(items) {
+            document.getElementById('resCount').textContent = items.length;
+            const container = document.getElementById('resourceList');
+            if (items.length === 0) {
+                container.innerHTML = '<p style="color:var(--text-muted); padding:10px;">No pending resources.</p>';
+                return;
+            }
+            container.innerHTML = items.map(item => `
+                <div class="approval-item">
+                    <div class="approval-info">
+                        <h4>${item.title}</h4>
+                        <p>${item.type.toUpperCase()} • Uploaded by User #${item.uploadedBy}</p>
+                        <a href="${item.fileUrl}" target="_blank" style="font-size:0.8rem; color:var(--brand);">View File</a>
+                    </div>
+                    <div class="actions">
+                        <button class="btn btn-approve" onclick="verifyCtx('resource', ${item.id}, 'approved')"><i data-feather="check"></i> Approve</button>
+                        <button class="btn btn-reject" onclick="verifyCtx('resource', ${item.id}, 'rejected')"><i data-feather="x"></i> Reject</button>
+                    </div>
+                </div>
+            `).join('');
+            feather.replace();
+        }
+
+        function renderEvents(items) {
+            document.getElementById('evtCount').textContent = items.length;
+            const container = document.getElementById('eventList');
+            if (items.length === 0) {
+                container.innerHTML = '<p style="color:var(--text-muted); padding:10px;">No pending events.</p>';
+                return;
+            }
+            container.innerHTML = items.map(item => `
+                <div class="approval-item">
+                    <div class="approval-info">
+                        <h4>${item.title}</h4>
+                        <p>Date: ${new Date(item.eventDate).toLocaleDateString()} • By User #${item.createdBy}</p>
+                        <p>${item.description || ''}</p>
+                    </div>
+                    <div class="actions">
+                        <button class="btn btn-approve" onclick="verifyCtx('event', ${item.id}, 'approved')"><i data-feather="check"></i> Approve</button>
+                        <button class="btn btn-reject" onclick="verifyCtx('event', ${item.id}, 'rejected')"><i data-feather="x"></i> Reject</button>
+                    </div>
+                </div>
+            `).join('');
+            feather.replace();
+        }
+
+        async function verifyCtx(type, id, status) {
+            if (!confirm(`Mark this ${type} as ${status}?`)) return;
+            try {
+                const res = await fetch(`/api/admin/verify-content/${type}/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ status })
+                });
+                if (res.ok) loadData();
+                else alert('Failed to update status');
+            } catch (e) {
+                console.error(e);
+                alert('Error');
+            }
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        }
+
+        loadData();
+    </script>
+</body>
+
+</html>

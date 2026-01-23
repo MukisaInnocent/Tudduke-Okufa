@@ -999,6 +999,11 @@
         feather.replace();
       }
 
+      // API Base Logic
+      const API_BASE = (window.location.protocol === 'file:' || window.location.port !== '3000')
+        ? 'http://localhost:3000'
+        : '';
+
       // --- API CALL ---
       try {
         const currency = document.getElementById('currency').value;
@@ -1006,7 +1011,7 @@
         const email = document.getElementById('donorEmail').value;
         const phone = document.getElementById('donorPhone') ? document.getElementById('donorPhone').value : null;
 
-        const res = await fetch('/api/donations', {
+        const res = await fetch(`${API_BASE}/api/donations`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

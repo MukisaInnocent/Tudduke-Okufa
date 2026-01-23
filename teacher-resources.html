@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resources | Teacher Portal</title>
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- ICONS -->
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <style>
+        :root {
+            --brand-primary: #b30000;
+            --brand-secondary: #e60000;
+            --bg-body: #f7f9fc;
+            --bg-surface: #ffffff;
+            --text-main: #1a202c;
+            --text-muted: #718096;
+            --border-light: #e2e8f0;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] {
+            --brand-primary: #ff4d4d;
+            --bg-body: #1a202c;
+            --bg-surface: #2d3748;
+            --text-main: #edf2f7;
+            --text-muted: #a0aec0;
+            --border-light: #4a5568;
+        }
+
+        * {
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR (Ministry Themed) */
+        .sidebar {
+            width: 260px;
+            background: #b30000;
+            border-right: none;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            z-index: 10;
+            color: white;
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #b30000;
+        }
+
+        .sidebar-menu {
+            padding: 20px;
+            flex: 1;
+        }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500;
+            border-radius: var(--radius);
+            margin-bottom: 4px;
+            transition: 0.2s ease;
+        }
+
+        .menu-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .menu-link.active {
+            background: white;
+            color: #b30000;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Dark Mode Override for Sidebar */
+        [data-theme="dark"] .sidebar {
+            background: #1a202c;
+            border-right: 1px solid var(--border-light);
+        }
+
+        [data-theme="dark"] .menu-link {
+            color: var(--text-muted);
+        }
+
+        [data-theme="dark"] .menu-link:hover {
+            background: var(--bg-surface);
+            color: var(--brand-primary);
+        }
+
+        [data-theme="dark"] .menu-link.active {
+            background: var(--brand-primary);
+            color: white;
+        }
+
+        [data-theme="dark"] .logo-icon {
+            background: var(--brand-primary);
+            color: white;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 40px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            margin: 0;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .action-btn {
+            background: var(--brand-primary);
+            font-weight: 600;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+
+        .action-btn:hover {
+            background: #900000;
+            transform: translateY(-2px);
+        }
+
+        .upload-area {
+            background: var(--bg-surface);
+            border: 2px dashed var(--border-light);
+            border-radius: var(--radius);
+            padding: 40px;
+            text-align: center;
+            color: var(--text-muted);
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: var(--brand-primary);
+            background: rgba(179, 0, 0, 0.02);
+        }
+
+        .file-list {
+            margin-top: 30px;
+            display: grid;
+            gap: 15px;
+        }
+
+        .file-item {
+            background: var(--bg-surface);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .file-icon {
+            width: 40px;
+            height: 40px;
+            background: #ebf8ff;
+            color: #3182ce;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: 0.3s;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: var(--bg-surface);
+            width: 90%;
+            max-width: 900px;
+            height: 80vh;
+            border-radius: var(--radius);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: zoomIn 0.2s ease;
+        }
+
+        .modal-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-surface);
+        }
+
+        .modal-body {
+            flex: 1;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        .close-btn:hover {
+            color: var(--danger);
+        }
+
+        iframe,
+        video {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.95);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-icon"><i data-feather="book-open"></i></div>
+            <h3 style="margin:0; font-size:1.1rem; font-weight:700;">Teacher Portal</h3>
+        </div>
+        <nav class="sidebar-menu">
+            <a href="teacher-dashboard.html" class="menu-link"><i data-feather="home"></i> Overview</a>
+            <a href="teacher-classes.html" class="menu-link"><i data-feather="users"></i> My Classes</a>
+            <a href="teacher-resources.html" class="menu-link active"><i data-feather="folder"></i> Resources</a>
+            <a href="teacher-schedule.html" class="menu-link"><i data-feather="calendar"></i> Schedule</a>
+            <div style="height:1px; background:rgba(255,255,255,0.2); margin:15px 0;"></div>
+            <a href="index.html" class="menu-link"><i data-feather="log-out"></i> Logout</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="header">
+            <div>
+                <h1 style="display:flex; align-items:center; gap:10px;">
+                    <i data-feather="menu" style="cursor:pointer; display:none;" onclick="toggleSidebar()"></i>
+                    Resources
+                </h1>
+                <p style="color:var(--text-muted); margin: 5px 0 0;">Upload and share teaching materials.</p>
+            </div>
+            <button class="action-btn"><i data-feather="upload-cloud"></i> Upload New</button>
+        </header>
+
+        <div class="upload-area">
+            <i data-feather="upload" style="width:48px; height:48px; margin-bottom:10px;"></i>
+            <h3>Drag & Drop files here</h3>
+            <p>or click to browse your computer</p>
+        </div>
+
+        <div class="file-list">
+            <p style="text-align:center;">Loading resources...</p>
+        </div>
+    </main>
+
+    <!-- UPLOAD MODAL -->
+    <div class="modal-overlay" id="uploadModal">
+        <div class="modal-content" style="max-width: 500px; height: auto; overflow: visible;">
+            <div class="modal-header">
+                <h3 style="margin:0; font-size:1.1rem;">Upload Resource</h3>
+                <button class="close-btn" onclick="closeUploadModal()">&times;</button>
+            </div>
+            <div class="modal-body"
+                style="background: var(--bg-surface); padding: 20px; display: block; overflow: auto; text-align: left;">
+                <form id="uploadForm">
+                    <div style="margin-bottom: 15px;">
+                        <label
+                            style="display:block; margin-bottom:5px; font-weight:500; color:var(--text-main);">Title</label>
+                        <input type="text" id="resTitle" required
+                            style="width:100%; padding:10px; border:1px solid var(--border-light); border-radius:8px; background:var(--bg-body); color:var(--text-main);">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label
+                            style="display:block; margin-bottom:5px; font-weight:500; color:var(--text-main);">Type</label>
+                        <select id="resType"
+                            style="width:100%; padding:10px; border:1px solid var(--border-light); border-radius:8px; background:var(--bg-body); color:var(--text-main);">
+                            <option value="pdf">PDF Document</option>
+                            <option value="video">Video</option>
+                            <option value="image">Image</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label
+                            style="display:block; margin-bottom:5px; font-weight:500; color:var(--text-main);">Description</label>
+                        <textarea id="resDesc" rows="3"
+                            style="width:100%; padding:10px; border:1px solid var(--border-light); border-radius:8px; background:var(--bg-body); color:var(--text-main);"></textarea>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label
+                            style="display:block; margin-bottom:5px; font-weight:500; color:var(--text-main);">File</label>
+                        <input type="file" id="resFile" required style="width:100%;">
+                    </div>
+
+                    <button type="submit" class="action-btn" style="width:100%; justify-content:center;">Upload
+                        Now</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL VIEWER -->
+    <div class="modal-overlay" id="resourceModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="margin:0; font-size:1.1rem;" id="modalTitle">Viewing Resource</h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Content injected here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        feather.replace();
+        const token = localStorage.getItem('ministryToken');
+        // if (!token) window.location.href = 'login.html';
+
+        // API Base Logic
+        const API_BASE = (window.location.protocol === 'file:' || window.location.port !== '3000')
+            ? 'http://localhost:3000'
+            : '';
+
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
+
+        // --- UPLOAD LOGIC ---
+        const uploadModal = document.getElementById('uploadModal');
+        const uploadBtn = document.querySelector('.action-btn'); // Primary Header Button
+
+        // Open Upload Modal
+        if (uploadBtn) {
+            uploadBtn.addEventListener('click', (e) => {
+                uploadModal.style.display = 'flex';
+            });
+        }
+
+        const dragArea = document.querySelector('.upload-area');
+        if (dragArea) dragArea.onclick = () => { uploadModal.style.display = 'flex'; }
+
+        function closeUploadModal() {
+            uploadModal.style.display = 'none';
+            document.getElementById('uploadForm').reset();
+        }
+
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn.textContent;
+            btn.textContent = 'Uploading...';
+            btn.disabled = true;
+
+            const formData = new FormData();
+            formData.append('title', document.getElementById('resTitle').value);
+            formData.append('type', document.getElementById('resType').value);
+            formData.append('description', document.getElementById('resDesc').value);
+            const fileInput = document.getElementById('resFile');
+            if (fileInput.files.length > 0) {
+                formData.append('resourceFile', fileInput.files[0]);
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/api/teacher/resources`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+
+                if (res.ok) {
+                    alert('Resource Uploaded Successfully!');
+                    closeUploadModal();
+                    loadResources();
+                } else {
+                    const err = await res.json();
+                    alert('Upload Failed: ' + (err.error || 'Unknown error'));
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Error uploading file');
+            } finally {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        });
+
+        // --- FETCH RESOURCES ---
+        async function loadResources() {
+            const listContainer = document.querySelector('.file-list');
+
+            try {
+                const res = await fetch(`${API_BASE}/api/teacher/resources`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!res.ok) {
+                    listContainer.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:20px;">No resources uploaded yet. Upload one now!</p>';
+                    return;
+                }
+
+                const data = await res.json();
+
+                if (data.length === 0) {
+                    listContainer.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:20px;">No resources uploaded yet. Upload one now!</p>';
+                } else {
+                    listContainer.innerHTML = data.map(item => {
+                        // Status Badge
+                        let statusBadge = '';
+                        if (item.status === 'pending') {
+                            statusBadge = '<span style="background:#fffaf0; color:#d69e2e; padding:4px 8px; border-radius:10px; font-size:0.75rem; font-weight:700; border:1px solid #fbd38d;">Pending Review</span>';
+                        } else if (item.status === 'rejected') {
+                            statusBadge = '<span style="background:#fff5f5; color:#e53e3e; padding:4px 8px; border-radius:10px; font-size:0.75rem; font-weight:700; border:1px solid #feb2b2;">Rejected</span>';
+                        } else {
+                            statusBadge = '<span style="background:#f0fff4; color:#38a169; padding:4px 8px; border-radius:10px; font-size:0.75rem; font-weight:700; border:1px solid #9ae6b4;">Live</span>';
+                        }
+
+                        return `
+                        <div class="file-item">
+                            <div class="file-info">
+                                <div class="file-icon" style="${getIconStyle(item.type)}">${getIcon(item.type)}</div>
+                                <div>
+                                    <div style="display:flex; align-items:center; gap:8px;">
+                                        <h4 style="margin:0; font-size:1rem; color:var(--text-main);">${item.title}</h4>
+                                        ${statusBadge}
+                                    </div>
+                                    <p style="margin:0; font-size:0.85rem; color:var(--text-muted);">${new Date(item.createdAt).toLocaleDateString()} • ${item.type.toUpperCase()}</p>
+                                </div>
+                            </div>
+                            <div style="display:flex; gap:10px;">
+                                <button class="action-btn" style="padding: 8px 12px; font-size:0.85rem; background: var(--bg-body); color: var(--text-main); border: 1px solid var(--border-light);" onclick="viewResource('${item.fileUrl}', '${item.type}')">
+                                    <i data-feather="eye"></i> View
+                                </button>
+                                <a href="${item.fileUrl}" download class="action-btn" style="padding: 8px 12px; font-size:0.85rem; text-decoration:none;">
+                                    <i data-feather="download"></i> Download
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                    }).join('');
+                }
+                feather.replace();
+
+            } catch (err) {
+                console.error(err);
+                listContainer.innerHTML = '<p style="text-align:center; color:var(--text-muted);">Failed to load resources.</p>';
+            }
+        }
+
+        function getIcon(type) {
+            if (type === 'video') return '<i data-feather="video"></i>';
+            if (type === 'image') return '<i data-feather="image"></i>';
+            return '<i data-feather="file-text"></i>';
+        }
+
+        function getIconStyle(type) {
+            if (type === 'video') return 'background:#fff5f5; color:#e53e3e;';
+            if (type === 'image') return 'background:#ebf8ff; color:#3182ce;';
+            return 'background:#f0fff4; color:#38a169;';
+        }
+
+        // RESOURCE VIEWER LOGIC
+        const modal = document.getElementById('resourceModal');
+        const modalBody = document.getElementById('modalBody');
+
+        function viewResource(url, type) {
+            modal.style.display = 'flex';
+            modalBody.innerHTML = '';
+
+            if (type === 'pdf') {
+                modalBody.innerHTML = `<iframe src="${url}" allowfullscreen></iframe>`;
+            } else if (type === 'video') {
+                modalBody.innerHTML = `<video controls autoplay style="max-height:100%; max-width:100%;"><source src="${url}" type="video/mp4">Your browser does not support video.</video>`;
+            } else if (type === 'image') {
+                modalBody.innerHTML = `<img src="${url}" style="max-height:100%; max-width:100%; object-fit:contain;">`;
+            } else {
+                modalBody.innerHTML = `<p style="color:white; padding:20px;">Preview not available for this file type.</p>`;
+            }
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+            modalBody.innerHTML = ''; // Stop video playback
+        }
+
+        document.querySelectorAll('.close-btn').forEach(btn => {
+            btn.onclick = () => {
+                const modal = btn.closest('.modal-overlay');
+                modal.style.display = 'none';
+                if (modal.id === 'resourceModal') modalBody.innerHTML = '';
+            }
+        });
+
+        // Close on click outside
+        window.onclick = (e) => {
+            if (e.target.classList.contains('modal-overlay')) {
+                e.target.style.display = 'none';
+                if (e.target.id === 'resourceModal') modalBody.innerHTML = '';
+            }
+        }
+
+        // Initial load
+        loadResources();
+    </script>
+</body>
+
+</html>

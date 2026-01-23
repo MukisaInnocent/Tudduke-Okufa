@@ -270,9 +270,14 @@
     /* LOAD LESSON FROM BACKEND */
     let currentLesson = null;
 
+    // API Base Logic
+    const API_BASE = (window.location.protocol === 'file:' || window.location.port !== '3000')
+      ? 'http://localhost:3000'
+      : '';
+
     async function loadWeeklyLesson() {
       try {
-        const res = await fetch('/api/kids/lessons');
+        const res = await fetch(`${API_BASE}/api/kids/lessons`);
         if (!res.ok) throw new Error('Failed to fetch lesson');
         const lessons = await res.json();
 
@@ -315,68 +320,69 @@
 
     async function loadQuiz() {
       try {
-        const res = await fetch('/api/kids/quiz');
-        if (!res.ok) throw new Error('Failed to fetch quiz');
-        const questions = await res.json();
+        try {
+          const res = await fetch(`${API_BASE}/api/kids/quiz`);
+          if (!res.ok) throw new Error('Failed to fetch quiz');
+          const questions = await res.json();
 
-        if (questions.length === 0) {
-          document.getElementById('quizContent').innerHTML = '<p>No quiz questions available yet.</p>';
-          return;
-        }
+          if (questions.length === 0) {
+            document.getElementById('quizContent').innerHTML = '<p>No quiz questions available yet.</p>';
+            return;
+          }
 
-        // Use first question for now
-        const q = questions[0];
-        document.getElementById('quizContent').innerHTML = `
+          // Use first question for now
+          const q = questions[0];
+          document.getElementById('quizContent').innerHTML = `
       <p style="font-weight:600; margin-bottom:15px; font-size:1.1rem;">1. ${q.question}</p>
       <label><input type="radio" name="q1" value="0"> ${q.option1}</label>
       <label><input type="radio" name="q1" value="1"> ${q.option2}</label>
       <label><input type="radio" name="q1" value="2"> ${q.option3}</label>
       <input type="hidden" id="correctAnswer" value="${q.correctAnswer - 1}">
     `;
-      } catch (err) {
-        console.error('Error loading quiz:', err);
-        document.getElementById('quizContent').innerHTML = '<p>Quiz questions will be available soon.</p>';
+        } catch (err) {
+          console.error('Error loading quiz:', err);
+          document.getElementById('quizContent').innerHTML = '<p>Quiz questions will be available soon.</p>';
+        }
       }
-    }
 
     /* LESSON COMPLETE */
     document.getElementById("completeLesson").onclick = () => {
-      document.getElementById("quizBox").style.display = "block";
-      document.getElementById("lessonBox").style.display = "none";
-      setTimeout(() => {
-        window.scrollTo({ top: document.getElementById("quizBox").offsetTop - 100, behavior: "smooth" });
-      }, 100);
-    };
+        document.getElementById("quizBox").style.display = "block";
+        document.getElementById("lessonBox").style.display = "none";
+        setTimeout(() => {
+          window.scrollTo({ top: document.getElementById("quizBox").offsetTop - 100, behavior: "smooth" });
+        }, 100);
+      };
 
-    /* QUIZ CHECK */
-    function checkQuiz() {
-      const answer = document.querySelector('input[name="q1"]:checked');
-      const result = document.getElementById("result");
-      const correctAnswer = parseInt(document.getElementById("correctAnswer")?.value || "1");
+      /* QUIZ CHECK */
+      function checkQuiz() {
+        const answer = document.querySelector('input[name="q1"]:checked');
+        const result = document.getElementById("result");
+        const correctAnswer = parseInt(document.getElementById("correctAnswer")?.value || "1");
 
-      if (!answer) {
-        result.textContent = "Please choose an answer 😊";
-        result.style.color = "var(--k-text-light)";
-        result.style.backgroundColor = "transparent";
-        return;
+        if (!answer) {
+          result.textContent = "Please choose an answer 😊";
+          result.style.color = "var(--k-text-light)";
+          result.style.backgroundColor = "transparent";
+          return;
+        }
+
+        const selectedAnswer = parseInt(answer.value);
+        if (selectedAnswer === correctAnswer) {
+          result.textContent = "🎉 Correct! Great job!";
+          result.style.color = "#155724";
+          result.style.backgroundColor = "#d4edda";
+          result.style.border = "1px solid #c3e6cb";
+        } else {
+          result.textContent = "❌ Try again! You can do it!";
+          result.style.color = "#721c24";
+          result.style.backgroundColor = "#f8d7da";
+          result.style.border = "1px solid #f5c6cb";
+        }
       }
 
-      const selectedAnswer = parseInt(answer.value);
-      if (selectedAnswer === correctAnswer) {
-        result.textContent = "🎉 Correct! Great job!";
-        result.style.color = "#155724";
-        result.style.backgroundColor = "#d4edda";
-        result.style.border = "1px solid #c3e6cb";
-      } else {
-        result.textContent = "❌ Try again! You can do it!";
-        result.style.color = "#721c24";
-        result.style.backgroundColor = "#f8d7da";
-        result.style.border = "1px solid #f5c6cb";
-      }
-    }
-
-    // Load lesson on page load
-    loadWeeklyLesson();
+      // Load lesson on page load
+      loadWeeklyLesson();
   </script>
 
 </body>

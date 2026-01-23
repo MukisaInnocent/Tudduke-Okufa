@@ -316,6 +316,11 @@
         const token = localStorage.getItem('ministryToken');
         const userStr = localStorage.getItem('ministryUser');
 
+        // API Base Logic
+        const API_BASE = (window.location.protocol === 'file:' || window.location.port !== '3000')
+            ? 'http://localhost:3000'
+            : '';
+
         if (!token || !userStr) {
             window.location.href = 'login.html';
         } else {
@@ -357,7 +362,7 @@
 
                 // Actually, let's just show ALL but only enable edit/delete for OWN.
 
-                const res = await fetch('/api/sermons');
+                const res = await fetch(`${API_BASE}/api/sermons`);
                 const sermons = await res.json();
 
                 // Decode token payload to get ID if not in userStr
@@ -411,7 +416,7 @@
                 examples: document.getElementById('examples').value
             };
 
-            const url = isEdit ? `/api/sermons/${id}` : '/api/sermons';
+            const url = isEdit ? `${API_BASE}/api/sermons/${id}` : `${API_BASE}/api/sermons`;
             const method = isEdit ? 'PUT' : 'POST';
 
             try {
@@ -443,7 +448,7 @@
             if (!confirm("Are you sure?")) return;
 
             try {
-                const res = await fetch(`/api/sermons/${id}`, {
+                const res = await fetch(`${API_BASE}/api/sermons/${id}`, {
                     method: 'DELETE',
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
@@ -461,7 +466,7 @@
         window.editSermon = async (id) => {
             // Fetch sermon details
             try {
-                const res = await fetch(`/api/sermons/${id}`);
+                const res = await fetch(`${API_BASE}/api/sermons/${id}`);
                 const sermon = await res.json();
 
                 document.getElementById('editId').value = sermon.sermonid;

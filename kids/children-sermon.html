@@ -188,8 +188,13 @@
   <script>
     /* LOAD CHILDREN SERMONS FROM BACKEND */
     async function loadChildrenSermons() {
+      // API Base Logic
+      const API_BASE = (window.location.protocol === 'file:' || window.location.port !== '3000')
+        ? 'http://localhost:3000'
+        : '';
+
       try {
-        const res = await fetch('/api/kids/sermons');
+        const res = await fetch(`${API_BASE}/api/kids/sermons`);
         if (!res.ok) throw new Error('Failed to fetch sermons');
         const sermons = await res.json();
 

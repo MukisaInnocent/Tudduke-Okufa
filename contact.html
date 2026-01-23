@@ -525,6 +525,11 @@
         const submitBtn = document.getElementById('submitBtn');
         const formStatus = document.getElementById('formStatus');
 
+        // API Base Logic
+        const API_BASE = (window.location.protocol === 'file:' || window.location.port !== '3000')
+            ? 'http://localhost:3000'
+            : '';
+
         contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -543,7 +548,7 @@
             };
 
             try {
-                const response = await fetch('/api/contact', {
+                const response = await fetch(`${API_BASE}/api/contact`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(formData)
