@@ -1,47 +1,32 @@
-# Deployment Guide for Render
+# Deploying to Render
 
-Your project is now configured for "Blueprint" deployment on Render. This is the easiest way to deploy as it automatically creates the Web Service and the managed Database for you.
+Your application is configured for Render. Follow these steps to ensure a smooth deployment.
 
-## Prerequisite: Push to GitHub/GitLab
+## 1. Prerequisites (On Render Dashboard)
+When you create your Web Service on Render, ensure you set the following **Environment Variables**:
 
-Since you are running locally, you must push your code to a remote repository (like GitHub) so Render can access it.
+| Variable | Value | Description |
+| :--- | :--- | :--- |
+| `NODE_ENV` | `production` | Optimizes the app for performance. |
+| `JWT_SECRET` | *(Generate a random string)* | Used to secure user sessions. |
+| `DATABASE_URL` | *(Internal Connection URL)* | Automatically set if you link a Render Postgres DB. |
 
-1. Create a **New Repository** on GitHub (ensure it is Private if you want to keep it secure, though Render works with both).
-2. Push your code:
-   ```bash
-   git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
-   git branch -M main
-   git push -u origin main
-   ```
-   *(If you already have a remote, just run `git push`)*
+## 2. Database Setup
+You **MUST** use a PostgreSQL database.
+1.  Create a **PostgreSQL** database on Render.
+2.  Link it to your Web Service.
+3.  Render will automatically inject `DATABASE_URL`.
 
-## Step 1: Deploy on Render
+> **Warning**: Do NOT use SQLite (local file) on Render. Your data will disappear every time the server restarts. The current code is already configured to detect and use PostgreSQL (`pg`) when available.
 
-1. Log in to your [Render Dashboard](https://dashboard.render.com/).
-2. Click **New +** and select **Blueprint**.
-3. Connect your GitHub/GitLab account if you haven't already.
-4. Select the repository you just pushed (`Tudduke-Okufa`).
-5. Render will detect the `render.yaml` file and show you the resources it will create:
-   - **Service**: `tudduke-okufa-web` (Your Node.js Backend & Frontend)
-   - **Database**: `tudduke-okufa-db` (PostgreSQL)
-6. Click **Apply** or **Create Resources**.
+## 3. File Storage
+We have migrated file storage to the database to ensure compatibility with Render.
+-   **Limits**: Uploads are limited to **50MB** per file to prevent crashing the server.
+-   **Storage**: Files are stored in the database `BLOB` columns.
 
-## Step 2: Sit Back & Relax
+## 4. Verification After Deployment
+Once deployed, check the **Logs** tab in Render:
+1.  Look for: `✅ Database connected`
+2.  Look for: `✅ Models synced`
 
-- Render will:
-  - Provision the database.
-  - Clone your code.
-  - Install dependencies (`npm install`).
-  - Seed the database (`npm run seed`).
-  - Start the server (`node server.js`).
-
-## Notes
-
-- **Database**: The configuration uses the "Free" plan for Postgres. Note that Render's free databases expire after 90 days. For long-term production, upgrade to a paid database plan (~$7/mo).
-- **Environment Variables**: The Blueprint automatically generates a `JWT_SECRET` and links the database, so you don't need to manually copy your `.env` file!
-- **Frontend**: Your frontend is served statically by the backend, so it will be available at the root URL (e.g., `https://tudduke-okufa-web.onrender.com/`).
-
-## Troubleshooting
-
-- **Logs**: If deployment fails, check the "Logs" tab in the Render dashboard.
-- **Auto-Redeploy**: Every time you push to the `main` branch, Render will automatically redeploy your site.
+If you see these, your app is live and connected!
