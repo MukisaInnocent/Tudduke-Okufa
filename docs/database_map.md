@@ -23,7 +23,7 @@ erDiagram
     }
 
     ClassEvent {
-        int eventid PK "FK to SabbathSchoolClass"
+        int id PK
         string title
         string description
         datetime eventDate
@@ -110,7 +110,7 @@ erDiagram
     User ||--o{ QuizResult : "achieves"
 
     %% Class Relationships
-    SabbathSchoolClass ||--|| ClassEvent : "has (One Event Per Class)"
+    %% SabbathSchoolClass relationship removed (Events are now independent)
     
     %% Sermon Relationships
     Sermon ||--o{ SermonComment : "has"
@@ -119,5 +119,5 @@ erDiagram
 ```
 
 ## Key Constraints
-- **One Event Per Class**: The `ClassEvent` table uses `eventid` as its Primary Key, which is also a Foreign Key to `SabbathSchoolClass.id`. This enforces a strict limit of one event per class.
+- **Events**: `ClassEvent` table uses `id` as Primary Key. Events are associated with the teacher (`createdBy`) who created them.
 - **Resource Storage**: `TeacherResource` stores the file path in `fileUrl`. Actual files are on the disk in `uploads/teacher-resources`.

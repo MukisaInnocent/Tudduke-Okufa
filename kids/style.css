@@ -240,8 +240,17 @@ aside a.active {
     margin: 0 auto;
     padding: 20px 20px 80px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 30px;
+}
+
+/* Large Screens */
+@media (min-width: 1600px) {
+    .cards {
+        max-width: 1600px;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 40px;
+    }
 }
 
 .card-link {
@@ -351,8 +360,10 @@ aside a.active {
 
 /* RESPONSIVE */
 @media (min-width: 1024px) {
+
+    /* Show menu toggle on desktop too */
     .menu-toggle {
-        display: none;
+        display: block;
     }
 
     header {
@@ -360,24 +371,38 @@ aside a.active {
         padding-right: 5%;
     }
 
-    /* If sidebar is visible on desktop? Keep original behavior */
+    /* Desktop Sidebar Behavior */
     aside#sidebar {
         left: 0;
         box-shadow: none;
         padding-top: 100px;
+        transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    header {
-        padding-left: 300px;
+    /* Collapsed State for Desktop */
+    aside#sidebar.closed {
+        left: -280px;
     }
 
+    /* Content Adjustment */
+    header,
     .hero,
     .cards,
-    .site-footer {
+    .site-footer,
+    .split-section {
         margin-left: 280px;
+        transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* Special case for full width content pages if needed later */
+    body.sidebar-closed header,
+    body.sidebar-closed .hero,
+    body.sidebar-closed .cards,
+    body.sidebar-closed .site-footer,
+    body.sidebar-closed .split-section {
+        margin-left: 0;
+    }
+
+    /* Header padding compensation not needed as it's fixed */
 }
 
 /* --- PROFESSIONAL FORMS --- */
@@ -514,5 +539,34 @@ textarea:focus {
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+/* --- MOBILE OPTIMIZATIONS --- */
+@media (max-width: 600px) {
+    .hero {
+        padding: 80px 20px 40px;
+    }
+
+    .hero h2 {
+        font-size: 2.2rem;
+    }
+
+    .hero p {
+        font-size: 1rem;
+    }
+
+    .content-library-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .content-library-header h2 {
+        font-size: 1.6rem;
+    }
+
+    header {
+        padding: 0 15px;
     }
 }

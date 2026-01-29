@@ -2,15 +2,12 @@ module.exports = (sequelize, DataTypes) => {
     const ClassEvent = sequelize.define(
         'ClassEvent',
         {
-            eventid: {
+            id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
-                allowNull: false,
-                references: {
-                    model: 'sabbath_school_classes',
-                    key: 'id'
-                }
+                autoIncrement: true
             },
+
             title: {
                 type: DataTypes.STRING(150),
                 allowNull: false
@@ -29,6 +26,14 @@ module.exports = (sequelize, DataTypes) => {
                 references: {
                     model: 'users',
                     key: 'userid'
+                }
+            },
+            classId: {
+                type: DataTypes.INTEGER,
+                allowNull: true,
+                references: {
+                    model: 'sabbath_school_classes',
+                    key: 'id'
                 }
             },
             status: {

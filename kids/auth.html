@@ -435,6 +435,113 @@
         const API_BASE = getApiBase();
 
         const form = document.getElementById('authForm');
+        const loginView = document.getElementById('loginView');
+        const registerWizard = document.getElementById('registerWizard');
+        const progressBar = document.getElementById('progressBar');
+        const pageTitle = document.getElementById('pageTitle');
+        const errorMsg = document.getElementById('errorMsg');
+        const roleInput = document.getElementById('role');
+        const tabLogin = document.getElementById('tabLogin');
+        const tabRegister = document.getElementById('tabRegister');
+        const toggleText = document.getElementById('toggleText');
+        const toggleLink = document.getElementById('toggleLink');
+        const guardianFields = document.getElementById('guardianFields');
+
+        // ERROR HELPER
+        function showError(msg) {
+            errorMsg.textContent = msg;
+            errorMsg.style.display = 'block';
+            errorMsg.style.background = '#ffebee';
+            errorMsg.style.color = '#d32f2f';
+        }
+
+        // SWITCH TAB
+        function switchTab(mode) {
+            errorMsg.style.display = 'none';
+            if (mode === 'login') {
+                isRegister = false;
+                loginView.style.display = 'block';
+                registerWizard.classList.add('hidden');
+                progressBar.classList.add('hidden');
+
+                tabLogin.classList.add('active');
+                tabRegister.classList.remove('active');
+
+                pageTitle.textContent = 'Welcome Back!';
+                toggleText.textContent = "Don't have an account?";
+                toggleLink.textContent = "Register here";
+                toggleLink.onclick = () => { switchTab('register'); return false; };
+            } else {
+                isRegister = true;
+                loginView.style.display = 'none';
+                registerWizard.classList.remove('hidden');
+                progressBar.classList.remove('hidden');
+
+                tabLogin.classList.remove('active');
+                tabRegister.classList.add('active');
+
+                pageTitle.textContent = 'Join Our Family';
+                toggleText.textContent = "Already have an account?";
+                toggleLink.textContent = "Login here";
+                toggleLink.onclick = () => { switchTab('login'); return false; };
+
+                // Reset Wizard
+                nextStep(1);
+            }
+        }
+
+        function toggleAuthMode() {
+            if (isRegister) switchTab('login');
+            else switchTab('register');
+        }
+
+        // ROLE SELECTION
+        function selectRole(role) {
+            roleInput.value = role;
+            document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById(`card-${role}`).classList.add('selected');
+
+            // Show/Hide Guardian Fields
+            if (role === 'kid') {
+                guardianFields.style.display = 'block';
+            } else {
+                guardianFields.style.display = 'none';
+            }
+        }
+
+        // WIZARD NAVIGATION
+        function nextStep(step) {
+            // Validation for Step 1 -> 2
+            if (step === 2) {
+                if (!roleInput.value) {
+                    showError("Please select a role to continue.");
+                    return;
+                }
+                errorMsg.style.display = 'none';
+            }
+            // Validation for Step 2 -> 3
+            if (step === 3) {
+                const fname = document.getElementById('fullname').value;
+                if (!fname) {
+                    showError("Please enter your full name.");
+                    return;
+                }
+                errorMsg.style.display = 'none';
+            }
+
+            // Update Steps
+            document.querySelectorAll('.wizard-step').forEach(s => s.classList.remove('active'));
+            document.getElementById(`step${step}`).classList.add('active');
+
+            // Update Progress
+            document.querySelectorAll('.progress-step').forEach((p, idx) => {
+                if (idx < step) p.classList.add('active');
+                else p.classList.remove('active');
+            });
+
+            pStep = step;
+        }
+
         // ... (existing code)
 
         // LOGIN SUBMIT

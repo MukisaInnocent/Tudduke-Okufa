@@ -75,7 +75,7 @@
             }
 
             ClassEvent {
-            int eventid PK "FK to SabbathSchoolClass"
+            int id PK
             string title
             string description
             datetime eventDate
@@ -162,7 +162,7 @@
             User ||--o{ QuizResult : "achieves"
 
             %% Class Relationships
-            SabbathSchoolClass ||--|| ClassEvent : "has (One Event Per Class)"
+
 
             %% Sermon Relationships
             Sermon ||--o{ SermonComment : "has"

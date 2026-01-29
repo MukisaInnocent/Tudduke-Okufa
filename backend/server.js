@@ -431,12 +431,46 @@ app.delete('/api/kids/sermons/:id', authenticateToken, async (req, res) => {
 });
 app.get('/api/sermons', async (req, res) => {
   try {
+    // Check for user token to determine "isLiked"
+    let currentUserId = null;
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (token) {
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'supersecretkey123');
+        currentUserId = decoded.userid;
+      } catch (e) { /* ignore invalid token */ }
+    }
+
     const sermons = await Sermon.findAll({
       where: { status: 'approved' },
+      include: [
+        { model: SermonLike, attributes: ['userId'] }, // Need userId to check ownership
+        { model: SermonComment, attributes: ['commentid'] },
+        { model: User, as: 'author', attributes: ['fullname', 'roles'] }, // Fetch Author Name
+        { model: User, as: 'verifier', attributes: ['fullname'] } // Fetch Verifier Name
+      ],
       order: [['entrytime', 'DESC']],
       limit: 100
     });
-    res.json(sermons);
+
+    const data = sermons.map(s => {
+      const json = s.toJSON();
+      json.likeCount = json.SermonLikes ? json.SermonLikes.length : 0;
+      json.commentCount = json.SermonComments ? json.SermonComments.length : 0;
+
+      // Determine if current user liked this
+      json.isLiked = false;
+      if (currentUserId && json.SermonLikes) {
+        json.isLiked = json.SermonLikes.some(like => like.userId === currentUserId);
+      }
+
+      delete json.SermonLikes;
+      delete json.SermonComments;
+      return json;
+    });
+
+    res.json(data);
   } catch (err) {
     console.error('❌ Sermons fetch error:', err);
     res.status(500).json({ error: 'Failed to fetch sermons' });
@@ -1218,11 +1252,10 @@ app.post('/api/teacher/schedule', authenticateToken, async (req, res) => {
   if (req.user.role !== 'teacher') return res.sendStatus(403);
 
   try {
-    const { title, description, eventDate, classId } = req.body;
+    const { title, description, eventDate } = req.body;
 
-    // classId IS the eventid now (PK)
+    // Standard Auto-Increment logic
     const event = await ClassEvent.create({
-      eventid: classId,
       title,
       description,
       eventDate,
@@ -1231,7 +1264,7 @@ app.post('/api/teacher/schedule', authenticateToken, async (req, res) => {
     res.status(201).json(event);
   } catch (err) {
     console.error('Create Event Error:', err);
-    res.status(500).json({ error: 'Failed to create event. A class can only have one event.' });
+    res.status(500).json({ error: 'Failed to create event: ' + err.message });
   }
 });
 
@@ -1308,12 +1341,48 @@ app.put('/api/admin/verify-content/:type/:id', authenticateToken, async (req, re
     if (!item) return res.status(404).json({ error: 'Item not found' });
 
     item.status = status;
+    if (type === 'sermon' && status === 'approved') {
+      item.verifiedBy = req.user.userid;
+    }
     await item.save();
 
     res.json({ success: true, item });
   } catch (err) {
     console.error('Verify Content Error:', err);
     res.status(500).json({ error: 'Failed to verify content' });
+  }
+});
+
+// GET /api/kids/directory - Fetch verified users for Parents page
+app.get('/api/kids/directory', async (req, res) => {
+  try {
+    const teachers = await User.findAll({
+      where: { roles: 'teacher', isVerified: true },
+      attributes: ['fullname', 'roles', 'profileImage'],
+      order: [['fullname', 'ASC']]
+    });
+
+    const preachers = await User.findAll({
+      where: { roles: 'preacher', isVerified: true },
+      attributes: ['fullname', 'roles', 'profileImage'],
+      order: [['fullname', 'ASC']]
+    });
+
+    const parents = await User.findAll({
+      where: { roles: 'User', isVerified: true },
+      attributes: ['fullname', 'roles', 'profileImage'],
+      order: [['fullname', 'ASC']],
+      limit: 50
+    });
+
+    res.json({
+      teachers,
+      preachers,
+      parents
+    });
+  } catch (err) {
+    console.error('Directory Fetch Error:', err);
+    res.status(500).json({ error: 'Failed to fetch directory' });
   }
 });
 

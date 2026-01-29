@@ -33,7 +33,7 @@ async function testSchema() {
         // 2. Create Event directly via Model
         console.log('2. Creating Event directly via Model...');
         const event = await ClassEvent.create({
-            eventid: classId, // PK = classId
+            classId: classId,
             title: 'Test Event',
             description: 'Desc',
             eventDate: new Date(),
@@ -41,25 +41,26 @@ async function testSchema() {
         });
         console.log('   ✅ Created Event with eventid:', event.eventid);
 
-        if (event.eventid !== classId) {
+        if (event.classId !== classId) {
             console.error('   ❌ FAIL: eventid does not match classId');
         } else {
             console.log('   ✅ PASS: eventid matches classId');
         }
 
-        // 3. Try to create ANOTHER event for same class
-        console.log('3. Attempting duplicate event for same class...');
+        // 3. Duplicate Test (Should SUCCEED now)
         try {
-            await ClassEvent.create({
-                eventid: classId,
-                title: 'Duplicate Event',
-                description: 'Desc',
+            console.log('3. Attempting to create duplicate event for same class...');
+            const event2 = await ClassEvent.create({
+                classId: classId, // Allows duplicates
+                title: 'Second Event',
+                description: 'Desc 2',
                 eventDate: new Date(),
                 createdBy: teacher.userid
             });
-            console.error('   ❌ FAIL: Created duplicate event! PK constraint not working.');
+            console.log('✅ PASS: Duplicate created successfully (1-to-Many is active)');
+            await event2.destroy();
         } catch (err) {
-            console.log('   ✅ PASS: Duplicate creation failed as expected (PK violation).');
+            console.log('❌ FAIL: Creation failed:', err.message);
         }
 
         // Cleanup

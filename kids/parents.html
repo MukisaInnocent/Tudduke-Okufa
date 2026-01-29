@@ -104,6 +104,61 @@
         transform: translateY(0);
       }
     }
+
+    .section-separator {
+      height: 1px;
+      background: rgba(0, 0, 0, 0.1);
+      margin: 60px 0;
+    }
+
+    [data-theme="dark"] .section-separator {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .directory-section {
+      margin-bottom: 50px;
+    }
+
+    .directory-title {
+      font-size: 1.5rem;
+      color: var(--k-text);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .directory-title i {
+      color: var(--k-brand);
+    }
+
+    .user-card {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      background: var(--k-bg);
+      padding: 15px;
+      border-radius: 16px;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    [data-theme="dark"] .user-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .user-avatar {
+      width: 50px;
+      height: 50px;
+      background: var(--k-brand-light);
+      color: var(--k-brand);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
   </style>
 </head>
 
@@ -198,6 +253,40 @@
         </ul>
       </div>
     </div>
+
+    <div class="section-separator"></div>
+
+    <!-- DIRECTORY SECTION -->
+    <div style="text-align: center; margin-bottom: 40px;">
+      <span class="hero-badge">Community</span>
+      <h2>Verified Community</h2>
+      <p class="intro" style="margin-bottom: 30px;">Meet our dedicated leaders and registered families.</p>
+    </div>
+
+    <!-- Teachers -->
+    <div class="directory-section">
+      <h3 class="directory-title"><i data-feather="briefcase"></i> Verified Teachers</h3>
+      <div class="grid" id="teachersGrid">
+        <i data-feather="loader" class="spin"></i> Loading...
+      </div>
+    </div>
+
+    <!-- Preachers -->
+    <div class="directory-section">
+      <h3 class="directory-title"><i data-feather="mic"></i> Verified Preachers</h3>
+      <div class="grid" id="preachersGrid">
+        <i data-feather="loader" class="spin"></i> Loading...
+      </div>
+    </div>
+
+    <!-- Parents -->
+    <div class="directory-section">
+      <h3 class="directory-title"><i data-feather="users"></i> Registered Parents</h3>
+      <div class="grid" id="parentsGrid">
+        <i data-feather="loader" class="spin"></i> Loading...
+      </div>
+    </div>
+
   </div>
 
   <!-- FOOTER -->
@@ -222,6 +311,57 @@
   <script src="auth-helper.js"></script>
   <script src="https://unpkg.com/feather-icons"></script>
   <script src="script.js"></script>
+  <script>
+    // Fetch Directory Data
+    async function loadDirectory() {
+      const getApiBase = () => {
+        const { hostname, protocol, port } = window.location;
+        if (protocol === 'file:') return 'http://localhost:3000';
+        if ((hostname === 'localhost' || hostname === '127.0.0.1') && port !== '3000') {
+          return 'http://localhost:3000';
+        }
+        return '';
+      };
+      const API_BASE = getApiBase();
+
+      try {
+        const res = await fetch(`${API_BASE}/api/kids/directory`);
+        if (!res.ok) throw new Error('Failed to load directory');
+        const data = await res.json();
+
+        renderUsers('teachersGrid', data.teachers, 'No teachers found.');
+        renderUsers('preachersGrid', data.preachers, 'No preachers found.');
+        renderUsers('parentsGrid', data.parents, 'No parents registered yet.');
+
+        feather.replace();
+
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function renderUsers(elementId, users, emptyMsg) {
+      const grid = document.getElementById(elementId);
+      if (!users || users.length === 0) {
+        grid.innerHTML = `<div style="color:var(--k-text-light); grid-column:1/-1;">${emptyMsg}</div>`;
+        return;
+      }
+
+      grid.innerHTML = users.map(u => {
+        const initials = u.fullname.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+        return `
+        <div class="card user-card">
+          <div class="user-avatar">${initials}</div>
+          <div>
+            <h4 style="margin:0; color:var(--k-text); font-size:1.1rem;">${u.fullname}</h4>
+            <span style="font-size:0.85rem; color:var(--k-text-light); opacity:0.8;">${u.roles}</span>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    loadDirectory();
+  </script>
 
 </body>
 

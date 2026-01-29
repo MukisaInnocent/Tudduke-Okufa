@@ -41,14 +41,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const menuToggle = document.getElementById('menuToggle');
 
     function toggleMenu() {
-        if (sidebar) sidebar.classList.toggle('active');
-        if (overlay) overlay.classList.toggle('active');
+        const isDesktop = window.innerWidth >= 1024;
+
+        if (isDesktop) {
+            // Desktop Toggle
+            document.body.classList.toggle('sidebar-closed');
+            if (sidebar) sidebar.classList.toggle('closed');
+        } else {
+            // Mobile Toggle
+            if (sidebar) sidebar.classList.toggle('active');
+            if (overlay) overlay.classList.toggle('active');
+        }
     }
 
     if (menuToggle) menuToggle.addEventListener('click', toggleMenu);
     if (overlay) overlay.addEventListener('click', toggleMenu);
 
-    // Close sidebar when clicking a link (improvement for mobile)
+    // Close sidebar when clicking a link (Mobile Only)
     if (sidebar) {
         sidebar.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => {

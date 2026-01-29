@@ -80,6 +80,7 @@ SermonLike.belongsTo(Sermon, { foreignKey: 'sermonId' });
 
 User.hasMany(Sermon, { foreignKey: 'authorid' });
 Sermon.belongsTo(User, { as: 'author', foreignKey: 'authorid' });
+Sermon.belongsTo(User, { as: 'verifier', foreignKey: 'verifiedBy' });
 
 // TEACHER / CLASS ASSOCIATIONS
 User.hasMany(SabbathSchoolClass, { foreignKey: 'teacherId' });
@@ -88,16 +89,16 @@ SabbathSchoolClass.belongsTo(User, { as: 'teacher', foreignKey: 'teacherId' });
 // Students in Class
 // SabbathSchoolClass.hasMany(User, { as: 'students', foreignKey: 'classId' });
 // User.belongsTo(SabbathSchoolClass, { as: 'class', foreignKey: 'classId' });
-
 // Resources
 User.hasMany(TeacherResource, { foreignKey: 'uploadedBy' });
 TeacherResource.belongsTo(User, { as: 'uploader', foreignKey: 'uploadedBy' });
 
 // Events
-SabbathSchoolClass.hasMany(ClassEvent, { foreignKey: 'eventid' });
-ClassEvent.belongsTo(SabbathSchoolClass, { foreignKey: 'eventid' });
 User.hasMany(ClassEvent, { foreignKey: 'createdBy' });
 ClassEvent.belongsTo(User, { as: 'creator', foreignKey: 'createdBy' });
+// ClassEvent belongs to Class
+SabbathSchoolClass.hasMany(ClassEvent, { foreignKey: 'classId' });
+ClassEvent.belongsTo(SabbathSchoolClass, { foreignKey: 'classId' });
 
 // Resource Views
 User.hasMany(ResourceView, { foreignKey: 'userId' });

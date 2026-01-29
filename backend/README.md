@@ -97,6 +97,23 @@ Once the server is running, the following endpoints are available:
 - `POST /api/donations` - Submit donation
 - `GET /api/donations` - Get all donations
 
+### Teacher Portal (Protected)
+- `GET /api/teacher/classes` - Get my classes
+- `POST /api/teacher/classes` - Create class
+- `GET /api/teacher/resources` - Get my resources
+- `POST /api/teacher/resources` - Upload resource
+- `GET /api/teacher/schedule` - Get schedule
+- `POST /api/teacher/schedule` - Add event (No classId required)
+- `GET /api/teacher/dashboard/stats` - Get stats
+- `POST /api/teacher/notify-parents` - Send notifications
+
+### Admin
+- `GET /api/admin/users` - List users
+- `PUT /api/admin/users/:id/verify` - Verify user
+- `GET /api/admin/activity` - Global activity log
+- `GET /api/admin/sermons` - All sermons
+- `PUT /api/admin/verify-content/:type/:id` - Approved/Reject content
+
 ### Health Check
 - `GET /api/health` - Server health check
 
@@ -130,9 +147,19 @@ The frontend is configured to connect to the backend at:
 
 The following tables will be created automatically:
 - `contact_messages` - Contact form submissions
-- `sermons` - Daily sermons
+- `users` - All users (teachers, kids, preachers, admins)
+- `activity_logs` - audit trail of user actions
+- `sermons` - Daily sermons (Main)
 - `weekly_lessons` - Kids weekly lessons
 - `memory_verses` - Memory verses for kids
 - `children_sermons` - Children's sermons
 - `quiz_questions` - Bible quiz questions
+- `quiz_results` - Kids quiz scores
 - `donations` - Donation records
+- `sabbath_school_classes` - Classes managed by teachers
+- `class_events` - Events created by teachers (independent of specific classes)
+- `teacher_resources` - Files/Links shared by teachers
+- `resource_views` - Tracking student views on resources
+- `sermon_likes` - Likes on main sermons
+- `sermon_comments` - Comments on main sermons
+

@@ -41,129 +41,141 @@
 
     .content-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 25px;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
     }
 
+    /* Glassmorphism & Premium Textures */
     .content-card {
-      background: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      border-radius: 20px;
-      padding: 25px;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 24px;
+      padding: 28px;
+      transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
       position: relative;
       overflow: hidden;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+      box-shadow:
+        0 4px 6px rgba(0, 0, 0, 0.02),
+        0 12px 24px rgba(0, 0, 0, 0.04);
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      gap: 16px;
+      height: 100%;
     }
 
     [data-theme="dark"] .content-card {
-      background: rgba(30, 30, 30, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      background: rgba(30, 30, 35, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     }
 
     .content-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-      background: rgba(255, 255, 255, 0.9);
+      transform: translateY(-8px) scale(1.01);
+      box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.1),
+        0 8px 16px rgba(0, 0, 0, 0.05);
+      border-color: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.95);
     }
 
     [data-theme="dark"] .content-card:hover {
-      background: rgba(40, 40, 40, 0.8);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      background: rgba(40, 40, 45, 0.9);
+      border-color: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
     }
 
-    .card-badge-new {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-      color: white;
-      font-size: 0.7rem;
-      font-weight: 800;
-      padding: 4px 10px;
-      border-radius: 20px;
-      text-transform: uppercase;
-      box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0% {
-        transform: scale(1);
-      }
-
-      50% {
-        transform: scale(1.05);
-      }
-
-      100% {
-        transform: scale(1);
-      }
-    }
-
-    .card-icon-wrapper {
-      width: 50px;
-      height: 50px;
-      border-radius: 14px;
+    /* Beautiful Empty State */
+    .empty-state {
+      background: rgba(255, 255, 255, 0.5);
+      border: 2px dashed rgba(0, 0, 0, 0.1);
+      border-radius: 24px;
+      padding: 50px 20px;
+      text-align: center;
+      grid-column: 1 / -1;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      margin-bottom: 5px;
+      gap: 15px;
+      transition: 0.3s;
     }
 
-    .card-meta {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 0.85rem;
-      color: var(--k-text-light);
-      font-weight: 500;
+    [data-theme="dark"] .empty-state {
+      background: rgba(255, 255, 255, 0.03);
+      border-color: rgba(255, 255, 255, 0.1);
     }
 
-    .content-card h3 {
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: var(--k-text);
-      line-height: 1.4;
-      margin: 0;
-      flex-grow: 1;
+    .empty-state:hover {
+      background: rgba(255, 255, 255, 0.8);
+      border-color: var(--k-brand);
+      transform: scale(1.02);
     }
 
-    .card-action {
-      margin-top: auto;
-      padding-top: 15px;
-      border-top: 1px solid rgba(0, 0, 0, 0.05);
-    }
-
-    [data-theme="dark"] .card-action {
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    [data-theme="dark"] .empty-state:hover {
+      background: rgba(255, 255, 255, 0.06);
     }
 
     .btn-view {
       width: 100%;
-      padding: 12px;
-      border-radius: 12px;
-      background: var(--k-bg);
+      padding: 14px;
+      border-radius: 16px;
+      background: var(--k-surface);
       color: var(--k-text);
-      font-weight: 600;
+      font-weight: 700;
+      letter-spacing: 0.5px;
       text-decoration: none;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      transition: 0.2s;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
 
     .btn-view:hover {
       background: var(--k-brand);
       color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(220, 38, 38, 0.25);
+    }
+
+    [data-theme="dark"] .btn-view {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Layout Balance: Side-by-Side on Desktop */
+    .split-section {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 40px;
+      padding: 0 20px 80px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    @media (min-width: 900px) {
+      .split-section {
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        align-items: start;
+        /* Prevent stretching if one column is short */
+      }
+    }
+
+    /* Large Screen Optimization (1920x1080) */
+    @media (min-width: 1400px) {
+
+      .split-section,
+      .content-library,
+      .cards {
+        max-width: 1600px !important;
+      }
+
+      .content-grid {
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
+        gap: 30px;
+      }
     }
   </style>
 </head>
@@ -248,21 +260,31 @@
 
   </section>
 
-  <!-- VERIFIED CONTENT SECTION -->
-  <section class="content-library" style="padding: 0 20px 80px; max-width: 1200px; margin: 0 auto;">
-    <div class="content-library-header">
-      <h2>Latest Content</h2>
-      <!-- Optional: Filter or More button here -->
-    </div>
-
-    <div class="content-grid" id="verifiedContentBody">
-      <!-- Dynamic Content Cards -->
-      <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--k-text-light);">
-        <i data-feather="loader" style="animation: spin 2s linear infinite;"></i>
-        <p style="margin-top: 10px;">Loading wonderful content...</p>
+  <div class="split-section">
+    <!-- TEACHER RESOURCES SECTION -->
+    <section class="content-library" style="padding: 0; margin: 0;">
+      <div class="content-library-header">
+        <h2>Teacher Resources</h2>
       </div>
-    </div>
-  </section>
+      <div class="content-grid" id="resourcesBody" style="grid-template-columns: 1fr;">
+        <div style="text-align: center; color: var(--k-text-light);">
+          <i data-feather="loader" style="animation: spin 2s linear infinite;"></i> Loading resources...
+        </div>
+      </div>
+    </section>
+
+    <!-- UPCOMING EVENTS SECTION -->
+    <section class="content-library" style="padding: 0; margin: 0;">
+      <div class="content-library-header">
+        <h2>Upcoming Events</h2>
+      </div>
+      <div class="content-grid" id="eventsBody" style="grid-template-columns: 1fr;">
+        <div style="text-align: center; color: var(--k-text-light);">
+          <i data-feather="loader" style="animation: spin 2s linear infinite;"></i> Loading events...
+        </div>
+      </div>
+    </section>
+  </div>
 
   <!-- FOOTER -->
   <footer class="site-footer">
@@ -301,7 +323,9 @@
 
     /* FETCH VERIFIED CONTENT */
     async function loadVerifiedContent() {
-      const grid = document.getElementById('verifiedContentBody');
+      const resourcesGrid = document.getElementById('resourcesBody');
+      const eventsGrid = document.getElementById('eventsBody');
+
       const getApiBase = () => {
         const { hostname, protocol, port } = window.location;
         if (protocol === 'file:') return 'http://localhost:3000';
@@ -321,91 +345,85 @@
           fetch(`${API_BASE}/api/kids/schedule`, { headers })
         ]);
 
-        const resources = resRes.ok ? await resRes.json() : [];
-        const events = resEvt.ok ? await resEvt.json() : [];
+        const resourcesData = resRes.ok ? await resRes.json() : [];
+        const eventsData = resEvt.ok ? await resEvt.json() : [];
 
-        // Normalize Data
-        const normalizedResources = resources.map(r => ({
-          type: 'Resource',
-          icon: 'file-text',
-          title: r.title,
-          date: new Date(r.createdAt),
-          link: r.fileUrl,
-          color: '#3b82f6',
-          bg: '#dbeafe'
-        }));
-
-        const normalizedEvents = events.map(e => ({
-          type: 'Event',
-          icon: 'calendar',
-          title: e.title,
-          date: new Date(e.eventDate),
-          link: '#', // Events might not have a direct link yet
-          color: '#8b5cf6',
-          bg: '#f3e8ff'
-        }));
-
-        const allContent = [...normalizedResources, ...normalizedEvents].sort((a, b) => b.date - a.date);
-
-        if (allContent.length === 0) {
-          grid.innerHTML = `
-            <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px;">
-              <div style="background: var(--k-surface); display: inline-block; padding: 30px; border-radius: 50%; margin-bottom: 20px; box-shadow: var(--k-shadow);">
-                <i data-feather="inbox" style="width: 40px; height: 40px; color: var(--k-text-light);"></i>
+        // RENDER RESOURCES
+        if (resourcesData.length === 0) {
+          resourcesGrid.innerHTML = `
+            <div class="empty-state">
+              <div style="background: var(--k-surface); padding: 20px; border-radius: 50%;">
+                <i data-feather="inbox" style="width: 32px; height: 32px; color: var(--k-text-light);"></i>
               </div>
-              <h3 style="color: var(--k-text); margin-bottom: 8px;">No Content Yet</h3>
-              <p style="color: var(--k-text-light);">Check back later for new stories and events!</p>
-            </div>
-          `;
-          feather.replace();
-          return;
+              <h3 style="color: var(--k-text); font-size:1.1rem; margin:0;">No Resources Yet</h3>
+              <p style="color: var(--k-text-light); font-size: 0.9rem; margin:0;">Teachers haven't shared anything new today.</p>
+            </div>`;
+        } else {
+          resourcesGrid.innerHTML = resourcesData.map(item => {
+            const date = new Date(item.createdAt);
+            const isNew = (new Date() - date) < (7 * 24 * 60 * 60 * 1000);
+            return `
+            <div class="content-card">
+              ${isNew ? '<div class="card-badge-new">New</div>' : ''}
+              <div class="card-icon-wrapper" style="background: #e0f2fe; color: #0284c7;">
+                <i data-feather="file-text"></i>
+              </div>
+              <div class="card-meta">
+                <span><i data-feather="clock" style="width:12px;"></i> ${date.toLocaleDateString()}</span>
+                <span style="opacity:0.5;">•</span>
+                <span>Resource</span>
+              </div>
+              <h3>${item.title}</h3>
+              <div class="card-action">
+                <a href="${item.fileUrl}" target="_blank" class="btn-view">Download <i data-feather="download" style="width:16px;"></i></a>
+              </div>
+            </div>`;
+          }).join('');
         }
 
-        // Helper to check if "New" (within last 7 days)
-        const isNew = (date) => {
-          const now = new Date();
-          const diffTime = Math.abs(now - date);
-          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-          return diffDays <= 7;
-        };
+        // RENDER EVENTS
+        if (eventsData.length === 0) {
+          eventsGrid.innerHTML = `
+            <div class="empty-state">
+              <div style="background: var(--k-surface); padding: 20px; border-radius: 50%;">
+                <i data-feather="calendar" style="width: 32px; height: 32px; color: var(--k-text-light);"></i>
+              </div>
+              <h3 style="color: var(--k-text); font-size:1.1rem; margin:0;">No Upcoming Events</h3>
+              <p style="color: var(--k-text-light); font-size: 0.9rem; margin:0;">Check back later for fun activities!</p>
+            </div>`;
+        } else {
+          eventsGrid.innerHTML = eventsData.map(item => {
+            const date = new Date(item.eventDate);
+            // Format: "Sat, Jan 25 @ 10:00 AM"
+            const dateStr = date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+            const timeStr = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
 
-        grid.innerHTML = allContent.map(item => `
+            return `
             <div class="content-card">
-                ${isNew(item.date) ? '<div class="card-badge-new">New</div>' : ''}
-                
-                <div class="card-icon-wrapper" style="background: ${item.bg}; color: ${item.color};">
-                    <i data-feather="${item.icon}"></i>
-                </div>
-
-                <div class="card-meta">
-                    <span style="display:flex; align-items:center; gap:4px;">
-                        <i data-feather="clock" style="width:12px; height:12px;"></i> ${item.date.toLocaleDateString()}
-                    </span>
-                    <span style="width: 4px; height: 4px; background: currentColor; border-radius: 50%; opacity: 0.5;"></span>
-                    <span>${item.type}</span>
-                </div>
-
-                <h3>${item.title}</h3>
-
-                <div class="card-action">
-                    ${item.link && item.link !== '#'
-            ? `<a href="${item.link}" target="_blank" class="btn-view">View Content <i data-feather="arrow-right" style="width:16px;"></i></a>`
-            : `<button disabled class="btn-view" style="opacity:0.6; cursor:default;">Coming Soon</button>`
-          }
-                </div>
-            </div>
-        `).join('');
+              <div class="card-icon-wrapper" style="background: #f3e8ff; color: #7c3aed;">
+                <i data-feather="calendar"></i>
+              </div>
+              <div class="card-meta">
+                <span><i data-feather="clock" style="width:12px;"></i> ${dateStr}</span>
+                <span style="opacity:0.5;">•</span>
+                <span>${timeStr}</span>
+              </div>
+              <h3>${item.title}</h3>
+              <p style="font-size:0.95rem; color:var(--k-text-light); margin:0; line-height:1.5;">${item.description || ''}</p>
+            </div>`;
+          }).join('');
+        }
 
         feather.replace();
 
       } catch (err) {
         console.error(err);
-        grid.innerHTML = `
-            <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #ef4444;">
-                <i data-feather="alert-circle" style="width: 30px; height: 30px; margin-bottom: 10px;"></i>
-                <p>Unable to load content. Please refresh or try logging in.</p>
-            </div>
-        `;
+        const errorHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; color: #ef4444;">
+                <i data-feather="alert-circle"></i> <p>Unable to load content.</p>
+            </div>`;
+        resourcesGrid.innerHTML = errorHTML;
+        eventsGrid.innerHTML = errorHTML;
         feather.replace();
       }
     }

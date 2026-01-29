@@ -22,7 +22,7 @@ These files define the database tables using Sequelize.
 | **index.js** | **Model Aggregator**. Initializes Sequelize, imports all models, and defines **Associations** (Relationships like One-To-Many). |
 | **User.js** | Users table (Admins, Teachers, Parents, Kids). Handles roles and auth. |
 | **SabbathSchoolClass.js** | Classes (e.g., "Small", "Middle"). Linked to a Teacher. |
-| **ClassEvent.js** | Events scheduled for classes. **PK: `eventid`**. One event per class. |
+| **ClassEvent.js** | Events created by teachers. **PK: `id`**. |
 | **TeacherResource.js** | Files uploaded by teachers. Links to file system (`uploads/teacher-resources`). |
 | **Sermon.js** | Sermons posted by admins. |
 | **Donation.js** | Records of donations. |
