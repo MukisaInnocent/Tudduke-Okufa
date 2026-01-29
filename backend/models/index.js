@@ -94,8 +94,8 @@ User.hasMany(TeacherResource, { foreignKey: 'uploadedBy' });
 TeacherResource.belongsTo(User, { as: 'uploader', foreignKey: 'uploadedBy' });
 
 // Events
-SabbathSchoolClass.hasMany(ClassEvent, { foreignKey: 'classId' });
-ClassEvent.belongsTo(SabbathSchoolClass, { foreignKey: 'classId' });
+SabbathSchoolClass.hasMany(ClassEvent, { foreignKey: 'eventid' });
+ClassEvent.belongsTo(SabbathSchoolClass, { foreignKey: 'eventid' });
 User.hasMany(ClassEvent, { foreignKey: 'createdBy' });
 ClassEvent.belongsTo(User, { as: 'creator', foreignKey: 'createdBy' });
 

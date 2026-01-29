@@ -321,7 +321,10 @@
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <div class="logo-icon"><i data-feather="book-open"></i></div>
-            <h3 style="margin:0; font-size:1.1rem; font-weight:700;">Teacher Portal</h3>
+            <div>
+                <h3 style="margin:0; font-size:1.1rem; font-weight:700;">Teacher Portal</h3>
+                <span id="teacherNameDisplay" style="font-size:0.8rem; color:rgba(255,255,255,0.7);">Loading...</span>
+            </div>
         </div>
         <nav class="sidebar-menu">
             <a href="teacher-dashboard.html" class="menu-link"><i data-feather="home"></i> Overview</a>
@@ -496,6 +499,23 @@
         });
 
         loadSchedule();
+
+        // Fetch Profile Name
+        async function loadProfile() {
+            try {
+                const res = await fetch(`${API_BASE}/api/auth/profile`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    const user = await res.json();
+                    const nameDisplay = document.getElementById('teacherNameDisplay');
+                    if (nameDisplay) nameDisplay.textContent = 'Welcome, ' + user.fullname;
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+        loadProfile();
     </script>
 </body>
 

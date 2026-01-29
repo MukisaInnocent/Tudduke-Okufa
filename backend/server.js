@@ -151,7 +151,7 @@ const authenticateToken = (req, res, next) => {
   if (!token) return res.sendStatus(401);
 
   jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403);
+    if (err) return res.status(403).json({ error: 'Invalid or expired session. Please login again.' });
     req.user = user;
     next();
   });
@@ -303,6 +303,20 @@ app.post('/api/auth/login', async (req, res) => {
   } catch (err) {
     console.error('Login Error:', err);
     res.status(500).json({ error: 'Login failed' });
+  }
+});
+
+// Get User Profile
+app.get('/api/auth/profile', authenticateToken, async (req, res) => {
+  try {
+    const user = await User.findByPk(req.user.userid, {
+      attributes: ['userid', 'fullname', 'email', 'roles', 'profileImage']
+    });
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    res.json(user);
+  } catch (err) {
+    console.error('Profile Fetch Error:', err);
+    res.status(500).json({ error: 'Failed to fetch profile' });
   }
 });
 
@@ -1027,7 +1041,7 @@ app.get('/api/teacher/resources', authenticateToken, async (req, res) => {
       const whereClause = req.user.role === 'admin' ? {} : { uploadedBy: req.user.userid };
       const resources = await TeacherResource.findAll({
         where: whereClause,
-        include: [{ model: User, attributes: ['fullname', 'email'] }],
+        include: [{ model: User, as: 'uploader', attributes: ['fullname', 'email'] }],
         order: [['createdAt', 'DESC']]
       });
       res.json(resources);
@@ -1100,7 +1114,10 @@ app.get('/api/kids/quiz/history', authenticateToken, async (req, res) => {
 
 // UPLOAD RESOURCE
 app.post('/api/teacher/resources', authenticateToken, upload.single('resourceFile'), async (req, res) => {
-  if (req.user.role !== 'teacher' && req.user.role !== 'admin') return res.sendStatus(403);
+  if (req.user.role !== 'teacher' && req.user.role !== 'admin') {
+    console.log(`[AUTH FAIL] User ${req.user.userid} (${req.user.email}) tried to upload but has role '${req.user.role}'`);
+    return res.status(403).json({ error: `Permission denied. You are a '${req.user.role}', but 'teacher' or 'admin' is required.` });
+  }
 
   try {
     const { title, type, description } = req.body;
@@ -1108,14 +1125,34 @@ app.post('/api/teacher/resources', authenticateToken, upload.single('resourceFil
     if (req.file) console.log('[DEBUG] File received:', req.file.filename);
     else console.log('[DEBUG] No file received');
 
-    // File Handling (Database)
+    // File Handling (File System)
     let fileUrl = '';
-    let fileData = null;
+    let fileData = null; // No longer storing BLOB
     let mimeType = null;
 
     if (req.file) {
-      fileData = req.file.buffer;
+      const fs = require('fs');
+      const path = require('path');
+
+      // Ensure directory exists
+      const uploadDir = path.join(__dirname, '../uploads/teacher-resources');
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+      }
+
+      // Generate unique filename
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      const ext = path.extname(req.file.originalname);
+      const filename = 'resource-' + uniqueSuffix + ext;
+      const filePath = path.join(uploadDir, filename);
+
+      // Write buffer to file
+      fs.writeFileSync(filePath, req.file.buffer);
+
+      fileUrl = `/uploads/teacher-resources/${filename}`;
       mimeType = req.file.mimetype;
+
+      console.log(`[UPLOAD] Saved file to ${filePath}`);
     } else {
       return res.status(400).json({ error: 'No file uploaded' });
     }
@@ -1123,23 +1160,15 @@ app.post('/api/teacher/resources', authenticateToken, upload.single('resourceFil
     const resource = await TeacherResource.create({
       title,
       type: type || 'other',
-      fileUrl: 'temp', // Will update after ID creation
+      fileUrl: fileUrl,
       description,
       uploadedBy: req.user.userid,
       status: 'pending',
-      fileData: fileData,
+      fileData: null, // Saving space
       mimeType: mimeType
     });
 
-    // Update URL logic
-    resource.fileUrl = `/api/public/resources/${resource.id}/file`;
-    await resource.save();
-
-    // Don't send huge buffer back in JSON
-    const resourcePlain = resource.toJSON();
-    delete resourcePlain.fileData;
-
-    res.status(201).json(resourcePlain);
+    res.status(201).json(resource);
   } catch (err) {
     console.error('Upload Resource Error:', err);
     res.status(500).json({ error: 'Failed to upload resource' });
@@ -1190,17 +1219,19 @@ app.post('/api/teacher/schedule', authenticateToken, async (req, res) => {
 
   try {
     const { title, description, eventDate, classId } = req.body;
+
+    // classId IS the eventid now (PK)
     const event = await ClassEvent.create({
+      eventid: classId,
       title,
       description,
       eventDate,
-      classId: classId || null,
       createdBy: req.user.userid
     });
     res.status(201).json(event);
   } catch (err) {
     console.error('Create Event Error:', err);
-    res.status(500).json({ error: 'Failed to create event' });
+    res.status(500).json({ error: 'Failed to create event. A class can only have one event.' });
   }
 });
 

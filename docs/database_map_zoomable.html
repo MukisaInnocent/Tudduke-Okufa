@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Map - Zoomable</title>
+    <!-- Mermaid JS -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+    <!-- SVG Pan Zoom -->
+    <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: sans-serif;
+        }
+
+        .controls {
+            padding: 10px;
+            background: #333;
+            color: white;
+            text-align: center;
+        }
+
+        #diagram-container {
+            flex: 1;
+            overflow: hidden;
+            background: #f4f4f4;
+            border: 1px solid #ccc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Ensure the svg takes full space for the pan-zoom library */
+        .mermaid {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="controls">
+        <strong>Database Map</strong> | Use Mouse Wheel to Zoom | Drag to Pan
+    </div>
+    <div id="diagram-container">
+        <div class="mermaid">
+            erDiagram
+            %% USERS & ROLES
+            User {
+            int userid PK
+            string fullname
+            string email
+            string password
+            string role "admin, teacher, kid, parent"
+            boolean isVerified
+            }
+
+            %% CLASSES & EVENTS
+            SabbathSchoolClass {
+            int id PK
+            string name
+            string ageGroup
+            int teacherId FK
+            }
+
+            ClassEvent {
+            int eventid PK "FK to SabbathSchoolClass"
+            string title
+            string description
+            datetime eventDate
+            string status "pending, approved, rejected"
+            int createdBy FK
+            }
+
+            %% RESOURCES (Files)
+            TeacherResource {
+            int id PK
+            string title
+            string type
+            string fileUrl "Path to file on disk"
+            string description
+            string status
+            int uploadedBy FK
+            }
+
+            %% CONTENT (Sermons, etc.)
+            Sermon {
+            int id PK
+            string title
+            string preacher
+            string fileUrl
+            string videoUrl
+            datetime entrytime
+            int authorid FK
+            }
+
+            SermonComment {
+            int id PK
+            string content
+            int userId FK
+            int sermonId FK
+            }
+
+            SermonLike {
+            int id PK
+            int userId FK
+            int sermonId FK
+            }
+
+            %% KIDS ACTIVITY
+            ResourceView {
+            int id PK
+            string resourceType
+            int resourceId
+            datetime viewedAt
+            int userId FK
+            }
+
+            QuizResult {
+            int id PK
+            int score
+            int totalQuestions
+            int kidId FK
+            }
+
+            %% PUBLIC / UTILS
+            Donation {
+            int id PK
+            string donorName
+            decimal amount
+            string method
+            }
+
+            ContactMessage {
+            int id PK
+            string name
+            string email
+            string message
+            }
+
+            %% RELATIONSHIPS
+
+            %% User Relationships
+            User ||--o{ SabbathSchoolClass : "teaches (as teacher)"
+            User ||--o{ TeacherResource : "uploads"
+            User ||--o{ ClassEvent : "creates"
+            User ||--o{ Sermon : "authors (as admin)"
+            User ||--o{ SermonComment : "writes"
+            User ||--o{ SermonLike : "likes"
+            User ||--o{ ResourceView : "views"
+            User ||--o{ QuizResult : "achieves"
+
+            %% Class Relationships
+            SabbathSchoolClass ||--|| ClassEvent : "has (One Event Per Class)"
+
+            %% Sermon Relationships
+            Sermon ||--o{ SermonComment : "has"
+            Sermon ||--o{ SermonLike : "has"
+        </div>
+    </div>
+
+    <script>
+        // Initialize svg-pan-zoom after mermaid renders the SVG
+        const initZoom = () => {
+            const svgElement = document.querySelector('.mermaid svg');
+            if (svgElement) {
+                // Set explicit dimensions for smoother zooming
+                svgElement.style.width = '100%';
+                svgElement.style.height = '100%';
+
+                svgPanZoom(svgElement, {
+                    zoomEnabled: true,
+                    controlIconsEnabled: true,
+                    fit: true,
+                    center: true,
+                    minZoom: 0.5,
+                    maxZoom: 10
+                });
+            } else {
+                // Retry if not yet rendered
+                setTimeout(initZoom, 100);
+            }
+        };
+
+        // Start checking for the SVG
+        setTimeout(initZoom, 500);
+    </script>
+</body>
+
+</html>

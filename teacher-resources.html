@@ -424,7 +424,7 @@
     <script>
         feather.replace();
         const token = localStorage.getItem('ministryToken');
-        // if (!token) window.location.href = 'login.html';
+        if (!token) window.location.href = 'login.html';
 
         // API Base Logic
         const getApiBase = () => {
@@ -465,6 +465,12 @@
             btn.textContent = 'Uploading...';
             btn.disabled = true;
 
+            if (!token) {
+                alert('You must be logged in to upload resources.');
+                window.location.href = 'login.html';
+                return;
+            }
+
             const formData = new FormData();
             formData.append('title', document.getElementById('resTitle').value);
             formData.append('type', document.getElementById('resType').value);
@@ -486,12 +492,26 @@
                     closeUploadModal();
                     loadResources();
                 } else {
-                    const err = await res.json();
-                    alert('Upload Failed: ' + (err.error || 'Unknown error'));
+                    let errorMessage = 'Unknown error';
+                    try {
+                        const err = await res.json();
+                        errorMessage = err.error || errorMessage;
+                    } catch (jsonErr) {
+                        // If JSON fails, try text (e.g. "Forbidden", "Unauthorized")
+                        console.warn('Response was not JSON:', jsonErr);
+                        try {
+                            // Response body might be already consumed? clone it? 
+                            // Wait, await res.json() consumes it. we can't consume it again easily unless we cloned it or checks content-type.
+                            // Actually, if await res.json() throws, we can't read it again.
+                        } catch (e) { }
+
+                        errorMessage = `Server Error (${res.status}): ${res.statusText}`;
+                    }
+                    alert('Upload Failed: ' + errorMessage);
                 }
             } catch (err) {
                 console.error(err);
-                alert('Error uploading file');
+                alert('Error uploading file: ' + err.message);
             } finally {
                 btn.textContent = originalText;
                 btn.disabled = false;
