@@ -116,6 +116,40 @@
         transform: translateY(0);
       }
     }
+
+    /* TOPIC GRID */
+    .topic-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .topic-card {
+      background: white;
+      padding: 24px;
+      border-radius: var(--k-radius);
+      box-shadow: var(--k-shadow);
+      cursor: pointer;
+      transition: 0.3s;
+      border: 2px solid transparent;
+      text-align: center;
+    }
+
+    .topic-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--k-brand);
+      background: #fff9f9;
+    }
+
+    .topic-card h3 {
+      color: var(--k-brand);
+      margin-bottom: 10px;
+    }
+
+    .topic-card p {
+      color: #666;
+      font-size: 0.9rem;
+    }
   </style>
 </head>
 
@@ -157,14 +191,32 @@
   <!-- MAIN -->
   <div class="container">
     <div class="quiz-wrapper">
-      <span class="hero-badge" style="margin-bottom: 10px;">Test Your Knowledge</span>
-      <h2>Kids Bible Quiz</h2>
 
-      <div class="quiz-card">
-        <h3 id="question">Loading Question...</h3>
-        <div class="options" id="options"></div>
-        <div class="score">⭐ Score: <span id="score">0</span></div>
+      <!-- TOPIC SELECTION -->
+      <div id="topicSection">
+        <span class="hero-badge" style="margin-bottom: 10px;">Select a Topic</span>
+        <h2>Choose Your Challenge</h2>
+        <div id="topicGrid" class="topic-grid">
+          <p>Loading topics...</p>
+        </div>
       </div>
+
+      <!-- QUIZ GAME (Hidden initially) -->
+      <div id="quizSection" style="display: none;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span class="hero-badge" style="margin-bottom: 10px;">Test Your Knowledge</span>
+          <button onclick="showTopics()"
+            style="background:none; border:none; text-decoration:underline; cursor:pointer;">Change Topic</button>
+        </div>
+        <h2 id="currentTopicTitle">General Quiz</h2>
+
+        <div class="quiz-card">
+          <h3 id="question">Loading Question...</h3>
+          <div class="options" id="options"></div>
+          <div class="score">⭐ Score: <span id="score">0</span></div>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -201,21 +253,58 @@
     const optionsEl = document.getElementById("options");
     const scoreEl = document.getElementById("score");
 
-    /* LOAD QUIZ QUESTIONS FROM BACKEND */
-    async function loadQuizQuestions() {
-      // API Base Logic
-      const getApiBase = () => {
-        const { hostname, protocol, port } = window.location;
-        if (protocol === 'file:') return 'http://localhost:3000';
-        if ((hostname === 'localhost' || hostname === '127.0.0.1') && port !== '3000') {
-          return 'http://localhost:3000';
+    /* LOAD TOPICS FIRST */
+    async function loadTopics() {
+      try {
+        const API_BASE = getApiBase();
+        const res = await fetch(`${API_BASE}/api/kids/quiz/topics`);
+        const topics = await res.json();
+
+        const grid = document.getElementById('topicGrid');
+        if (topics.length === 0) {
+          grid.innerHTML = '<p>No quizzes available right now. Please check back later!</p>';
+          return;
         }
-        return '';
-      };
+
+        grid.innerHTML = topics.map(t => `
+                <div class="topic-card" onclick="startQuiz(${t.topicid}, '${t.title}')">
+                    <h3>${t.title}</h3>
+                    <p>${t.description || 'Click to start!'}</p>
+                </div>
+            `).join('');
+
+      } catch (e) {
+        console.error(e);
+        document.getElementById('topicGrid').innerHTML = '<p>Error loading topics.</p>';
+      }
+    }
+
+    function startQuiz(topicId, topicTitle) {
+      document.getElementById('topicSection').style.display = 'none';
+      document.getElementById('quizSection').style.display = 'block';
+      document.getElementById('currentTopicTitle').textContent = topicTitle;
+
+      currentIndex = 0;
+      score = 0;
+      document.getElementById('score').textContent = '0';
+
+      loadQuizQuestions(topicId);
+    }
+
+    function showTopics() {
+      document.getElementById('quizSection').style.display = 'none';
+      document.getElementById('topicSection').style.display = 'block';
+    }
+
+    /* LOAD QUIZ QUESTIONS FROM BACKEND */
+    async function loadQuizQuestions(topicId) {
       const API_BASE = getApiBase();
 
       try {
-        const res = await fetch(`${API_BASE}/api/kids/quiz`);
+        let url = `${API_BASE}/api/kids/quiz`;
+        if (topicId) url += `?topicId=${topicId}`;
+
+        const res = await fetch(url);
         if (!res.ok) throw new Error('Failed to fetch quiz questions');
 
         const data = await res.json();
@@ -224,7 +313,8 @@
           loadQuestion();
         } else {
           // Fallback if no questions
-          questionEl.textContent = "No questions available right now!";
+          document.getElementById('question').textContent = "No questions found for this topic!";
+          document.getElementById('options').innerHTML = `<button onclick="showTopics()">Go Back</button>`;
         }
       } catch (err) {
         console.error("Error loading quiz:", err);
@@ -248,7 +338,10 @@
     async function loadQuestion() {
       if (currentIndex >= quizQuestions.length) {
         questionEl.innerHTML = "🎉 Quiz Completed!";
-        optionsEl.innerHTML = `<button onclick="location.reload()" style="background:var(--k-brand); color:white; border:none;">Play Again</button>`;
+        optionsEl.innerHTML = `
+            <button onclick="startQuiz(null, 'Replay')" style="background:var(--k-brand); color:white; border:none; margin-right:10px;">Replay</button>
+            <button onclick="showTopics()" style="background:#555; color:white; border:none;">Choose Topic</button>
+        `;
 
         // Submit Result
         await submitQuizResult(score, quizQuestions.length);
@@ -318,7 +411,16 @@
     }
 
     // Start
-    loadQuizQuestions();
+    // Start
+    const getApiBase = () => {
+      const { hostname, protocol, port } = window.location;
+      if (protocol === 'file:') return 'http://localhost:3000';
+      if ((hostname === 'localhost' || hostname === '127.0.0.1') && port !== '3000') {
+        return 'http://localhost:3000';
+      }
+      return '';
+    };
+    loadTopics();
   </script>
 
 </body>

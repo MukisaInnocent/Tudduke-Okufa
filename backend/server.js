@@ -29,7 +29,8 @@ const {
   ClassEvent,
   ResourceView,
   QuizResult,
-  PreacherResource
+  PreacherResource,
+  QuizTopic
 } = require('./models');
 
 /*********************************
@@ -756,11 +757,49 @@ app.get('/api/kids/sermons/:id', async (req, res) => {
   }
 });
 
+// Quiz Topics (Kids)
+app.get('/api/kids/quiz/topics', async (req, res) => {
+  try {
+    const topics = await QuizTopic.findAll({
+      where: { isActive: true },
+      order: [['createdAt', 'DESC']]
+    });
+    // Add default "General" if empty or hardcoded logic needed?
+    // For now return DB topics
+    res.json(topics);
+  } catch (err) {
+    console.error('❌ Quiz topics fetch error:', err);
+    res.status(500).json({ error: 'Failed to fetch quiz topics' });
+  }
+});
+
+// Create Quiz Topic (Teacher)
+app.post('/api/teacher/quiz/topics', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'teacher' && req.user.role !== 'admin') return res.sendStatus(403);
+  try {
+    const { title, description } = req.body;
+    const topic = await QuizTopic.create({
+      title,
+      description,
+      createdBy: req.user.userid
+    });
+    res.status(201).json(topic);
+  } catch (err) {
+    console.error('Create Topic Error:', err);
+    res.status(500).json({ error: 'Failed to create topic' });
+  }
+});
+
 // Quiz Questions (Kids)
 app.get('/api/kids/quiz', async (req, res) => {
   try {
+    const whereClause = { isActive: true };
+    if (req.query.topicId) {
+      whereClause.topicId = req.query.topicId;
+    }
+
     const questions = await QuizQuestion.findAll({
-      where: { isActive: true },
+      where: whereClause,
       order: [['createdAt', 'DESC']]
     });
     res.json(questions);
@@ -769,6 +808,39 @@ app.get('/api/kids/quiz', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch quiz questions' });
   }
 });
+
+// Memory Verses
+app.get('/api/kids/memory-verses', async (req, res) => {
+  try {
+    const verses = await MemoryVerse.findAll({
+      where: { isActive: true },
+      order: [['createdAt', 'DESC']]
+    });
+    res.json(verses);
+  } catch (err) {
+    console.error('Fetch Memory Verses Error:', err);
+    res.status(500).json({ error: 'Failed to fetch verses' });
+  }
+});
+
+app.post('/api/admin/memory-verses', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'admin' && req.user.role !== 'teacher') return res.sendStatus(403);
+
+  try {
+    const { text, reference, dayOfWeek } = req.body;
+    const verse = await MemoryVerse.create({
+      text,
+      reference,
+      dayOfWeek,
+      createdBy: req.user.userid
+    });
+    res.status(201).json(verse);
+  } catch (err) {
+    console.error('Create Memory Verse Error:', err);
+    res.status(500).json({ error: 'Failed to create verse' });
+  }
+});
+
 
 // Donations
 app.post('/api/donations', async (req, res) => {
@@ -1490,23 +1562,29 @@ app.get('/api/preacher/resources', async (req, res) => {
   try {
     const whereClause = {};
 
-    // Filter by 'mine' if requested (Protected)
-    if (req.query.mine === 'true') {
-      const authHeader = req.headers['authorization'];
-      const token = authHeader && authHeader.split(' ')[1];
-      if (token) {
-        try {
-          const user = jwt.verify(token, process.env.JWT_SECRET || 'supersecretkey123');
-          whereClause.uploadedBy = user.userid;
-        } catch (e) {
-          // invalid token, ignore or return error? defaulting to public view if auth fails might be safer or returning empty
-          return res.status(403).json({ error: 'Invalid token' });
-        }
-      } else {
-        return res.status(401).json({ error: 'Unauthorized' });
+    // Auth Check for Admin / Owner
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    let user = null;
+
+    if (token) {
+      try {
+        user = jwt.verify(token, process.env.JWT_SECRET || 'supersecretkey123');
+      } catch (e) {
+        // invalid token
       }
+    }
+
+    if (user && user.role === 'admin') {
+      // Admin sees ALL (or status filtered)
+      if (req.query.status) {
+        whereClause.status = req.query.status;
+      }
+    } else if (req.query.mine === 'true' && user) {
+      // Preacher sees own
+      whereClause.uploadedBy = user.userid;
     } else {
-      // Public view: only approved resources
+      // Public / Default
       whereClause.status = 'approved';
     }
 

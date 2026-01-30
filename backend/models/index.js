@@ -65,6 +65,7 @@ const ClassEvent = require('./ClassEvent')(sequelize, require('sequelize').DataT
 
 const ResourceView = require('./ResourceView')(sequelize, require('sequelize').DataTypes);
 const QuizResult = require('./QuizResult')(sequelize, require('sequelize').DataTypes);
+const QuizTopic = require('./QuizTopic')(sequelize, require('sequelize').DataTypes);
 
 // ASSOCIATIONS
 User.hasMany(SermonComment, { foreignKey: 'userId' });
@@ -109,9 +110,20 @@ ClassEvent.belongsTo(SabbathSchoolClass, { foreignKey: 'classId' });
 User.hasMany(ResourceView, { foreignKey: 'userId' });
 ResourceView.belongsTo(User, { foreignKey: 'userId' });
 
+// Quiz Topics & Questions
+User.hasMany(QuizTopic, { foreignKey: 'createdBy' });
+QuizTopic.belongsTo(User, { as: 'creator', foreignKey: 'createdBy' });
+
+QuizTopic.hasMany(QuizQuestion, { foreignKey: 'topicId' });
+QuizQuestion.belongsTo(QuizTopic, { foreignKey: 'topicId' });
+
 // Quiz Results
 User.hasMany(QuizResult, { foreignKey: 'kidId' });
 QuizResult.belongsTo(User, { foreignKey: 'kidId' });
+
+// Memory Verses
+User.hasMany(MemoryVerse, { foreignKey: 'createdBy' });
+MemoryVerse.belongsTo(User, { as: 'creator', foreignKey: 'createdBy' });
 
 module.exports = {
   sequelize,
@@ -131,5 +143,6 @@ module.exports = {
   PreacherResource,
   ClassEvent,
   ResourceView,
-  QuizResult
+  QuizResult,
+  QuizTopic
 };

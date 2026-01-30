@@ -88,24 +88,27 @@ Once the server is running, the following endpoints are available:
 - `GET /api/kids/lessons` - Get weekly lessons
 - `GET /api/kids/lessons/:id` - Get specific lesson
 - `GET /api/kids/memory-verses` - Get all memory verses
-- `GET /api/kids/memory-verses/daily` - Get today's verse
+- `POST /api/admin/memory-verses` - Create memory verse (Admin/Teacher)
 - `GET /api/kids/sermons` - Get children's sermons
 - `GET /api/kids/sermons/:id` - Get specific children's sermon
-- `GET /api/kids/quiz` - Get quiz questions
+- `GET /api/kids/quiz` - Get quiz questions (Optional ?topicId=...)
+- `GET /api/kids/quiz/topics` - Get quiz topics
+- `POST /api/teacher/quiz/topics` - Create quiz topic
 
 ### Donations
 - `POST /api/donations` - Submit donation
 - `GET /api/donations` - Get all donations
 
-### Teacher Portal (Protected)
+### Teacher/Preacher Portal (Protected)
 - `GET /api/teacher/classes` - Get my classes
 - `POST /api/teacher/classes` - Create class
 - `GET /api/teacher/resources` - Get my resources
 - `POST /api/teacher/resources` - Upload resource
-- `GET /api/teacher/schedule` - Get schedule
-- `POST /api/teacher/schedule` - Add event (No classId required)
-- `GET /api/teacher/dashboard/stats` - Get stats
+- `POST /api/teacher/schedule` - Add event
 - `POST /api/teacher/notify-parents` - Send notifications
+- `GET /api/preacher/resources` - Get preacher resources (Admin sees all)
+- `POST /api/preacher/resources` - Upload preacher resource
+- `PUT /api/admin/preacher-resources/:id/verify` - Verify preacher resource
 
 ### Admin
 - `GET /api/admin/users` - List users
@@ -154,11 +157,13 @@ The following tables will be created automatically:
 - `memory_verses` - Memory verses for kids
 - `children_sermons` - Children's sermons
 - `quiz_questions` - Bible quiz questions
+- `quiz_topics` - Categories for quizzes
 - `quiz_results` - Kids quiz scores
 - `donations` - Donation records
 - `sabbath_school_classes` - Classes managed by teachers
 - `class_events` - Events created by teachers (independent of specific classes)
 - `teacher_resources` - Files/Links shared by teachers
+- `preacher_resources` - Resources uploaded by preachers (requires verification)
 - `resource_views` - Tracking student views on resources
 - `sermon_likes` - Likes on main sermons
 - `sermon_comments` - Comments on main sermons

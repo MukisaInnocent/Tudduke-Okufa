@@ -28,6 +28,14 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         comment: '1, 2, or 3 indicating which option is correct'
       },
+      topicId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+          model: 'quiz_topics',
+          key: 'topicid'
+        }
+      },
       isActive: {
         type: DataTypes.BOOLEAN,
         defaultValue: true

@@ -643,6 +643,26 @@
                         </tbody>
                     </table>
                 </div>
+
+                <h3 style="margin-top:30px;">Preacher Resources</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>Uploader</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="preacherResourceTable">
+                            <tr>
+                                <td colspan="5" style="text-align:center;">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -750,28 +770,23 @@
                     fetch(`${API_BASE}/api/teacher/resources`, { headers: { 'Authorization': `Bearer ${token}` } }),
                     fetch(`${API_BASE}/api/teacher/schedule`, { headers: { 'Authorization': `Bearer ${token}` } }),
                     fetch(`${API_BASE}/api/admin/sermons`, { headers: { 'Authorization': `Bearer ${token}` } }),
-                    fetch(`${API_BASE}/api/resources/pending`, { headers: { 'Authorization': `Bearer ${token}` } })
-                        .catch(() => ({ ok: false })) // Graceful fallback if endpoint doesn't exist
+                    fetch(`${API_BASE}/api/preacher/resources`, { headers: { 'Authorization': `Bearer ${token}` } })
                 ]);
 
                 const resources = await resRes.json();
                 const events = await resEvt.json();
                 const sermons = await resSermons.json();
-
-                // Handle pending preacher resources
-                if (resPendingResources.ok) {
-                    const pendingResourcesData = await resPendingResources.json();
-                    const count = pendingResourcesData.count || pendingResourcesData.length || 0;
-                    document.getElementById('pendingResourcesStat').textContent = count;
-                } else {
-                    document.getElementById('pendingResourcesStat').textContent = '0';
-                }
+                const preacherResources = await resPendingResources.json();
 
                 // Check pending counts for badge
+                // Check pending counts for badge
                 const pRes = resources.filter(r => r.status === 'pending').length;
+                const pPreacherRes = Array.isArray(preacherResources) ? preacherResources.filter(r => r.status === 'pending').length : 0;
                 const pEvt = events.filter(e => e.status === 'pending').length;
                 const pSerm = sermons.filter(s => s.status === 'pending').length;
-                const totalPending = pRes + pEvt + pSerm;
+                const totalPending = pRes + pPreacherRes + pEvt + pSerm;
+
+                document.getElementById('pendingResourcesStat').textContent = pPreacherRes;
 
                 const tabLabel = `Content Manager ${totalPending > 0 ? `<span style="background:var(--danger); color:white; padding:2px 6px; border-radius:10px; font-size:0.7em; margin-left:4px;">${totalPending}</span>` : ''}`;
                 document.getElementById('tab-content').innerHTML = tabLabel;
@@ -780,6 +795,7 @@
                 window.allResources = resources;
                 window.allEvents = events;
                 window.allSermons = sermons;
+                window.allPreacherResources = Array.isArray(preacherResources) ? preacherResources : [];
 
                 renderContent(); // Initial Render
             } catch (e) { console.error("Content Load Error:", e); }
@@ -795,6 +811,11 @@
             const rBody = document.getElementById('resourceTable');
             const rFiltered = (window.allResources || []).filter(filterFn);
             rBody.innerHTML = rFiltered.length ? rFiltered.map(r => createResourceRow(r)).join('') : '<tr><td colspan="6" style="text-align:center;">No matching resources.</td></tr>';
+
+            // Render Preacher Resources
+            const prBody = document.getElementById('preacherResourceTable');
+            const prFiltered = (window.allPreacherResources || []).filter(filterFn);
+            prBody.innerHTML = prFiltered.length ? prFiltered.map(r => createPreacherResourceRow(r)).join('') : '<tr><td colspan="5" style="text-align:center;">No matching resources.</td></tr>';
 
             // Render Events
             const eBody = document.getElementById('eventTable');
@@ -912,6 +933,42 @@
             if (status === 'approved') return '<span class="badge badge-verified">Approved</span>';
             if (status === 'rejected') return '<span class="badge" style="background:#fff5f5; color:#e53e3e;">Rejected</span>';
             return '<span class="badge badge-pending">Pending</span>';
+        }
+
+        function createPreacherResourceRow(r) {
+            const uploadedBy = r.uploader ? r.uploader.fullname : (r.uploadedBy || 'Unknown');
+            return `
+                <tr>
+                    <td><strong>${r.title}</strong></td>
+                    <td><span class="badge" style="background:#edf2f7; color:#4a5568;">${r.type}</span></td>
+                    <td>${getStatusBadge(r.status)}</td>
+                    <td>${uploadedBy}</td>
+                    <td>${new Date(r.createdAt).toLocaleDateString()}</td>
+                    <td>
+                        <a href="${r.fileUrl}" target="_blank" class="btn-sm" style="color:var(--brand-primary); text-decoration:none; margin-right:5px;">View</a>
+                        <button class="btn-sm btn-approve" onclick="verifyPreacherResource('${r.id}', 'approved')">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; margin-right:4px;"><polyline points="20 6 9 17 4 12"></polyline></svg> Approve
+                        </button>
+                        <button class="btn-sm" style="background:#fff5f5; color:var(--danger);" onclick="verifyPreacherResource('${r.id}', 'rejected')">Reject</button>
+                    </td>
+                </tr>
+            `;
+        }
+
+        async function verifyPreacherResource(id, status) {
+            if (!confirm(`Are you sure you want to ${status.toUpperCase()} this resource?`)) return;
+            try {
+                const res = await fetch(`${API_BASE}/api/admin/preacher-resources/${id}/verify`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ status })
+                });
+                if (res.ok) {
+                    loadData();
+                } else {
+                    alert('Verification failed');
+                }
+            } catch (e) { console.error(e); }
         }
 
         function createResourceRow(r) {

@@ -282,24 +282,7 @@
   <script src="script.js"></script>
 
   <script>
-    /* ===== VERSE DATA ===== */
-    const verses = [
-      { text: "For God so loved the world that he gave his one and only Son...", ref: "John 3:16" },
-      { text: "I can do all this through him who gives me strength.", ref: "Philippians 4:13" },
-      { text: "In the beginning God created the heavens and the earth.", ref: "Genesis 1:1" },
-      { text: "Children, obey your parents in everything, for this pleases the Lord.", ref: "Colossians 3:20" },
-      { text: "The Lord is my shepherd, I lack nothing.", ref: "Psalm 23:1" }
-    ];
-
-    const weeklySchedule = [
-      "Mon: Genesis 1:1",
-      "Tue: John 3:16",
-      "Wed: Psalm 23:1",
-      "Thu: Phil 4:13",
-      "Fri: Eph 6:1",
-      "Sat: Review All",
-      "Sun: Share with Family"
-    ];
+    let verses = [];
 
     // Select Elements
     const mainText = document.getElementById("mainText");
@@ -308,31 +291,63 @@
     const weeklyList = document.getElementById("weeklyList");
     const memCheck = document.getElementById("memorized");
 
+    /* API Base Logic */
+    const getApiBase = () => {
+      const { hostname, protocol, port } = window.location;
+      if (protocol === 'file:') return 'http://localhost:3000';
+      if ((hostname === 'localhost' || hostname === '127.0.0.1') && port !== '3000') {
+        return 'http://localhost:3000';
+      }
+      return '';
+    };
+
+    async function loadVerses() {
+      try {
+        const API_BASE = getApiBase();
+        const res = await fetch(`${API_BASE}/api/kids/memory-verses`);
+        const data = await res.json();
+
+        if (data && data.length > 0) {
+          verses = data;
+        } else {
+          // Fallback if DB is empty
+          verses = [
+            { text: "Thy word is a lamp unto my feet, and a light unto my path.", reference: "Psalm 119:105" }
+          ];
+        }
+        init();
+      } catch (e) {
+        console.error("Error loading verses:", e);
+        verses = [
+          { text: "Thy word is a lamp unto my feet, and a light unto my path.", reference: "Psalm 119:105" }
+        ];
+        init();
+      }
+    }
+
     // Init
     function init() {
+      if (verses.length === 0) return;
+
       // Main Verse (Random for now)
       const random = verses[Math.floor(Math.random() * verses.length)];
       mainText.textContent = `"${random.text}"`;
-      mainRef.textContent = random.ref;
+      mainRef.textContent = random.reference;
 
       // Populate Others
       otherVerses.innerHTML = "";
       verses.forEach(v => {
-        if (v.ref !== random.ref) {
+        if (v.reference !== random.reference) {
           const card = document.createElement("div");
           card.className = "verse-card";
-          card.innerHTML = `<p>"${v.text}"</p><div class="ref">${v.ref}</div>`;
+          card.innerHTML = `<p>"${v.text}"</p><div class="ref">${v.reference}</div>`;
           otherVerses.appendChild(card);
         }
       });
 
-      // Weekly
-      weeklyList.innerHTML = "";
-      weeklySchedule.forEach(day => {
-        const li = document.createElement("li");
-        li.textContent = day;
-        weeklyList.appendChild(li);
-      });
+      // Weekly (Static or could be dynamic too)
+      // For now keep static or clear
+      // weeklyList.innerHTML = ""; 
 
       // Check LocalStorage for memorized
       if (localStorage.getItem('verseMemorized_' + new Date().toDateString())) {
@@ -357,7 +372,7 @@
       }
     }
 
-    init();
+    loadVerses();
 
     // Refresh Feather icons for new dynamic content if needed
     // But since script.js runs at end of body, we might need to re-run it or let it handle it.

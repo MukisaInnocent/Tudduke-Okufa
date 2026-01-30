@@ -106,5 +106,8 @@ npm start # Retry
 
 - **Auth**: `/api/auth/register`, `/api/auth/login`
 - **Main Sermons**: `/api/sermons` (GET/POST/PUT/DELETE)
-- **Kids Sermons**: `/api/kids/sermons` (GET/POST/PUT/DELETE)
+- **Kids**: 
+  - Sermons: `/api/kids/sermons`
+  - Quiz: `/api/kids/quiz/topics`, `/api/kids/quiz`
+  - Memory Verses: `/api/kids/memory-verses`
 - **Admin**: `/api/admin/users`, `/api/admin/activity`

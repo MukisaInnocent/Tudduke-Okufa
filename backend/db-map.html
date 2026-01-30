@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Map | Tudduke Okufa</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #f4f4f4;
+            font-family: sans-serif;
+        }
+
+        #container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            padding: 10px 20px;
+            background: #333;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+
+        #diagram {
+            flex: 1;
+            border: 1px solid #ccc;
+            background: white;
+            overflow: hidden;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="container">
+        <header>
+            <h3>Tudduke Okufa Database Map</h3>
+            <div class="controls">
+                <button onclick="panZoomInstance.zoomIn()">+</button>
+                <button onclick="panZoomInstance.zoomOut()">-</button>
+                <button onclick="panZoomInstance.resetZoom()">Reset</button>
+            </div>
+        </header>
+        <div id="diagram" class="mermaid">
+            erDiagram
+            Users ||--o{ SabbathSchoolClass : "teaches"
+            Users ||--o{ TeacherResource : "uploads"
+            Users ||--o{ PreacherResource : "uploads"
+            Users ||--o{ ClassEvent : "creates"
+            Users ||--o{ ResourceView : "views"
+            Users ||--o{ QuizResult : "has"
+            Users ||--o{ Sermon : "authors"
+            Users ||--o{ SermonComment : "comments"
+            Users ||--o{ SermonLike : "likes"
+            Users ||--o{ QuizTopic : "creates"
+            Users ||--o{ MemoryVerse : "creates"
+
+            SabbathSchoolClass ||--o{ ClassEvent : "has"
+
+            QuizTopic ||--o{ QuizQuestion : "contains"
+
+            Sermon ||--o{ SermonComment : "has"
+            Sermon ||--o{ SermonLike : "has"
+
+            Users {
+            int userid PK
+            string fullname
+            string email
+            string password
+            enum role "admin, preacher, teacher, kid"
+            boolean isSubscribed
+            }
+
+            Sermon {
+            int sermonid PK
+            string title
+            string preacher
+            string content
+            string videoUrl
+            string audioUrl
+            string pdfUrl
+            int authorid FK
+            int verifiedBy FK
+            enum status "pending, approved, rejected"
+            }
+
+            PreacherResource {
+            int resourceid PK
+            string title
+            string description
+            string type
+            string fileUrl
+            int uploadedBy FK
+            enum status "pending, approved, rejected"
+            }
+
+            QuizTopic {
+            int topicid PK
+            string title
+            string description
+            int createdBy FK
+            boolean isActive
+            }
+
+            QuizQuestion {
+            int questionid PK
+            string question
+            string option1
+            string option2
+            string option3
+            int correctAnswer
+            int topicId FK
+            }
+
+            MemoryVerse {
+            int verseid PK
+            string text
+            string reference
+            string dayOfWeek
+            int createdBy FK
+            }
+
+            WeeklyLesson {
+            int lessonid PK
+            string title
+            string content
+            string videoUrl
+            }
+
+            ChildrenSermon {
+            int sermonid PK
+            string title
+            string videoUrl
+            }
+
+            Donation {
+            int donationid PK
+            string name
+            decimal amount
+            string status
+            }
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+
+        let panZoomInstance;
+
+        // Wait for Mermaid to render the SVG
+        const checkExist = setInterval(function () {
+            const svg = document.querySelector('#diagram svg');
+            if (svg) {
+                console.log("SVG Rendered");
+                clearInterval(checkExist);
+
+                // Initialize PanZoom
+                panZoomInstance = svgPanZoom(svg, {
+                    zoomEnabled: true,
+                    controlIconsEnabled: false,
+                    fit: true,
+                    center: true,
+                    minZoom: 0.1,
+                    maxZoom: 10
+                });
+
+                // Fix SVG size to fill container
+                svg.style.width = '100%';
+                svg.style.height = '100%';
+            }
+        }, 100);
+    </script>
+
+</body>
+
+</html>

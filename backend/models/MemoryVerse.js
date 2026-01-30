@@ -19,6 +19,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(20),
         allowNull: true
       },
+      createdBy: {
+        type: DataTypes.INTEGER,
+        allowNull: true // Allow null for seeded/legacy data, or set to false if strict
+      },
       isActive: {
         type: DataTypes.BOOLEAN,
         defaultValue: true
