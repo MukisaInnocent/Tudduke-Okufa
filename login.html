@@ -84,6 +84,14 @@
             color: var(--brand);
         }
 
+        .header-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--brand);
+        }
+
         /* MAIN */
         main {
             flex: 1;
@@ -217,6 +225,270 @@
             border: 1px solid rgba(255, 0, 0, 0.2);
         }
 
+        .success-msg {
+            background: rgba(0, 255, 0, 0.1);
+            color: #22c55e;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            display: none;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        /* MULTI-STEP FORM */
+        .form-step {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        .form-step h3 {
+            color: var(--brand);
+            margin-bottom: 25px;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* PROGRESS INDICATOR */
+        .progress-container {
+            margin-bottom: 40px;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--brand), #ff6b6b);
+            width: 33.33%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            position: relative;
+        }
+
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--surface-2);
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+        }
+
+        .step.active .step-circle {
+            background: var(--brand);
+            border-color: var(--brand);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .step.completed .step-circle {
+            background: #22c55e;
+            border-color: #22c55e;
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .step.active .step-label {
+            color: var(--brand);
+            font-weight: 600;
+        }
+
+        /* FORM ROW */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* TEXTAREA */
+        textarea {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--input-bg);
+            color: var(--text);
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.2s;
+        }
+
+        textarea:focus {
+            border-color: var(--brand);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(198, 0, 0, 0.2);
+        }
+
+        small {
+            display: block;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+
+        /* IMAGE UPLOAD */
+        .image-upload-container {
+            margin-bottom: 30px;
+        }
+
+        .image-preview {
+            width: 180px;
+            height: 180px;
+            border: 3px dashed var(--border);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            background: var(--surface-2);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .image-preview:hover {
+            border-color: var(--brand);
+            transform: scale(1.02);
+        }
+
+        .image-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-preview p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        input[type="file"] {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        /* FORM SUMMARY */
+        .form-summary {
+            background: var(--surface-2);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .form-summary h4 {
+            color: var(--brand);
+            margin-bottom: 15px;
+        }
+
+        #summaryContent {
+            display: grid;
+            gap: 10px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .summary-value {
+            color: var(--text);
+            text-align: right;
+        }
+
+        /* FORM NAVIGATION */
+        .form-navigation {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .form-navigation .btn {
+            flex: 1;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text);
+            border: 2px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--surface-2);
+            border-color: var(--text-muted);
+        }
+
+        .btn-primary {
+            background: var(--brand);
+        }
+
+        [data-theme="dark"] .btn-secondary {
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
         /* FOOTER */
         footer {
             text-align: center;
@@ -247,7 +519,7 @@
 
     <header>
         <div class="header-content">
-            <i data-feather="shield"></i>
+            <img src="logo.png" alt="Tudduke Okufa Logo" class="header-logo">
             <h1>MINISTRY PORTAL</h1>
         </div>
         <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
@@ -265,33 +537,147 @@
             </div>
 
             <div id="errorMsg" class="error-msg"></div>
+            <div id="successMsg" class="success-msg"></div>
 
-            <form id="authForm">
-                <div class="form-group hidden" id="nameGroup">
-                    <label>Full Name</label>
-                    <input type="text" id="fullname" placeholder="John Mark">
-                </div>
-
+            <!-- LOGIN FORM -->
+            <form id="loginForm">
                 <div class="form-group">
                     <label>Email Address</label>
-                    <input type="email" id="email" required placeholder="name@ministry.org">
+                    <input type="email" id="loginEmail" required placeholder="name@ministry.org">
                 </div>
 
                 <div class="form-group">
                     <label>Password</label>
-                    <input type="password" id="password" required placeholder="••••••••">
+                    <input type="password" id="loginPassword" required placeholder="••••••••">
                 </div>
 
-                <div class="form-group hidden" id="roleGroup">
-                    <label>Role</label>
-                    <select id="role">
-                        <option value="preacher">Preacher</option>
-                        <option value="teacher">Teacher</option>
-                        <option value="admin">Admin</option>
-                    </select>
+                <button type="submit" class="btn">Access Portal</button>
+            </form>
+
+            <!-- REGISTRATION FORM -->
+            <form id="registerForm" class="hidden">
+                <!-- Progress Indicator -->
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-steps">
+                        <div class="step active" data-step="1">
+                            <div class="step-circle">1</div>
+                            <div class="step-label">Basic Info</div>
+                        </div>
+                        <div class="step" data-step="2">
+                            <div class="step-circle">2</div>
+                            <div class="step-label">Personal</div>
+                        </div>
+                        <div class="step" data-step="3">
+                            <div class="step-circle">3</div>
+                            <div class="step-label">Profile</div>
+                        </div>
+                    </div>
                 </div>
 
-                <button type="submit" class="btn" id="submitBtn">Access Portal</button>
+                <!-- STEP 1: Basic Information -->
+                <div class="form-step active" data-step="1">
+                    <h3>Basic Information</h3>
+
+                    <div class="form-group">
+                        <label>Full Name *</label>
+                        <input type="text" id="fullname" required placeholder="John Mark Kiviri">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email Address *</label>
+                        <input type="email" id="email" required placeholder="name@ministry.org">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Phone Number *</label>
+                        <input type="tel" id="phonenumber" required placeholder="+256 700 000 000">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Password *</label>
+                        <input type="password" id="password" required placeholder="••••••••" minlength="6">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Confirm Password *</label>
+                        <input type="password" id="confirmPassword" required placeholder="••••••••">
+                    </div>
+                </div>
+
+                <!-- STEP 2: Personal Details -->
+                <div class="form-step" data-step="2">
+                    <h3>Personal Details</h3>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Date of Birth *</label>
+                            <input type="date" id="dateofbirth" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Sex *</label>
+                            <select id="sex" required>
+                                <option value="">Select...</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Address *</label>
+                        <input type="text" id="address" required placeholder="Kampala, Uganda">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Role *</label>
+                        <select id="role" required>
+                            <option value="">Select your role...</option>
+                            <option value="preacher">Preacher</option>
+                            <option value="teacher">Teacher</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="description" rows="4"
+                            placeholder="Tell us about yourself and your ministry experience..."></textarea>
+                    </div>
+                </div>
+
+                <!-- STEP 3: Profile Picture -->
+                <div class="form-step" data-step="3">
+                    <h3>Profile Picture</h3>
+
+                    <div class="image-upload-container">
+                        <div class="image-preview" id="imagePreview">
+                            <i data-feather="user" style="width: 80px; height: 80px; color: #ccc;"></i>
+                            <p>No image selected</p>
+                        </div>
+                        <div class="form-group">
+                            <label>Upload Profile Picture (Optional)</label>
+                            <input type="file" id="profileImage" accept="image/*" onchange="previewImage(this)">
+                            <small>Recommended: Square image, max 5MB</small>
+                        </div>
+                    </div>
+
+                    <div class="form-summary">
+                        <h4>Review Your Information</h4>
+                        <div id="summaryContent"></div>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="form-navigation">
+                    <button type="button" class="btn btn-secondary" id="prevBtn" onclick="changeStep(-1)"
+                        style="display: none;">Previous</button>
+                    <button type="button" class="btn btn-primary" id="nextBtn" onclick="changeStep(1)">Next</button>
+                    <button type="submit" class="btn btn-primary hidden" id="submitBtn">Create Account</button>
+                </div>
             </form>
 
             <a href="index.html" class="back-link">&larr; Return to Main Site</a>
@@ -325,6 +711,7 @@
             feather.replace();
         }
 
+        // --- TAB SWITCHING ---
         let isLogin = true;
 
         function switchTab(tab) {
@@ -333,16 +720,176 @@
             event.target.classList.add('active');
 
             document.getElementById('pageTitle').textContent = isLogin ? 'Staff Login' : 'Staff Registration';
-            document.getElementById('submitBtn').textContent = isLogin ? 'Access Portal' : 'Create Account';
+            document.getElementById('loginForm').classList.toggle('hidden', !isLogin);
+            document.getElementById('registerForm').classList.toggle('hidden', isLogin);
 
-            document.getElementById('nameGroup').classList.toggle('hidden', isLogin);
-            document.getElementById('roleGroup').classList.toggle('hidden', isLogin);
-
-            document.getElementById('fullname').required = !isLogin;
             document.getElementById('errorMsg').style.display = 'none';
+            document.getElementById('successMsg').style.display = 'none';
         }
 
-        // Determine API BASE for local file access vs server access
+        // --- MULTI-STEP FORM NAVIGATION ---
+        let currentStep = 1;
+        const totalSteps = 3;
+
+        function changeStep(direction) {
+            // Validate current step before proceeding
+            if (direction === 1 && !validateStep(currentStep)) {
+                return;
+            }
+
+            currentStep += direction;
+            if (currentStep < 1) currentStep = 1;
+            if (currentStep > totalSteps) currentStep = totalSteps;
+
+            showStep(currentStep);
+            updateProgress();
+        }
+
+        function showStep(step) {
+            // Hide all steps
+            document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.progress-steps .step').forEach(s => {
+                s.classList.remove('active', 'completed');
+            });
+
+            // Show current step
+            document.querySelector(`.form-step[data-step="${step}"]`).classList.add('active');
+            document.querySelector(`.progress-steps .step[data-step="${step}"]`).classList.add('active');
+
+            // Mark completed steps
+            for (let i = 1; i < step; i++) {
+                document.querySelector(`.progress-steps .step[data-step="${i}"]`).classList.add('completed');
+            }
+
+            // Show/hide navigation buttons
+            document.getElementById('prevBtn').style.display = step === 1 ? 'none' : 'block';
+            document.getElementById('nextBtn').style.display = step === totalSteps ? 'none' : 'block';
+            document.getElementById('submitBtn').classList.toggle('hidden', step !== totalSteps);
+
+            // If on last step, generate summary
+            if (step === totalSteps) {
+                generateSummary();
+            }
+
+            feather.replace();
+        }
+
+        function updateProgress() {
+            const progressFill = document.getElementById('progressFill');
+            const percentage = ((currentStep - 1) / (totalSteps - 1)) * 100;
+            progressFill.style.width = percentage + '%';
+        }
+
+        function validateStep(step) {
+            const stepElement = document.querySelector(`.form-step[data-step="${step}"]`);
+            const inputs = stepElement.querySelectorAll('input[required], select[required], textarea[required]');
+            const errorMsg = document.getElementById('errorMsg');
+
+            console.log(`Validating step ${step}`);
+
+            for (let input of inputs) {
+                // For select and date inputs, just check if they have a value
+                if (input.tagName === 'SELECT' || input.type === 'date') {
+                    if (!input.value) {
+                        errorMsg.textContent = 'Please fill in all required fields';
+                        errorMsg.style.display = 'block';
+                        input.focus();
+                        return false;
+                    }
+                } else {
+                    // For text inputs, trim and check
+                    if (!input.value.trim()) {
+                        errorMsg.textContent = 'Please fill in all required fields';
+                        errorMsg.style.display = 'block';
+                        input.focus();
+                        return false;
+                    }
+                }
+            }
+
+            // Additional validation for step 1
+            if (step === 1) {
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+
+                if (password.length < 6) {
+                    errorMsg.textContent = 'Password must be at least 6 characters';
+                    errorMsg.style.display = 'block';
+                    return false;
+                }
+
+                if (password !== confirmPassword) {
+                    errorMsg.textContent = 'Passwords do not match';
+                    errorMsg.style.display = 'block';
+                    return false;
+                }
+            }
+
+            console.log(`Step ${step} validated successfully`);
+            errorMsg.style.display = 'none';
+            return true;
+        }
+
+        function generateSummary() {
+            const summaryContent = document.getElementById('summaryContent');
+            const fullname = document.getElementById('fullname').value;
+            const email = document.getElementById('email').value;
+            const phonenumber = document.getElementById('phonenumber').value;
+            const dateofbirth = document.getElementById('dateofbirth').value;
+            const sex = document.getElementById('sex').value;
+            const address = document.getElementById('address').value;
+            const role = document.getElementById('role').value;
+            const description = document.getElementById('description').value;
+
+            summaryContent.innerHTML = `
+                <div class="summary-item">
+                    <span class="summary-label">Full Name:</span>
+                    <span class="summary-value">${fullname}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Email:</span>
+                    <span class="summary-value">${email}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Phone:</span>
+                    <span class="summary-value">${phonenumber}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Date of Birth:</span>
+                    <span class="summary-value">${dateofbirth}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Sex:</span>
+                    <span class="summary-value">${sex}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Address:</span>
+                    <span class="summary-value">${address}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Role:</span>
+                    <span class="summary-value">${role.charAt(0).toUpperCase() + role.slice(1)}</span>
+                </div>
+                ${description ? `<div class="summary-item">
+                    <span class="summary-label">Description:</span>
+                    <span class="summary-value">${description.substring(0, 100)}${description.length > 100 ? '...' : ''}</span>
+                </div>` : ''}
+            `;
+        }
+
+        // --- IMAGE PREVIEW ---
+        function previewImage(input) {
+            const preview = document.getElementById('imagePreview');
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.innerHTML = `<img src="${e.target.result}" alt="Profile Preview">`;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // --- API CONFIGURATION ---
         const getApiBase = () => {
             const { hostname, protocol, port } = window.location;
             if (protocol === 'file:') return 'http://localhost:3000';
@@ -353,28 +900,20 @@
         };
         const API_BASE = getApiBase();
 
-        document.getElementById('authForm').addEventListener('submit', async (e) => {
+        // --- LOGIN FORM ---
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
             const errorMsg = document.getElementById('errorMsg');
 
             errorMsg.style.display = 'none';
 
-            const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
-            const body = { email, password };
-
-            if (!isLogin) {
-                body.fullname = document.getElementById('fullname').value;
-                body.role = document.getElementById('role').value;
-                body.isSubscribed = true; // Default subscription for staff
-            }
-
             try {
-                const res = await fetch(`${API_BASE}${endpoint}`, {
+                const res = await fetch(`${API_BASE}/api/auth/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(body)
+                    body: JSON.stringify({ email, password })
                 });
 
                 const data = await res.json();
@@ -383,28 +922,79 @@
                     throw new Error(data.error || 'Authentication failed');
                 }
 
-                if (isLogin) {
-                    // Check if role is allowed
-                    if (data.user.role !== 'preacher' && data.user.role !== 'admin' && data.user.role !== 'teacher') {
-                        throw new Error('Access Denied. This portal is for Staff Only (Preachers, Teachers, Admins).');
-                    }
-
-                    // Save token specific to Ministry Portal
-                    localStorage.setItem('ministryToken', data.token);
-                    localStorage.setItem('ministryUser', JSON.stringify(data.user));
-
-                    // Redirect
-                    if (data.user.role === 'preacher') {
-                        window.location.href = 'preacher-dashboard.html';
-                    } else if (data.user.role === 'admin') {
-                        window.location.href = 'admin.html';
-                    } else if (data.user.role === 'teacher') {
-                        window.location.href = 'teacher-dashboard.html';
-                    }
-                } else {
-                    alert('Account created! Please login.');
-                    switchTab('login');
+                // Check if role is allowed
+                if (data.user.role !== 'preacher' && data.user.role !== 'admin' && data.user.role !== 'teacher') {
+                    throw new Error('Access Denied. This portal is for Staff Only (Preachers, Teachers, Admins).');
                 }
+
+                // Save token specific to Ministry Portal
+                localStorage.setItem('ministryToken', data.token);
+                localStorage.setItem('ministryUser', JSON.stringify(data.user));
+
+                // Redirect based on role
+                if (data.user.role === 'preacher') {
+                    window.location.href = 'preacher-dashboard.html';
+                } else if (data.user.role === 'admin') {
+                    window.location.href = 'admin.html';
+                } else if (data.user.role === 'teacher') {
+                    window.location.href = 'teacher-dashboard.html';
+                }
+
+            } catch (err) {
+                errorMsg.textContent = err.message;
+                errorMsg.style.display = 'block';
+            }
+        });
+
+        // --- REGISTRATION FORM ---
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const errorMsg = document.getElementById('errorMsg');
+            const successMsg = document.getElementById('successMsg');
+
+            errorMsg.style.display = 'none';
+            successMsg.style.display = 'none';
+
+            // Create FormData to handle file upload
+            const formData = new FormData();
+            formData.append('fullname', document.getElementById('fullname').value);
+            formData.append('email', document.getElementById('email').value);
+            formData.append('phonenumber', document.getElementById('phonenumber').value);
+            formData.append('password', document.getElementById('password').value);
+            formData.append('dateofbirth', document.getElementById('dateofbirth').value);
+            formData.append('sex', document.getElementById('sex').value);
+            formData.append('address', document.getElementById('address').value);
+            formData.append('role', document.getElementById('role').value);
+            formData.append('description', document.getElementById('description').value || '');
+            formData.append('isSubscribed', 'true');
+
+            const profileImage = document.getElementById('profileImage').files[0];
+            if (profileImage) {
+                formData.append('profileImage', profileImage);
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/api/auth/register`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    throw new Error(data.error || 'Registration failed');
+                }
+
+                successMsg.textContent = 'Account created successfully! Please login.';
+                successMsg.style.display = 'block';
+
+                setTimeout(() => {
+                    switchTab('login');
+                    document.getElementById('registerForm').reset();
+                    currentStep = 1;
+                    showStep(1);
+                    updateProgress();
+                }, 2000);
 
             } catch (err) {
                 errorMsg.textContent = err.message;

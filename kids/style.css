@@ -107,6 +107,19 @@ header {
     color: var(--k-text-light);
 }
 
+.header-logo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+[data-theme="dark"] .header-logo {
+    border-color: var(--k-brand);
+}
+
 .theme-toggle {
     background: none;
     border: none;

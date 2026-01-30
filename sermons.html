@@ -12,10 +12,31 @@
       --bg: #f4f4f4;
       --text: #333;
       --card: #fff;
+      --header-bg: #b30000;
+      --header-text: #fff;
+      --sidebar-bg: #fff;
+      --sidebar-text: #b30000;
+      --input-bg: #fff;
+      --input-border: #ddd;
+    }
+
+    [data-theme="dark"] {
+      --brand: #e53935;
+      /* Brighter red for dark mode */
+      --bg: #121212;
+      --text: #e0e0e0;
+      --card: #1e1e1e;
+      --header-bg: #000;
+      --header-text: #e0e0e0;
+      --sidebar-bg: #1e1e1e;
+      --sidebar-text: #e53935;
+      --input-bg: #2c2c2c;
+      --input-border: #444;
     }
 
     * {
-      box-sizing: border-box
+      box-sizing: border-box;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     body {
@@ -37,8 +58,9 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 16px;
+      padding: 0 20px;
       z-index: 1000;
+      gap: 20px;
     }
 
     .menu-toggle {
@@ -47,29 +69,67 @@
       border: none;
       color: #fff;
       cursor: pointer;
+      flex-shrink: 0;
+      padding: 8px;
     }
 
-    .header-center {
-      flex: 1;
-      text-align: center;
+    .header-left {
       display: flex;
-      flex-direction: column;
       align-items: center;
-      gap: 6px;
+      gap: 12px;
+      flex-shrink: 0;
     }
 
-    .header-center h1 {
+    .header-left h1 {
       margin: 0;
-      font-size: 1.5rem
+      font-size: 1.3rem;
+      white-space: nowrap;
+    }
+
+    .search-bar {
+      flex: 1;
+      max-width: 500px;
+      min-width: 0;
     }
 
     .search-bar input {
-      padding: 8px 14px;
-      border-radius: 20px;
+      padding: 10px 20px;
+      border-radius: 25px;
       border: none;
-      width: 260px;
-      max-width: 70vw;
+      width: 100%;
       text-align: center;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    .search-bar input:focus {
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+    }
+
+    .header-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    #themeToggle {
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      padding: 8px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background 0.2s;
+    }
+
+    #themeToggle:hover {
+      background: rgba(255, 255, 255, 0.1);
     }
 
     /* ===== SIDEBAR ===== */
@@ -79,7 +139,7 @@
       left: -260px;
       width: 260px;
       height: calc(100vh - 70px);
-      background: #fff;
+      background: var(--sidebar-bg);
       padding: 20px;
       border-right: 1px solid #ddd;
       transition: left .3s ease;
@@ -97,10 +157,10 @@
       gap: 12px;
       padding: 12px 16px;
       margin: 12px 0;
-      background: #fff;
+      background: var(--sidebar-bg);
       border-radius: 12px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, .08);
-      color: var(--brand);
+      color: var(--sidebar-text);
       font-weight: bold;
       text-decoration: none;
       transition: .2s ease;
@@ -179,6 +239,29 @@
       margin-bottom: 12px;
     }
 
+    .preacher-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 15px;
+      padding: 10px;
+      background: var(--bg);
+      border-radius: 8px;
+    }
+
+    .preacher-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--brand);
+      flex-shrink: 0;
+    }
+
+    .preacher-details {
+      flex: 1;
+    }
+
     /* Make text/content flexible to push footer/engagement to bottom */
     .article-content {
       flex: 1;
@@ -188,7 +271,7 @@
     article p {
       margin: 8px 0;
       line-height: 1.5;
-      color: #555;
+      color: var(--text-secondary);
     }
 
     /* ===== ENGAGEMENT ===== */
@@ -208,7 +291,7 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      color: #666;
+      color: var(--text-muted);
       font-weight: 600;
       transition: 0.2s;
       padding: 6px 10px;
@@ -322,7 +405,7 @@
     /* FOOTER */
     .site-footer {
       background: linear-gradient(to bottom, #1a1a1a, #000);
-      color: #ccc;
+      color: #bbb;
       padding: 40px 20px;
       text-align: center;
       border-top: 4px solid var(--brand);
@@ -392,14 +475,63 @@
     }
 
     /* ===== MOBILE ===== */
-    @media(max-width:600px) {
+    @media(max-width:768px) {
+      header {
+        padding: 0 12px;
+        gap: 10px;
+      }
+
+      .header-left h1 {
+        font-size: 1.1rem;
+      }
+
+      .header-logo {
+        width: 35px;
+        height: 35px;
+      }
+
+      .search-bar {
+        max-width: 250px;
+      }
+
       .search-bar input {
-        width: 220px
+        font-size: 0.85rem;
+        padding: 8px 14px;
+      }
+
+      main {
+        margin-top: 100px;
       }
 
       aside#sidebar {
         width: 240px;
-        left: -240px
+        left: -240px;
+        top: 70px;
+        height: calc(100vh - 70px);
+      }
+    }
+
+    @media(max-width:500px) {
+      .header-left h1 {
+        font-size: 0.95rem;
+      }
+
+      .header-logo {
+        width: 30px;
+        height: 30px;
+      }
+
+      .search-bar {
+        max-width: 150px;
+      }
+
+      .search-bar input {
+        font-size: 0.8rem;
+        padding: 6px 10px;
+      }
+
+      .menu-toggle {
+        font-size: 1.4rem;
       }
     }
 
@@ -466,13 +598,19 @@
 
   <header>
     <button class="menu-toggle" id="menuToggle">☰</button>
-    <div class="header-center">
+
+    <div class="header-left">
+      <img src="logo.png" alt="Tudduke Okufa Logo" class="header-logo">
       <h1>Daily Sermons</h1>
-      <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="Search sermons...">
-      </div>
     </div>
-    <div style="width:32px"></div>
+
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search sermons...">
+    </div>
+
+    <button id="themeToggle">
+      <i data-feather="moon"></i>
+    </button>
   </header>
 
   <!-- SIDEBAR -->
@@ -521,7 +659,30 @@
     const toggleBtn = document.getElementById("menuToggle");
     const searchInput = document.getElementById("searchInput");
     const sermonsContainer = document.getElementById("sermons");
+    const themeToggleBtn = document.getElementById("themeToggle");
     const socket = io();
+
+    /* THEME LOGIC */
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('theme', theme);
+      if (themeToggleBtn) {
+        themeToggleBtn.innerHTML = theme === 'dark'
+          ? '<i data-feather="sun"></i>'
+          : '<i data-feather="moon"></i>';
+        feather.replace();
+      }
+    }
+
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    applyTheme(savedTheme);
+
+    if (themeToggleBtn) {
+      themeToggleBtn.addEventListener('click', () => {
+        const current = document.documentElement.getAttribute('data-theme');
+        applyTheme(current === 'dark' ? 'light' : 'dark');
+      });
+    }
 
     /* SIDEBAR */
     function openSidebar() { sidebar.classList.add("active"); overlay.classList.add("active"); }
@@ -572,13 +733,22 @@
           const likeActive = isLiked ? 'active' : '';
           const likeFill = isLiked ? 'var(--brand)' : 'none';
 
+          // Get preacher profile image or use fallback
+          const preacherName = s.author ? s.author.fullname : 'Unknown Preacher';
+          const preacherImage = s.author?.profileImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(preacherName)}&background=c60000&color=fff&size=96`;
+
           article.innerHTML = `
             <div class="article-content">
                 <h2>${s.title || s.topic || 'Untitled Sermon'}</h2>
-                <div style="font-size:0.9rem; margin-bottom:10px;">
-                    <span style="color:var(--brand); font-weight:bold;">Predicted by: ${s.author ? s.author.fullname : 'Unknown Preacher'}</span>
-                    ${s.verifier ? `<span style="display:block; font-size:0.8rem; color:#2e7d32; margin-top:2px;">✓ Verified by: ${s.verifier.fullname}</span>` : ''}
+                
+                <div class="preacher-info">
+                    <img src="${preacherImage}" alt="${preacherName}" class="preacher-avatar" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(preacherName)}&background=c60000&color=fff&size=96'">
+                    <div class="preacher-details">
+                        <span style="color:var(--brand); font-weight:bold; display:block;">Posted by: ${preacherName}</span>
+                        ${s.verifier ? `<span style="font-size:0.8rem; color:#2e7d32; margin-top:2px; display:block;">✓ Verified by: ${s.verifier.fullname}</span>` : ''}
+                    </div>
                 </div>
+                
                 ${s.scripture ? `<p><strong>Scripture:</strong> ${s.scripture}</p>` : ''}
                 ${s.explanation ? `<p><strong>Explanation:</strong> ${s.explanation}</p>` : ''}
                 ${s.examples ? `<p><strong>Examples:</strong> ${s.examples}</p>` : ''}
@@ -586,7 +756,7 @@
             </div>
             
             <div class="engagement-bar">
-                <div class="stats" style="font-size:0.85rem; color:#888; margin-right:auto;">
+                <div class="stats" style="font-size:0.85rem; color:var(--text-muted); margin-right:auto;">
                     <i data-feather="eye" style="width:14px;height:14px;vertical-align:middle;"></i> ${views.toLocaleString()} Views
                 </div>
                 

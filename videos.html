@@ -401,6 +401,7 @@
       border-radius: 50%;
       background: #ccc;
       flex-shrink: 0;
+      object-fit: cover;
     }
 
     .card-text {
@@ -626,7 +627,8 @@
   <header class="page-header">
     <button class="menu-toggle" id="menuToggle"><i data-feather="menu"></i></button>
     <div class="brand-logo">
-      <i data-feather="youtube" style="color:var(--brand); fill:var(--brand);"></i> Tudduke Okufa
+      <img src="logo.png" alt="Tudduke Okufa Logo"
+        style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover;"> Tudduke Okufa
     </div>
     <div class="header-search">
       <input type="text" id="searchInput" placeholder="Search">
@@ -843,7 +845,7 @@
                     <img src="${thumb}" loading="lazy" alt="${title}">
                 </div>
                 <div class="card-info">
-                    <div class="card-avatar"></div> <!-- Placeholder for channel avatar -->
+                    <img src="logo.png" class="card-avatar" alt="Tudduke Okufa Logo">
                     <div class="card-text">
                         <div class="card-title">${title}</div>
                         <div class="card-meta">${date} • Tudduke Okufa</div>
