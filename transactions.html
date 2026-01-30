@@ -421,6 +421,35 @@
             </div>
         </header>
 
+        <!-- Currency Selector -->
+        <div
+            style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 30px; gap: 15px; animation: fadeIn 0.6s ease-out;">
+            <div
+                style="display: flex; align-items: center; gap: 12px; background: var(--bg-surface); padding: 12px 20px; border-radius: 12px; border: 1px solid var(--border-light); box-shadow: var(--shadow-sm); transition: all 0.3s ease;">
+                <i data-feather="dollar-sign" style="width: 20px; height: 20px; color: var(--brand-primary);"></i>
+                <label
+                    style="font-weight: 600; color: var(--text-main); font-size: 0.95rem; margin: 0;">Currency:</label>
+                <select id="currencySelector" style="
+                        padding: 8px 16px;
+                        font-size: 0.95rem;
+                        font-weight: 600;
+                        border: 2px solid var(--border-light);
+                        border-radius: 8px;
+                        background: linear-gradient(135deg, var(--bg-surface) 0%, var(--bg-body) 100%);
+                        color: var(--brand-primary);
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        min-width: 100px;
+                        outline: none;
+                        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+                    " onchange="switchCurrency()"
+                    onmouseover="this.style.borderColor='var(--brand-primary)'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(179, 0, 0, 0.2)';"
+                    onmouseout="this.style.borderColor='var(--border-light)'; this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.05)';">
+                    <option value="UGX">UGX</option>
+                </select>
+            </div>
+        </div>
+
         <!-- STATS GRID -->
         <div class="stats-grid">
             <div class="stat-card">
@@ -428,18 +457,20 @@
                 <div class="value" id="totalDonations">0</div>
             </div>
             <div class="stat-card">
-                <div style="display:flex; justify-content:space-between;">
-                    <h3>Total (UGX)</h3>
-                    <i data-feather="trending-up" style="color:var(--success);"></i>
+                <h3>Total Revenue</h3>
+                <div class="value">
+                    <span id="totalRevenue">0</span>
+                    <i data-feather="trending-up"
+                        style="color:var(--success); width:20px; height:20px; margin-left:8px;"></i>
                 </div>
-                <div class="value" id="totalAmountUGX">0</div>
             </div>
-            <div class="stat-card">
-                <div style="display:flex; justify-content:space-between;">
-                    <h3>Total (USD)</h3>
-                    <i data-feather="dollar-sign" style="color:var(--success);"></i>
+            <div class="stat-card" style="border-left: 4px solid var(--warning);">
+                <h3>Pending Revenue</h3>
+                <div class="value" style="color: var(--warning);" id="pendingRevenue">0</div>
+                <div style="margin-top: 10px; font-size: 0.85rem; color: var(--text-muted);">
+                    <i data-feather="alert-circle" style="width:14px; height:14px;"></i>
+                    <span id="pendingCount">0</span> awaiting verification
                 </div>
-                <div class="value" id="totalAmountUSD">$0</div>
             </div>
         </div>
 
@@ -525,6 +556,15 @@
             }
         }
 
+        // Data Store
+        let currentPage = 1;
+        let totalPages = 1;
+
+        // Store revenue data in all currencies dynamically
+        let revenueData = {};
+        let pendingData = {};
+        let availableCurrencies = new Set(['UGX']); // Default to UGX
+
         async function loadData(page = 1) {
             const tbody = document.getElementById('dataTable');
             const search = document.getElementById("search").value;
@@ -560,11 +600,26 @@
                     totalPages = response.totalPages;
                 }
 
-                // Update Stats
+                // Update Stats with dynamic currency support
                 if (response.stats) {
                     document.getElementById('totalDonations').innerText = response.total || 0;
-                    document.getElementById('totalAmountUGX').innerText = parseFloat(response.stats.totalUGX || 0).toLocaleString();
-                    document.getElementById('totalAmountUSD').innerText = '$' + parseFloat(response.stats.totalUSD || 0).toLocaleString();
+
+                    // Store revenue data
+                    revenueData.UGX = parseFloat(response.stats.totalUGX || 0);
+                    revenueData.USD = parseFloat(response.stats.totalUSD || 0);
+                    if (revenueData.USD > 0) availableCurrencies.add('USD');
+
+                    // Handle pending revenue
+                    if (response.stats.pendingUGX !== undefined) {
+                        pendingData.UGX = parseFloat(response.stats.pendingUGX || 0);
+                        pendingData.USD = parseFloat(response.stats.pendingUSD || 0);
+                        document.getElementById('pendingCount').innerText = response.stats.pendingCount || 0;
+                    }
+                }
+
+                // Extract all currencies from data
+                if (data && data.length > 0) {
+                    extractCurrenciesFromData(data);
                 }
 
                 if (data.length === 0) {
@@ -592,6 +647,77 @@
                 console.error(e);
                 tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--danger); padding:20px;">Error loading data: ${e.message}</td></tr>`;
             }
+        }
+
+        function extractCurrenciesFromData(data) {
+            // Reset revenue data for recalculation
+            const newRevenueData = {};
+            const newPendingData = {};
+            let pendingCount = 0;
+
+            data.forEach(donation => {
+                const currency = donation.currency || 'UGX';
+                availableCurrencies.add(currency);
+
+                // Initialize if not exists
+                if (!newRevenueData[currency]) newRevenueData[currency] = 0;
+                if (!newPendingData[currency]) newPendingData[currency] = 0;
+
+                // Sum totals
+                const amount = parseFloat(donation.amount || 0);
+                if (donation.status === 'completed') {
+                    newRevenueData[currency] += amount;
+                } else if (donation.status === 'pending') {
+                    newPendingData[currency] += amount;
+                    pendingCount++;
+                }
+            });
+
+            // Update global data
+            revenueData = newRevenueData;
+            pendingData = newPendingData;
+            document.getElementById('pendingCount').innerText = pendingCount;
+
+            // Update dropdown
+            populateCurrencyDropdown();
+            switchCurrency();
+        }
+
+        function populateCurrencyDropdown() {
+            const selector = document.getElementById('currencySelector');
+            const currentValue = selector.value;
+
+            // Clear and repopulate
+            selector.innerHTML = '';
+            const sortedCurrencies = Array.from(availableCurrencies).sort();
+
+            sortedCurrencies.forEach(currency => {
+                const option = document.createElement('option');
+                option.value = currency;
+                option.textContent = currency;
+                selector.appendChild(option);
+            });
+
+            // Restore selection if currency still exists
+            if (availableCurrencies.has(currentValue)) {
+                selector.value = currentValue;
+            } else if (availableCurrencies.has('UGX')) {
+                selector.value = 'UGX';
+            }
+        }
+
+        function switchCurrency() {
+            const currency = document.getElementById('currencySelector').value;
+            const symbol = currency === 'USD' ? '$' : '';
+            const suffix = currency === 'USD' ? '' : ' ' + currency;
+
+            // Update total revenue
+            const totalAmount = revenueData[currency] || 0;
+            document.getElementById('totalRevenue').innerText = symbol + totalAmount.toLocaleString() + suffix;
+
+            // Update pending revenue
+            const pendingAmount = pendingData[currency] || 0;
+            document.getElementById('pendingRevenue').innerText = symbol + pendingAmount.toLocaleString() + suffix;
         }
 
         function filterTable() {
@@ -636,10 +762,6 @@
 
         const savedTheme = localStorage.getItem('adminTheme') || 'light';
         document.documentElement.setAttribute('data-theme', savedTheme);
-
-        // Data Store
-        let currentPage = 1;
-        let totalPages = 1;
 
         window.addEventListener('DOMContentLoaded', () => {
             updateThemeIcon(savedTheme);

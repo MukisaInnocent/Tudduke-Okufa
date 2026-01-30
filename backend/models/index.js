@@ -60,6 +60,7 @@ const SermonLike = require('./SermonLike')(sequelize);
 // NEW MODELS
 const SabbathSchoolClass = require('./SabbathSchoolClass')(sequelize, require('sequelize').DataTypes);
 const TeacherResource = require('./TeacherResource')(sequelize, require('sequelize').DataTypes);
+const PreacherResource = require('./PreacherResource')(sequelize, require('sequelize').DataTypes);
 const ClassEvent = require('./ClassEvent')(sequelize, require('sequelize').DataTypes);
 
 const ResourceView = require('./ResourceView')(sequelize, require('sequelize').DataTypes);
@@ -93,6 +94,10 @@ SabbathSchoolClass.belongsTo(User, { as: 'teacher', foreignKey: 'teacherId' });
 User.hasMany(TeacherResource, { foreignKey: 'uploadedBy' });
 TeacherResource.belongsTo(User, { as: 'uploader', foreignKey: 'uploadedBy' });
 
+// Preacher Resources
+User.hasMany(PreacherResource, { foreignKey: 'uploadedBy' });
+PreacherResource.belongsTo(User, { as: 'uploader', foreignKey: 'uploadedBy' });
+
 // Events
 User.hasMany(ClassEvent, { foreignKey: 'createdBy' });
 ClassEvent.belongsTo(User, { as: 'creator', foreignKey: 'createdBy' });
@@ -123,6 +128,7 @@ module.exports = {
   SermonLike,
   SabbathSchoolClass,
   TeacherResource,
+  PreacherResource,
   ClassEvent,
   ResourceView,
   QuizResult

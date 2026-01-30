@@ -553,9 +553,39 @@
             </div>
             <div class="header-actions">
                 <button class="btn-icon" onclick="toggleTheme()"><i data-feather="moon"></i></button>
-                <button class="btn-primary" onclick="loadData()"><i data-feather="refresh-cw"></i> Refresh Data</button>
+                <button class="btn-primary" onclick="loadData(); loadPendingResources();"><i
+                        data-feather="refresh-cw"></i> Refresh Data</button>
             </div>
         </header>
+
+        <!-- Currency Selector -->
+        <div
+            style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 30px; gap: 15px; animation: fadeInUp 0.6s ease-out;">
+            <div
+                style="display: flex; align-items: center; gap: 12px; background: var(--bg-surface); padding: 12px 20px; border-radius: 12px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); transition: all 0.3s ease;">
+                <i data-feather="dollar-sign" style="width: 20px; height: 20px; color: var(--primary);"></i>
+                <label
+                    style="font-weight: 600; color: var(--text-main); font-size: 0.95rem; margin: 0;">Currency:</label>
+                <select id="currencySelector" style="
+                        padding: 8px 16px;
+                        font-size: 0.95rem;
+                        font-weight: 600;
+                        border: 2px solid var(--border);
+                        border-radius: 8px;
+                        background: linear-gradient(135deg, var(--bg-surface) 0%, var(--bg-body) 100%);
+                        color: var(--primary);
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        min-width: 100px;
+                        outline: none;
+                        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+                    " onchange="switchCurrency()"
+                    onmouseover="this.style.borderColor='var(--primary)'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(179, 0, 0, 0.2)';"
+                    onmouseout="this.style.borderColor='var(--border)'; this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.05)';">
+                    <option value="UGX">UGX</option>
+                </select>
+            </div>
+        </div>
 
         <!-- Metrics -->
         <div class="stats-grid">
@@ -566,17 +596,34 @@
                 </div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Revenue (UGX)</div>
+                <div class="stat-label">Total Revenue</div>
                 <div class="stat-value">
-                    <span id="totalAmountUGX">0</span>
+                    <span id="totalRevenue">0</span>
                     <div class="trend-badge"><i data-feather="trending-up" style="width:14px;"></i> Live</div>
                 </div>
             </div>
-            <div class="stat-card">
-                <div class="stat-label">Revenue (USD)</div>
+            <div class="stat-card" style="border-left: 4px solid var(--warning-text);">
+                <div class="stat-label">Pending Revenue</div>
                 <div class="stat-value">
-                    <span id="totalAmountUSD">$0</span>
-                    <div class="trend-badge"><i data-feather="trending-up" style="width:14px;"></i> Live</div>
+                    <span id="pendingRevenue" style="color: var(--warning-text);">0</span>
+                    <div class="trend-badge" style="background: var(--warning-bg); color: var(--warning-text);">
+                        <i data-feather="alert-circle" style="width:14px;"></i> Unverified
+                    </div>
+                </div>
+                <div style="margin-top: 10px; font-size: 0.85rem; color: var(--text-muted);">
+                    <span id="pendingCount">0</span> donations awaiting verification
+                </div>
+            </div>
+            <div class="stat-card" style="border-left: 4px solid var(--accent);">
+                <div class="stat-label">Pending Resources</div>
+                <div class="stat-value">
+                    <span id="pendingResources" style="color: var(--accent);">0</span>
+                    <div class="trend-badge" style="background: rgba(229, 62, 62, 0.1); color: var(--accent);">
+                        <i data-feather="book-open" style="width:14px;"></i> Review
+                    </div>
+                </div>
+                <div style="margin-top: 10px; font-size: 0.85rem; color: var(--text-muted);">
+                    <span id="pendingResourcesCount">0</span> preacher resources awaiting approval
                 </div>
             </div>
         </div>
@@ -668,6 +715,29 @@
         let currentPage = 1;
         let totalPages = 1;
 
+        async function loadPendingResources() {
+            try {
+                const res = await fetch(`${API_BASE}/api/resources/pending`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    const count = data.count || data.length || 0;
+                    document.getElementById('pendingResources').innerText = count;
+                    document.getElementById('pendingResourcesCount').innerText = count;
+                } else {
+                    // Fallback if endpoint doesn't exist yet
+                    document.getElementById('pendingResources').innerText = '0';
+                    document.getElementById('pendingResourcesCount').innerText = '0';
+                }
+            } catch (e) {
+                console.log('Unable to fetch pending resources:', e.message);
+                document.getElementById('pendingResources').innerText = '0';
+                document.getElementById('pendingResourcesCount').innerText = '0';
+            }
+        }
+
         async function loadData(page = 1) {
             const tbody = document.getElementById("donationsBody");
             const search = document.getElementById("search").value;
@@ -746,14 +816,118 @@
             }).join('');
         }
 
+        // Store revenue data in all currencies dynamically
+        let revenueData = {};
+        let pendingData = {};
+        let availableCurrencies = new Set(['UGX']); // Default to UGX
+
         function updateStats(response) {
             if (response.stats) {
                 document.getElementById('totalDonations').innerText = response.total || 0;
-                document.getElementById('totalAmountUGX').innerText = parseFloat(response.stats.totalUGX || 0).toLocaleString();
-                document.getElementById('totalAmountUSD').innerText = '$' + parseFloat(response.stats.totalUSD || 0).toLocaleString();
+
+                // Store both currency values (fallback for old API)
+                revenueData.UGX = parseFloat(response.stats.totalUGX || 0);
+                revenueData.USD = parseFloat(response.stats.totalUSD || 0);
+                if (revenueData.USD > 0) availableCurrencies.add('USD');
+
+                // Handle pending revenue
+                if (response.stats.pendingUGX !== undefined) {
+                    pendingData.UGX = parseFloat(response.stats.pendingUGX || 0);
+                    pendingData.USD = parseFloat(response.stats.pendingUSD || 0);
+                    document.getElementById('pendingCount').innerText = response.stats.pendingCount || 0;
+                }
+
+                // Update display based on selected currency
+                switchCurrency();
             } else if (response.total) { // Fallback
                 document.getElementById('totalDonations').innerText = response.total;
             }
+
+            // If stats don't include pending, calculate from data
+            if (response.data && !response.stats?.pendingUGX) {
+                calculatePendingFromData(response.data);
+            }
+
+            // Extract all currencies from data
+            if (response.data) {
+                extractCurrenciesFromData(response.data);
+            }
+        }
+
+        function extractCurrenciesFromData(data) {
+            // Reset revenue data for recalculation
+            const newRevenueData = {};
+            const newPendingData = {};
+            let pendingCount = 0;
+
+            data.forEach(donation => {
+                const currency = donation.currency || 'UGX';
+                availableCurrencies.add(currency);
+
+                // Initialize if not exists
+                if (!newRevenueData[currency]) newRevenueData[currency] = 0;
+                if (!newPendingData[currency]) newPendingData[currency] = 0;
+
+                // Sum totals
+                const amount = parseFloat(donation.amount || 0);
+                if (donation.status === 'completed') {
+                    newRevenueData[currency] += amount;
+                } else if (donation.status === 'pending') {
+                    newPendingData[currency] += amount;
+                    pendingCount++;
+                }
+            });
+
+            // Update global data
+            revenueData = newRevenueData;
+            pendingData = newPendingData;
+            document.getElementById('pendingCount').innerText = pendingCount;
+
+            // Update dropdown
+            populateCurrencyDropdown();
+            switchCurrency();
+        }
+
+        function populateCurrencyDropdown() {
+            const selector = document.getElementById('currencySelector');
+            const currentValue = selector.value;
+
+            // Clear and repopulate
+            selector.innerHTML = '';
+            const sortedCurrencies = Array.from(availableCurrencies).sort();
+
+            sortedCurrencies.forEach(currency => {
+                const option = document.createElement('option');
+                option.value = currency;
+                option.textContent = currency;
+                selector.appendChild(option);
+            });
+
+            // Restore selection if currency still exists
+            if (availableCurrencies.has(currentValue)) {
+                selector.value = currentValue;
+            } else if (availableCurrencies.has('UGX')) {
+                selector.value = 'UGX';
+            }
+        }
+
+        function switchCurrency() {
+            const currency = document.getElementById('currencySelector').value;
+            const symbol = currency === 'USD' ? '$' : '';
+            const suffix = currency === 'USD' ? '' : ' ' + currency;
+
+            // Update total revenue
+            const totalAmount = revenueData[currency] || 0;
+            document.getElementById('totalRevenue').innerText = symbol + totalAmount.toLocaleString() + suffix;
+
+            // Update pending revenue
+            const pendingAmount = pendingData[currency] || 0;
+            document.getElementById('pendingRevenue').innerText = symbol + pendingAmount.toLocaleString() + suffix;
+        }
+
+        function calculatePendingFromData(data) {
+            // Extract currencies will handle this
+            extractCurrenciesFromData(data);
         }
 
         // --- ACTIONS ---
@@ -814,6 +988,7 @@
             updateIcons(saved);
             feather.replace();
             loadData();
+            loadPendingResources();
         });
     </script>
 

@@ -28,7 +28,8 @@ const {
   TeacherResource,
   ClassEvent,
   ResourceView,
-  QuizResult
+  QuizResult,
+  PreacherResource
 } = require('./models');
 
 /*********************************
@@ -1426,6 +1427,204 @@ app.get('/api/public/users/:id/profile-image', async (req, res) => {
   } catch (e) {
     console.error(e);
     res.status(500).send('Error serving image');
+  }
+});
+
+/*********************************
+ * PREACHER RESOURCES ROUTES
+ *********************************/
+
+// 1. Get Pending Resources Count (Admin/Dashboard)
+app.get('/api/resources/pending', async (req, res) => {
+  try {
+    const count = await PreacherResource.count({
+      where: { status: 'pending' }
+    });
+    res.json({ count });
+  } catch (err) {
+    console.error('Pending Resources Count Error:', err);
+    res.status(500).json({ error: 'Failed to fetch pending count' });
+  }
+});
+
+// 2. Upload Preacher Resource (Protected)
+app.post('/api/preacher/resources', authenticateToken, upload.single('file'), async (req, res) => {
+  // Ideally check if role is preacher or admin
+  try {
+    const { title, type, description } = req.body;
+    let fileData = null;
+    let mimeType = null;
+    let fileUrl = '#'; // Placeholder or constructed URL
+
+    if (req.file) {
+      fileData = req.file.buffer;
+      mimeType = req.file.mimetype;
+    }
+
+    const resource = await PreacherResource.create({
+      title,
+      type, // 'sermon', 'pdf', 'document', etc.
+      description,
+      fileData,
+      mimeType,
+      fileUrl,
+      uploadedBy: req.user.userid,
+      status: 'pending'
+    });
+
+    // Update URL now that we have ID
+    resource.fileUrl = `/api/preacher/resources/${resource.id}/file`;
+    await resource.save();
+
+    req.io.emit('preacher_resource_update', { action: 'create', resource });
+
+    res.status(201).json({ success: true, data: resource });
+  } catch (err) {
+    console.error('Upload Preacher Resource Error:', err);
+    res.status(500).json({ error: 'Failed to upload resource' });
+  }
+});
+
+// 3. Get Preacher Resources (Public/Filtered)
+app.get('/api/preacher/resources', async (req, res) => {
+  try {
+    const whereClause = {};
+
+    // Filter by 'mine' if requested (Protected)
+    if (req.query.mine === 'true') {
+      const authHeader = req.headers['authorization'];
+      const token = authHeader && authHeader.split(' ')[1];
+      if (token) {
+        try {
+          const user = jwt.verify(token, process.env.JWT_SECRET || 'supersecretkey123');
+          whereClause.uploadedBy = user.userid;
+        } catch (e) {
+          // invalid token, ignore or return error? defaulting to public view if auth fails might be safer or returning empty
+          return res.status(403).json({ error: 'Invalid token' });
+        }
+      } else {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+    } else {
+      // Public view: only approved resources
+      whereClause.status = 'approved';
+    }
+
+    const resources = await PreacherResource.findAll({
+      where: whereClause,
+      include: [{ model: User, as: 'uploader', attributes: ['fullname'] }],
+      order: [['createdAt', 'DESC']]
+    });
+
+    // Don't send huge fileData in list view
+    const cleanedResources = resources.map(r => {
+      const json = r.toJSON();
+      delete json.fileData;
+      return json;
+    });
+
+    res.json(cleanedResources);
+  } catch (err) {
+    console.error('Fetch Preacher Resources Error:', err);
+    res.status(500).json({ error: 'Failed to fetch resources' });
+  }
+});
+
+// 4. Get Single Resource
+app.get('/api/preacher/resources/:id', async (req, res) => {
+  try {
+    const resource = await PreacherResource.findByPk(req.params.id, {
+      include: [{ model: User, as: 'uploader', attributes: ['fullname'] }]
+    });
+
+    if (!resource) return res.status(404).json({ error: 'Resource not found' });
+
+    const json = resource.toJSON();
+    delete json.fileData; // Serve file via specific endpoint
+    res.json(json);
+  } catch (err) {
+    console.error('Fetch Resource Error:', err);
+    res.status(500).json({ error: 'Failed to fetch resource' });
+  }
+});
+
+// 5. Update Resource (Protected)
+app.put('/api/preacher/resources/:id', authenticateToken, async (req, res) => {
+  try {
+    const { title, description, type } = req.body;
+    const resource = await PreacherResource.findByPk(req.params.id);
+
+    if (!resource) return res.status(404).json({ error: 'Resource not found' });
+
+    // Ownership check (or admin)
+    if (resource.uploadedBy !== req.user.userid && req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Not authorized' });
+    }
+
+    await resource.update({ title, description, type });
+
+    req.io.emit('preacher_resource_update', { action: 'update', resource });
+
+    res.json({ success: true, data: resource });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Update failed' });
+  }
+});
+
+// 6. Delete Resource (Protected)
+app.delete('/api/preacher/resources/:id', authenticateToken, async (req, res) => {
+  try {
+    const resource = await PreacherResource.findByPk(req.params.id);
+    if (!resource) return res.status(404).json({ error: 'Resource not found' });
+
+    if (resource.uploadedBy !== req.user.userid && req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Not authorized' });
+    }
+
+    await resource.destroy();
+    req.io.emit('preacher_resource_update', { action: 'delete', id: req.params.id });
+
+    res.json({ success: true, message: 'Resource deleted' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Delete failed' });
+  }
+});
+
+// 7. Serve Resource File (Public)
+app.get('/api/preacher/resources/:id/file', async (req, res) => {
+  try {
+    const resource = await PreacherResource.findByPk(req.params.id);
+    if (!resource || !resource.fileData) return res.status(404).send('File not found');
+
+    res.setHeader('Content-Type', resource.mimeType || 'application/octet-stream');
+    res.send(resource.fileData);
+  } catch (e) {
+    console.error(e);
+    res.status(500).send('Error serving file');
+  }
+});
+
+// 8. Admin Verify Resource
+app.put('/api/admin/preacher-resources/:id/verify', authenticateToken, async (req, res) => {
+  if (req.user.role !== 'admin') return res.sendStatus(403);
+
+  try {
+    const { status } = req.body; // 'approved' or 'rejected'
+    const resource = await PreacherResource.findByPk(req.params.id);
+
+    if (!resource) return res.status(404).json({ error: 'Resource not found' });
+
+    resource.status = status;
+    await resource.save();
+
+    req.io.emit('preacher_resource_update', { action: 'verify', resource });
+
+    res.json({ success: true, data: resource });
+  } catch (err) {
+    console.error('Verify Resource Error:', err);
+    res.status(500).json({ error: 'Verification failed' });
   }
 });
 

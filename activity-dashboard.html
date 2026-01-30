@@ -560,6 +560,20 @@
         <!-- CONTENT PANEL -->
         <div id="content" class="panel">
             <div style="padding:20px;">
+                <!-- Pending Resources Stats -->
+                <div class="stats-grid" style="margin-bottom: 30px;">
+                    <div class="stat-card" style="border-left: 4px solid var(--brand-primary);">
+                        <div class="stat-label">Pending Preacher Resources</div>
+                        <div class="stat-value">
+                            <span id="pendingResourcesStat" style="color: var(--brand-primary);">0</span>
+                        </div>
+                        <div style="margin-top: 10px; font-size: 0.85rem; color: var(--text-muted);">
+                            <i data-feather="book-open" style="width:14px; height:14px;"></i>
+                            Awaiting admin approval
+                        </div>
+                    </div>
+                </div>
+
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
                     <h3 style="margin:0;">Teacher Resources</h3>
                     <select id="contentFilter" onchange="renderContent()"
@@ -732,15 +746,26 @@
 
         async function loadContent() {
             try {
-                const [resRes, resEvt, resSermons] = await Promise.all([
+                const [resRes, resEvt, resSermons, resPendingResources] = await Promise.all([
                     fetch(`${API_BASE}/api/teacher/resources`, { headers: { 'Authorization': `Bearer ${token}` } }),
                     fetch(`${API_BASE}/api/teacher/schedule`, { headers: { 'Authorization': `Bearer ${token}` } }),
-                    fetch(`${API_BASE}/api/admin/sermons`, { headers: { 'Authorization': `Bearer ${token}` } })
+                    fetch(`${API_BASE}/api/admin/sermons`, { headers: { 'Authorization': `Bearer ${token}` } }),
+                    fetch(`${API_BASE}/api/resources/pending`, { headers: { 'Authorization': `Bearer ${token}` } })
+                        .catch(() => ({ ok: false })) // Graceful fallback if endpoint doesn't exist
                 ]);
 
                 const resources = await resRes.json();
                 const events = await resEvt.json();
                 const sermons = await resSermons.json();
+
+                // Handle pending preacher resources
+                if (resPendingResources.ok) {
+                    const pendingResourcesData = await resPendingResources.json();
+                    const count = pendingResourcesData.count || pendingResourcesData.length || 0;
+                    document.getElementById('pendingResourcesStat').textContent = count;
+                } else {
+                    document.getElementById('pendingResourcesStat').textContent = '0';
+                }
 
                 // Check pending counts for badge
                 const pRes = resources.filter(r => r.status === 'pending').length;
