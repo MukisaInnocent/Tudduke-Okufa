@@ -21,7 +21,11 @@ module.exports = (sequelize, DataTypes) => {
             },
             createdBy: {
                 type: DataTypes.INTEGER,
-                allowNull: false
+                allowNull: false,
+                references: {
+                    model: 'users',
+                    key: 'userid'
+                }
             },
             isActive: {
                 type: DataTypes.BOOLEAN,

@@ -21,7 +21,11 @@ module.exports = (sequelize, DataTypes) => {
       },
       createdBy: {
         type: DataTypes.INTEGER,
-        allowNull: true // Allow null for seeded/legacy data, or set to false if strict
+        allowNull: true,
+        references: {
+          model: 'users',
+          key: 'userid'
+        }
       },
       isActive: {
         type: DataTypes.BOOLEAN,

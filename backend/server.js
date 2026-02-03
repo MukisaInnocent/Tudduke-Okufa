@@ -45,7 +45,27 @@ const io = new Server(server, {
   }
 });
 
+
 const PORT = process.env.PORT || 3000;
+
+/*********************************
+ * ENVIRONMENT VALIDATION
+ *********************************/
+// Validate critical environment variables in production
+if (process.env.NODE_ENV === 'production') {
+  const requiredEnvVars = ['DATABASE_URL'];
+  const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
+
+  if (missingVars.length > 0) {
+    console.error('❌ Missing required environment variables:', missingVars.join(', '));
+    process.exit(1);
+  }
+
+  if (!process.env.JWT_SECRET || process.env.JWT_SECRET === 'supersecretkey123') {
+    console.warn('⚠️  WARNING: Using default or missing JWT_SECRET in production!');
+  }
+}
+
 
 // Attach io to req for use in routes
 app.use((req, res, next) => {
@@ -78,11 +98,16 @@ app.use(express.static(path.join(__dirname, '../')));
     await sequelize.authenticate();
     console.log('✅ Database connected');
 
-    // TEMP — run once, then remove alter:true
-    await sequelize.sync({ alter: true });
-    console.log('✅ Models synced');
+    // Use alter:true only in development, safer sync in production
+    const syncOptions = process.env.NODE_ENV === 'production'
+      ? {}
+      : { alter: true };
+
+    await sequelize.sync(syncOptions);
+    console.log(`✅ Models synced (${process.env.NODE_ENV || 'development'} mode)`);
   } catch (error) {
     console.error('❌ Database error:', error);
+    process.exit(1); // Exit if database connection fails
   }
 })();
 
@@ -90,7 +115,27 @@ app.use(express.static(path.join(__dirname, '../')));
  * API ROUTES
  *********************************/
 
-
+// Health Check Endpoint
+app.get('/api/health', async (req, res) => {
+  try {
+    // Check database connection
+    await sequelize.authenticate();
+    res.json({
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      database: 'connected',
+      environment: process.env.NODE_ENV || 'development'
+    });
+  } catch (error) {
+    res.status(503).json({
+      status: 'error',
+      timestamp: new Date().toISOString(),
+      database: 'disconnected',
+      error: error.message
+    });
+  }
+});
 
 // Contact Messages
 app.post('/api/contact', async (req, res) => {
@@ -693,18 +738,7 @@ app.get('/api/kids/lessons/:id', async (req, res) => {
 });
 
 // Memory Verses (Kids)
-app.get('/api/kids/memory-verses', async (req, res) => {
-  try {
-    const verses = await MemoryVerse.findAll({
-      where: { isActive: true },
-      order: [['createdAt', 'DESC']]
-    });
-    res.json(verses);
-  } catch (err) {
-    console.error('❌ Memory verses fetch error:', err);
-    res.status(500).json({ error: 'Failed to fetch memory verses' });
-  }
-});
+
 
 app.get('/api/kids/memory-verses/daily', async (req, res) => {
   try {
@@ -814,6 +848,11 @@ app.get('/api/kids/memory-verses', async (req, res) => {
   try {
     const verses = await MemoryVerse.findAll({
       where: { isActive: true },
+      include: [{
+        model: User,
+        as: 'creator',
+        attributes: ['fullname']
+      }],
       order: [['createdAt', 'DESC']]
     });
     res.json(verses);

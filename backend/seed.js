@@ -6,9 +6,10 @@ async function seed() {
   try {
     console.log('🌱 Starting database seeding...');
 
-    // Sync database
-    await sequelize.sync({ alter: true });
-    console.log('✅ Database synced');
+    // Sync database (conditional based on environment)
+    const syncOptions = process.env.NODE_ENV === 'production' ? {} : { alter: true };
+    await sequelize.sync(syncOptions);
+    console.log(`✅ Database synced (${process.env.NODE_ENV || 'development'} mode)`);
 
     // Check if data already exists
     const sermonCount = await Sermon.count();
