@@ -523,6 +523,29 @@ app.get('/api/sermons', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch sermons' });
   }
 });
+// Get My Sermons (Preacher Dashboard)
+// MUST BE BEFORE /:id
+app.get('/api/sermons/my', authenticateToken, async (req, res) => {
+  try {
+    console.log(`[DEBUG] Fetching sermons for user ${req.user.userid} (${req.user.role})`);
+
+    const sermons = await Sermon.findAll({
+      where: { authorid: req.user.userid },
+      order: [['entrytime', 'DESC']]
+    });
+
+    console.log(`[DEBUG] Found ${sermons.length} sermons for user ${req.user.userid}`);
+
+    res.json(sermons);
+  } catch (err) {
+    console.error('Fetch My Sermons Error:', err);
+    // Return detailed error for debugging (remove stack in final prod, strictly for now)
+    res.status(500).json({
+      error: 'Failed to fetch sermons: ' + err.message,
+      details: err.stack
+    });
+  }
+});
 
 app.get('/api/sermons/:id', async (req, res) => {
   try {
@@ -630,28 +653,7 @@ app.post('/api/sermons/:id/comments', authenticateToken, async (req, res) => {
   }
 });
 
-// Get My Sermons (Preacher Dashboard)
-app.get('/api/sermons/my', authenticateToken, async (req, res) => {
-  try {
-    console.log(`[DEBUG] Fetching sermons for user ${req.user.userid} (${req.user.role})`);
 
-    const sermons = await Sermon.findAll({
-      where: { authorid: req.user.userid },
-      order: [['entrytime', 'DESC']]
-    });
-
-    console.log(`[DEBUG] Found ${sermons.length} sermons for user ${req.user.userid}`);
-
-    res.json(sermons);
-  } catch (err) {
-    console.error('Fetch My Sermons Error:', err);
-    // Return detailed error for debugging (remove stack in final prod, strictly for now)
-    res.status(500).json({
-      error: 'Failed to fetch sermons: ' + err.message,
-      details: err.stack
-    });
-  }
-});
 
 // Create Main Sermon (Protected)
 app.post('/api/sermons', authenticateToken, async (req, res) => {
