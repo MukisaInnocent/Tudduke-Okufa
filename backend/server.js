@@ -494,7 +494,7 @@ app.get('/api/sermons', async (req, res) => {
       include: [
         { model: SermonLike, attributes: ['userId'] }, // Need userId to check ownership
         { model: SermonComment, attributes: ['commentid'] },
-        { model: User, as: 'author', attributes: ['fullname', 'roles'] }, // Fetch Author Name
+        { model: User, as: 'author', attributes: ['fullname', 'roles', 'profileImage'] }, // Fetch Author Name
         { model: User, as: 'verifier', attributes: ['fullname'] } // Fetch Verifier Name
       ],
       order: [['entrytime', 'DESC']],
@@ -531,6 +531,11 @@ app.get('/api/sermons/:id', async (req, res) => {
         {
           model: SermonLike,
           attributes: ['userId']
+        },
+        {
+          model: User,
+          as: 'author',
+          attributes: ['fullname', 'profileImage']
         }
       ]
     });
