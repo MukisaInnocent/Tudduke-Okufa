@@ -38,6 +38,10 @@ const {
  *********************************/
 const app = express();
 const server = http.createServer(app);
+
+// Enable Global CORS for local file:// access
+app.use(cors({ origin: '*' }));
+
 const io = new Server(server, {
   cors: {
     origin: "*", // Allow all origins for simplicity in this setup
@@ -205,8 +209,28 @@ const authenticateToken = (req, res, next) => {
 };
 
 // Multer Setup (Memory Storage for DB)
+// Multer Setup (Disk Storage)
 const multer = require('multer');
-const storage = multer.memoryStorage();
+const fs = require('fs');
+// path already defined at top
+
+// Ensure uploads dir exists
+const uploadDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, uploadDir)
+  },
+  filename: function (req, file, cb) {
+    // Unique filename: timestamp + random + ext
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + path.extname(file.originalname))
+  }
+});
+
 const upload = multer({
   storage: storage,
   limits: { fileSize: 50 * 1024 * 1024 } // 50MB Limit
@@ -1578,41 +1602,78 @@ app.get('/api/resources/pending', async (req, res) => {
   }
 });
 
-// 2. Upload Preacher Resource (Protected)
+// 4. Create Resource (Protected, File Upload)
 app.post('/api/preacher/resources', authenticateToken, upload.single('file'), async (req, res) => {
-  // Ideally check if role is preacher or admin
   try {
     const { title, type, description } = req.body;
-    let fileData = null;
+    console.log(`[UPLOAD START] User: ${req.user.userid}, Title: ${title}`);
+
     let mimeType = null;
-    let fileUrl = '#'; // Placeholder or constructed URL
+    let fileSize = 0;
+    let filePath = null;
 
     if (req.file) {
-      fileData = req.file.buffer;
+      // Disk Storage: File is already saved to 'req.file.path'
+      filePath = req.file.filename; // Store filename only, relative to uploads/
       mimeType = req.file.mimetype;
+      fileSize = req.file.size;
+      console.log(`[UPLOAD INFO] File Saved to Disk: ${filePath} (${(fileSize / 1024 / 1024).toFixed(2)} MB)`);
     }
 
+    console.time('DB_WRITE_TIME');
     const resource = await PreacherResource.create({
       title,
-      type, // 'sermon', 'pdf', 'document', etc.
+      type,
       description,
-      fileData,
+      fileUrl: '', // Will update
+      // fileData removed
       mimeType,
-      fileUrl,
       uploadedBy: req.user.userid,
-      status: 'pending'
+      status: 'pending' // Default
     });
+    console.timeEnd('DB_WRITE_TIME');
 
     // Update URL now that we have ID
-    resource.fileUrl = `/api/preacher/resources/${resource.id}/file`;
-    await resource.save();
+    // We can store the filename in a separate field or just derive it, but we need to know WHICH file belongs to this resource.
+    // Ideally we'd have a 'fileName' column, but we removed 'fileData'.
+    // Let's store the FILENAME in 'fileUrl' for now as a temporary internal reference, then overwrite it? 
+    // Wait, the previous logic constructed a URL: /api/preacher/resources/:id/file
+    // That URL endpoint needs to know WHICH file to serve.
+    // We should save the FILENAME in the DB. We don't have a 'fileName' column.
+    // We can re-purpose 'fileUrl' to store the filename? No, frontend uses it as a link.
+    // OPTION: We add a 'fileName' column? Or we just rename the file to include the resource ID?
+    // We already saved the file with a unique name.
+    // Let's UPDATE the fileUrl to point to the endpoint, but WE NEED TO STORE THE FILENAME somewhere to serve it.
+    // HACK: Since we deleted 'fileData', let's use 'fileUrl' to store the endpoint, and we need a way to lookup the file.
+    // Problem: The endpoint /api/preacher/resources/:id/file needs to know "uploads/12345.pdf".
+    // If we rely on resource.id, we'd have to rename the file to match the ID.
+    // BETTER: Rename the file to `resource-${resource.id}${ext}` AFTER creation?
+    // Yes.
+
+    if (req.file) {
+      const ext = path.extname(req.file.originalname);
+      const newFilename = `resource-${resource.id}${ext}`;
+      const oldPath = req.file.path;
+      const newPath = path.join(uploadDir, newFilename);
+
+      fs.renameSync(oldPath, newPath);
+      console.log(`[RENAME] File renamed to: ${newFilename}`);
+
+      // We don't store the path in DB, we verify existence by ID when serving
+      // But we need the EXTENSION to serve correctly?
+      // We stored mimeType, so we can guess, but better to keep extension.
+      // Let's store the endpoint in fileUrl.
+      resource.fileUrl = `/api/preacher/resources/${resource.id}/file`;
+      await resource.save();
+    }
 
     req.io.emit('preacher_resource_update', { action: 'create', resource });
 
+    console.log(`[UPLOAD SUCCESS] Resource ID: ${resource.id}`);
     res.status(201).json({ success: true, data: resource });
   } catch (err) {
     console.error('Upload Preacher Resource Error:', err);
-    res.status(500).json({ error: 'Failed to upload resource' });
+    res.status(500).json({ error: 'Failed to upload resource: ' + err.message });
   }
 });
 
@@ -1733,12 +1794,31 @@ app.delete('/api/preacher/resources/:id', authenticateToken, async (req, res) =>
 app.get('/api/preacher/resources/:id/file', async (req, res) => {
   try {
     const resource = await PreacherResource.findByPk(req.params.id);
-    if (!resource || !resource.fileData) return res.status(404).send('File not found');
+    if (!resource) return res.status(404).send('Resource not found');
+
+    // Determine filename
+    // We renamed it to `resource-${id}.ext`
+    // We need to find the extension.
+    // Naively search for matching file in uploads dir
+    const uploadDir = path.join(__dirname, 'uploads');
+    const files = fs.readdirSync(uploadDir);
+    const filename = files.find(f => f.startsWith(`resource-${resource.id}.`));
+
+    if (!filename) {
+      return res.status(404).send('File not found on server disk');
+    }
+
+    const filePath = path.join(uploadDir, filename);
 
     res.setHeader('Content-Type', resource.mimeType || 'application/octet-stream');
-    res.send(resource.fileData);
-  } catch (e) {
-    console.error(e);
+    // res.setHeader('Content-Disposition', `attachment; filename="${resource.title}${path.extname(filename)}"`);
+
+    // Stream file
+    const stream = fs.createReadStream(filePath);
+    stream.pipe(res);
+
+  } catch (err) {
+    console.error('Serve Resource Error:', err);
     res.status(500).send('Error serving file');
   }
 });
