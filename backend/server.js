@@ -98,11 +98,9 @@ app.use(express.static(path.join(__dirname, '../')));
     await sequelize.authenticate();
     console.log('✅ Database connected');
 
-    // Use alter:true only in development OR if explicitly requested via env var
-    // This allows fixing schema mismatches in production
-    const syncOptions = (process.env.NODE_ENV === 'production' && process.env.DB_SYNC_ALTER !== 'true')
-      ? {}
-      : { alter: true };
+    // FORCE SYNC for this deployment to fix missing columns (authorid)
+    // We will revert this after one successful deploy.
+    const syncOptions = { alter: true };
 
     console.log(`Connection Sync Options: ${JSON.stringify(syncOptions)}`);
     await sequelize.sync(syncOptions);
