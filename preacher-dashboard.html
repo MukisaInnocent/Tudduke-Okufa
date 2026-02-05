@@ -562,9 +562,23 @@
         /* ===== RESOURCE MANAGEMENT ===== */
         async function loadResources() {
             try {
-                const res = await fetch(`${API_BASE}/api/preacher/resources`, {
+                // IMPORTANT: Pass ?mine=true to see own pending resources
+                const res = await fetch(`${API_BASE}/api/preacher/resources?mine=true`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
+
+                if (!res.ok) {
+                    let errorMessage = 'Fetch failed';
+                    try {
+                        const errData = await res.json();
+                        errorMessage = errData.error || errData.message || res.statusText;
+                    } catch (e) {
+                        errorMessage = `HTTP ${res.status}: ${res.statusText}`;
+                    }
+                    console.error('Failed to fetch resources:', errorMessage);
+                    throw new Error(errorMessage);
+                }
+
                 const resources = await res.json();
                 const list = document.getElementById('resourceList');
 
@@ -576,7 +590,11 @@
                 list.innerHTML = resources.map(r => `
                     <div class="sermon-item">
                         <div class="sermon-info">
-                            <h4>${r.title} <span style="font-size: 0.7rem; background: #eee; padding: 2px 6px; border-radius: 4px;">${r.type}</span></h4>
+                            <h4>
+                                ${r.title} 
+                                <span style="font-size: 0.7rem; background: #eee; padding: 2px 6px; border-radius: 4px;">${r.type}</span>
+                                ${r.status !== 'approved' ? `<span style="font-size: 0.7rem; background: #fff3cd; color: #856404; padding: 2px 6px; border-radius: 4px; margin-left: 5px;">${r.status}</span>` : ''}
+                            </h4>
                             <p>${r.description || ''}</p>
                             <p><a href="${r.fileUrl}" target="_blank" style="color: var(--brand); font-size: 0.85rem;">View Resource</a></p>
                         </div>
@@ -588,7 +606,7 @@
                 feather.replace();
             } catch (err) {
                 console.error(err);
-                document.getElementById('resourceList').innerHTML = '<p style="color:red">Failed to load resources.</p>';
+                document.getElementById('resourceList').innerHTML = `<p style="color:red; text-align:center;">Error: ${err.message}</p>`;
             }
         }
 
@@ -599,34 +617,34 @@
             btn.disabled = true;
 
             const formData = new FormData();
-            formData.append('title', document.getElementById('resTitle').value);
-            formData.append('type', document.getElementById('resType').value);
-            formData.append('description', document.getElementById('resDesc').value);
+            formData.append('title', document.getElementById('resourceTitle').value);
+            formData.append('type', document.getElementById('resourceType').value);
+            formData.append('description', document.getElementById('resourceDesc').value);
 
-            const fileInput = document.getElementById('resFile');
-            if (fileInput.files[0]) {
+            const fileInput = document.getElementById('resourceFile');
+            if (fileInput.files.length > 0) {
                 formData.append('file', fileInput.files[0]);
             }
-            const linkVal = document.getElementById('resLink').value;
-            if (linkVal) formData.append('linkUrl', linkVal);
 
             try {
                 const res = await fetch(`${API_BASE}/api/preacher/resources`, {
                     method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}` }, // FormData sets Content-Type boundary automatically
+                    headers: { 'Authorization': `Bearer ${token}` },
                     body: formData
                 });
 
-                if (res.ok) {
-                    alert('Resource Uploaded!');
+                const data = await res.json();
+                if (data.success) {
+                    alert('Resource uploaded successfully!');
                     document.getElementById('resourceForm').reset();
+                    document.getElementById('resourceUploadArea').classList.add('hidden');
                     loadResources();
                 } else {
-                    alert('Upload failed.');
+                    alert('Upload failed: ' + (data.error || 'Unknown error'));
                 }
             } catch (err) {
                 console.error(err);
-                alert('Error uploading resource');
+                alert('An error occurred during upload.');
             } finally {
                 btn.textContent = 'Upload Resource';
                 btn.disabled = false;

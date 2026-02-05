@@ -1201,15 +1201,19 @@ app.get('/api/teacher/resources', authenticateToken, async (req, res) => {
   if (req.user.role === 'teacher' || req.user.role === 'admin') {
     try {
       const whereClause = req.user.role === 'admin' ? {} : { uploadedBy: req.user.userid };
-      const resources = await TeacherResource.findAll({
+      console.log(`[DEBUG] Fetching resources with filter: ${JSON.stringify(whereClause)}`);
+
+      const resources = await PreacherResource.findAll({
         where: whereClause,
-        include: [{ model: User, as: 'uploader', attributes: ['fullname', 'email'] }],
+        include: [{ model: User, as: 'uploader', attributes: ['fullname'] }],
         order: [['createdAt', 'DESC']]
       });
+
+      console.log(`[DEBUG] Found ${resources.length} resources.`);
       res.json(resources);
     } catch (err) {
-      console.error('Fetch Resources Error:', err);
-      res.status(500).json({ error: 'Failed to fetch resources' });
+      console.error('Fetch Preacher Resources Error:', err);
+      res.status(500).json({ error: 'Failed to fetch resources: ' + err.message, details: err.stack });
     }
     return;
   }
