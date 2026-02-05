@@ -1757,6 +1757,7 @@ app.put('/api/admin/preacher-resources/:id/verify', authenticateToken, async (re
   }
 });
 
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`✅ Server running on port ${PORT}`);
+  console.log('🚀 Server Version: 1.2.0 (Debug Enabled)');
 });
