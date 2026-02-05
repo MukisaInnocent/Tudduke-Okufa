@@ -708,36 +708,46 @@
     };
     const API_BASE = getApiBase();
 
-    /* FETCH SERMONS */
+    let allSermons = [];
+
     async function loadSermons() {
       try {
         const headers = {};
-        if (token) headers['Authorization'] = `Bearer ${token}`; // Send token to get "isLiked"
+        if (token) headers['Authorization'] = `Bearer ${token}`;
 
         const res = await fetch(`${API_BASE}/api/sermons`, { headers });
         if (!res.ok) throw new Error('Failed to fetch sermons');
         const data = await res.json();
-        sermonsContainer.innerHTML = "";
 
-        if (data.length === 0) {
-          sermonsContainer.innerHTML = "<p style='text-align:center;padding:20px;'>No sermons available yet. Check back soon!</p>";
-          return;
-        }
+        allSermons = data;
+        renderSermons(allSermons);
+      } catch (err) {
+        sermonsContainer.innerHTML = "<p style='color:red;text-align:center;padding:20px;'>Failed to load sermons.</p>";
+        console.error(err);
+      }
+    }
 
-        data.forEach(s => {
-          const article = document.createElement("article");
-          const views = s.views || 0;
-          const likeCount = s.likeCount || 0;
-          const isLiked = s.isLiked === true;
+    function renderSermons(data) {
+      sermonsContainer.innerHTML = "";
 
-          const likeActive = isLiked ? 'active' : '';
-          const likeFill = isLiked ? 'var(--brand)' : 'none';
+      if (data.length === 0) {
+        sermonsContainer.innerHTML = "<p style='text-align:center;padding:20px;'>No results found.</p>";
+        return;
+      }
 
-          // Get preacher profile image or use fallback
-          const preacherName = s.author ? s.author.fullname : 'Unknown Preacher';
-          const preacherImage = s.author?.profileImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(preacherName)}&background=c60000&color=fff&size=96`;
+      data.forEach(s => {
+        const article = document.createElement("article");
+        const views = s.views || 0;
+        const likeCount = s.likeCount || 0;
+        const isLiked = s.isLiked === true;
 
-          article.innerHTML = `
+        const likeActive = isLiked ? 'active' : '';
+        const likeFill = isLiked ? 'var(--brand)' : 'none';
+
+        const preacherName = s.author ? s.author.fullname : 'Unknown Preacher';
+        const preacherImage = s.author?.profileImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(preacherName)}&background=c60000&color=fff&size=96`;
+
+        article.innerHTML = `
             <div class="article-content">
                 <h2>${s.title || s.topic || 'Untitled Sermon'}</h2>
                 
@@ -779,16 +789,21 @@
                 </div>
             </div>
           `;
-          sermonsContainer.appendChild(article);
-
-          // Lazy load real like count if needed, or rely on future update
-        });
-        feather.replace();
-      } catch (err) {
-        sermonsContainer.innerHTML = "<p style='color:red;text-align:center;padding:20px;'>Failed to load sermons.</p>";
-        console.error(err);
-      }
+        sermonsContainer.appendChild(article);
+      });
+      feather.replace();
     }
+
+    searchInput.addEventListener('input', (e) => {
+      const term = e.target.value.toLowerCase();
+      const filtered = allSermons.filter(s =>
+        (s.title && s.title.toLowerCase().includes(term)) ||
+        (s.topic && s.topic.toLowerCase().includes(term)) ||
+        (s.author && s.author.fullname.toLowerCase().includes(term)) ||
+        (s.scripture && s.scripture.toLowerCase().includes(term))
+      );
+      renderSermons(filtered);
+    });
 
     /* LIKE LOGIC */
     async function toggleLike(id, btn) {
