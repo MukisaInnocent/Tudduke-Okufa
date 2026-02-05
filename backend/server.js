@@ -635,10 +635,15 @@ app.post('/api/sermons/:id/comments', authenticateToken, async (req, res) => {
 // Get My Sermons (Preacher Dashboard)
 app.get('/api/sermons/my', authenticateToken, async (req, res) => {
   try {
+    console.log(`[DEBUG] Fetching sermons for user ${req.user.userid} (${req.user.role})`);
+
     const sermons = await Sermon.findAll({
       where: { authorid: req.user.userid },
       order: [['entrytime', 'DESC']]
     });
+
+    console.log(`[DEBUG] Found ${sermons.length} sermons for user ${req.user.userid}`);
+
     res.json(sermons);
   } catch (err) {
     console.error('Fetch My Sermons Error:', err);

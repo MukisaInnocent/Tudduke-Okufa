@@ -402,10 +402,18 @@
         async function loadSermons() {
             // Fetch MY sermons only (Protected Route)
             try {
+                console.log('Fetching my sermons...');
                 const res = await fetch(`${API_BASE}/api/sermons/my`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
+
+                if (!res.ok) {
+                    console.error('Failed to fetch sermons:', res.status, res.statusText);
+                    throw new Error('Fetch failed');
+                }
+
                 const sermons = await res.json();
+                console.log('Sermons fetched:', sermons);
 
                 // Decode token payload to get ID if not in userStr
                 const user = JSON.parse(userStr);
@@ -419,7 +427,7 @@
 
                 const list = document.getElementById('sermonList');
                 if (sermons.length === 0) {
-                    list.innerHTML = '<p style="text-align: center; color: #888;">No sermons yet.</p>';
+                    list.innerHTML = '<p style="text-align: center; color: #888;">No sermons found for your account.</p>';
                     return;
                 }
 
@@ -440,6 +448,7 @@
 
             } catch (err) {
                 console.error(err);
+                document.getElementById('sermonList').innerHTML = `<p style="text-align: center; color: red;">Error loading sermons: ${err.message}</p>`;
             }
         }
 
