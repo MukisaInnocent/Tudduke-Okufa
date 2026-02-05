@@ -408,8 +408,15 @@
                 });
 
                 if (!res.ok) {
-                    console.error('Failed to fetch sermons:', res.status, res.statusText);
-                    throw new Error('Fetch failed');
+                    let errorMessage = 'Fetch failed';
+                    try {
+                        const errData = await res.json();
+                        errorMessage = errData.error || errData.message || res.statusText;
+                    } catch (e) {
+                        errorMessage = `HTTP ${res.status}: ${res.statusText}`;
+                    }
+                    console.error('Failed to fetch sermons:', errorMessage);
+                    throw new Error(errorMessage);
                 }
 
                 const sermons = await res.json();
