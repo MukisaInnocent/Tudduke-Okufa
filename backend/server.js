@@ -657,7 +657,7 @@ app.post('/api/sermons', authenticateToken, async (req, res) => {
     res.status(201).json({ success: true, data: sermon });
   } catch (err) {
     console.error('Create Sermon Error:', err);
-    res.status(500).json({ error: 'Failed to create sermon' });
+    res.status(500).json({ error: 'Failed to create sermon: ' + err.message });
   }
 });
 
