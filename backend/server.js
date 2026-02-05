@@ -647,7 +647,11 @@ app.get('/api/sermons/my', authenticateToken, async (req, res) => {
     res.json(sermons);
   } catch (err) {
     console.error('Fetch My Sermons Error:', err);
-    res.status(500).json({ error: 'Failed to fetch sermons' });
+    // Return detailed error for debugging (remove stack in final prod, strictly for now)
+    res.status(500).json({
+      error: 'Failed to fetch sermons: ' + err.message,
+      details: err.stack
+    });
   }
 });
 
