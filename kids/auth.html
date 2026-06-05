@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kids Login | Tudduke Okufa Ministry</title>
+
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* PAGE SPECIFIC STYLES */
+        .auth-section {
+            padding: 120px 5% 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 200px);
+        }
+
+        @media (min-width: 1024px) {
+            .auth-section {
+                margin-left: 280px;
+                padding-right: 20px;
+            }
+        }
+
+        .auth-container {
+            background: var(--k-surface);
+            padding: 50px 40px;
+            border-radius: var(--k-radius);
+            box-shadow: var(--k-shadow);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, var(--k-brand), #ff6b6b);
+        }
+
+        .auth-container h2 {
+            color: var(--k-brand);
+            margin-bottom: 30px;
+            font-size: 2rem;
+            font-weight: 800;
+        }
+
+        /* TABS */
+        .tabs {
+            display: flex;
+            margin-bottom: 30px;
+            background: var(--k-bg);
+            padding: 6px;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            /* Using var(--k-bg) ensures theme adaptability */
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: 700;
+            color: var(--k-text-light);
+            /* Using text-light var */
+            transition: 0.3s;
+        }
+
+        .tab.active {
+            background: var(--k-surface);
+            color: var(--k-brand);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .toggle-text {
+            margin-top: 24px;
+            font-size: 0.95rem;
+            color: var(--k-text-light);
+        }
+
+        .toggle-text a {
+            color: var(--k-brand);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .toggle-text a:hover {
+            text-decoration: underline;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .error-msg {
+            color: #d32f2f;
+            background: #ffebee;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            display: none;
+            font-size: 0.9rem;
+        }
+    </style>
+
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#c60000">
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="header-left">
+            <button class="menu-toggle" id="menuToggle">
+                <i data-feather="menu"></i>
+            </button>
+            <div class="header-text">
+                <h1>TUDDUKE OKUFA</h1>
+                <p>Preparing People for the Second Coming</p>
+            </div>
+        </div>
+        <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+            <i data-feather="moon"></i>
+        </button>
+    </header>
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar">
+        <a href="index.html"><i data-feather="home"></i> Kids Home</a>
+        <a href="videos.html"><i data-feather="play-circle"></i> Kids Videos</a>
+        <a href="quiz.html"><i data-feather="help-circle"></i> Bible Quiz</a>
+        <a href="memory-verses.html"><i data-feather="book-open"></i> Memory Verses</a>
+        <a href="children-sermon.html"><i data-feather="mic"></i> Children Sermons</a>
+        <a href="weekly-lesson.html"><i data-feather="sun"></i> Weekly Lessons</a>
+        <a href="parents.html"><i data-feather="users"></i> Parents & Teachers</a>
+        <div style="height: 1px; background: rgba(0,0,0,0.1); margin: 10px 0;"></div>
+        <a href="auth.html" class="active"
+            style="color: var(--k-brand); border: 1px solid var(--k-brand); justify-content: center;"><i
+                data-feather="lock"></i> Login / Join</a>
+        <a href="../index.html" style="opacity: 0.7;"><i data-feather="arrow-left"></i> Home Page</a>
+    </aside>
+
+    <div class="overlay" id="overlay"></div>
+
+    <section class="auth-section">
+        <div class="auth-container">
+            <h2 id="pageTitle">Welcome Back!</h2>
+
+            <!-- TABS -->
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('login')" id="tabLogin">Login</div>
+                <div class="tab" onclick="switchTab('register')" id="tabRegister">Register</div>
+            </div>
+
+            <!-- ERROR MESSAGE -->
+            <p id="errorMsg" class="error-msg"></p>
+
+            <!-- FORM -->
+            <!-- WIZARD STYLES -->
+            <style>
+                .wizard-step {
+                    display: none;
+                    animation: fadeIn 0.4s ease;
+                }
+
+                .wizard-step.active {
+                    display: block;
+                }
+
+                @keyframes fadeIn {
+                    from {
+                        opacity: 0;
+                        transform: translateY(10px);
+                    }
+
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+
+                .role-cards {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 15px;
+                    margin-bottom: 20px;
+                }
+
+                .role-card {
+                    background: var(--k-bg);
+                    border: 2px solid rgba(0, 0, 0, 0.05);
+                    border-radius: 16px;
+                    padding: 20px;
+                    text-align: center;
+                    cursor: pointer;
+                    transition: 0.3s;
+                }
+
+                .role-card:hover {
+                    border-color: var(--k-brand);
+                    background: rgba(198, 0, 0, 0.02);
+                    transform: translateY(-3px);
+                }
+
+                .role-card.selected {
+                    border-color: var(--k-brand);
+                    background: rgba(198, 0, 0, 0.05);
+                    box-shadow: 0 4px 12px rgba(198, 0, 0, 0.15);
+                }
+
+                .role-card i {
+                    margin-bottom: 10px;
+                    color: var(--k-text-light);
+                }
+
+                .role-card.selected i {
+                    color: var(--k-brand);
+                }
+
+                .role-card h4 {
+                    font-size: 1.1rem;
+                    color: var(--k-text);
+                    margin: 0;
+                }
+
+                .progress-bar {
+                    display: flex;
+                    gap: 5px;
+                    margin-bottom: 25px;
+                }
+
+                .progress-step {
+                    flex: 1;
+                    height: 4px;
+                    background: rgba(0, 0, 0, 0.1);
+                    border-radius: 2px;
+                    transition: 0.3s;
+                }
+
+                .progress-step.active {
+                    background: var(--k-brand);
+                }
+
+                .wizard-nav {
+                    display: flex;
+                    gap: 10px;
+                    margin-top: 20px;
+                }
+            </style>
+
+            <form id="authForm">
+                <!-- PROGRESS BAR (Only visible in Register mode) -->
+                <div id="progressBar" class="progress-bar hidden">
+                    <div class="progress-step active" id="pStep1"></div>
+                    <div class="progress-step" id="pStep2"></div>
+                    <div class="progress-step" id="pStep3"></div>
+                </div>
+
+                <!-- LOGIN VIEW (Default) -->
+                <div id="loginView">
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="loginEmail" placeholder="hello@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="loginPassword" placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="btn-primary" id="loginBtn">Login</button>
+                </div>
+
+                <!-- REGISTER WIZARD (Hidden by default) -->
+                <div id="registerWizard" class="hidden">
+
+                    <!-- STEP 1: ROLE -->
+                    <div class="wizard-step active" id="step1">
+                        <h3 style="text-align:center; color:var(--k-brand); margin-bottom:20px;">Who are you?</h3>
+                        <div class="role-cards">
+                            <div class="role-card" onclick="selectRole('kid')" id="card-kid">
+                                <i data-feather="smile" style="width: 40px; height: 40px;"></i>
+                                <h4>I'm a Kid</h4>
+                            </div>
+                            <div class="role-card" onclick="selectRole('teacher')" id="card-teacher">
+                                <i data-feather="briefcase" style="width: 40px; height: 40px;"></i>
+                                <h4>I'm a Teacher</h4>
+                            </div>
+                        </div>
+                        <input type="hidden" id="role" value="">
+                        <div class="wizard-nav">
+                            <button type="button" class="btn-primary" onclick="nextStep(2)">Next: Details</button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 2: DETAILS -->
+                    <div class="wizard-step" id="step2">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="fullname" placeholder="Enter your full name">
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                            <div>
+                                <label>Date of Birth</label>
+                                <input type="date" id="dateOfBirth">
+                            </div>
+                            <div>
+                                <label>Sex</label>
+                                <select id="sex">
+                                    <option value="">Select...</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" id="phoneNumber" placeholder="+256...">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Address</label>
+                            <input type="text" id="address" placeholder="e.g. Kampala">
+                        </div>
+
+                        <!-- Guardian Info (Dynamic) -->
+                        <div id="guardianFields">
+                            <div class="form-group">
+                                <label>Guardian Name</label>
+                                <input type="text" id="guardianName" placeholder="Parent's Name">
+                            </div>
+                            <div class="form-group">
+                                <label>Guardian Phone</label>
+                                <input type="tel" id="guardianPhone" placeholder="+256...">
+                            </div>
+                        </div>
+
+                        <div class="wizard-nav">
+                            <button type="button" class="btn-secondary" onclick="nextStep(1)">Back</button>
+                            <button type="button" class="btn-primary" onclick="nextStep(3)">Next: Security</button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 3: SECURITY -->
+                    <div class="wizard-step" id="step3">
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" id="email" placeholder="hello@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" id="password" placeholder="Min 6 chars">
+                        </div>
+
+                        <div id="termsGroup" style="margin-top:20px;">
+                            <label style="display: flex; gap: 10px; cursor: pointer; font-size: 0.9rem;">
+                                <input type="checkbox" id="terms" style="margin-top: 4px;">
+                                <span>I agree to the <a href="#">Terms & Conditions</a></span>
+                            </label>
+                            <label
+                                style="display: flex; gap: 10px; cursor: pointer; margin-top: 10px; font-size: 0.9rem;">
+                                <input type="checkbox" id="regSubscribe" checked>
+                                <span>Subscribe to Updates</span>
+                            </label>
+                        </div>
+
+                        <div class="wizard-nav">
+                            <button type="button" class="btn-secondary" onclick="nextStep(2)">Back</button>
+                            <button type="button" class="btn-primary" id="finalSubmitBtn"
+                                onclick="submitRegister()">Create Account</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <p class="toggle-text">
+                <span id="toggleText">Don't have an account?</span>
+                <a href="#" onclick="toggleAuthMode(); return false;" id="toggleLink">Register here</a>
+            </p>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>Tudduke Okufa Ministry</h3>
+                <p class="leader-text">Led by Servant Kiviri John Mark</p>
+            </div>
+
+            <div class="footer-dev">
+                <p>Developed with excellence by</p>
+                <a href="#" class="dev-link">InnoTech Solutions</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; <span id="year"></span> Tudduke Okufa. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="auth-helper.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="script.js"></script>
+
+    <script>
+        /* AUTH LOGIC */
+        let isRegister = false;
+        let pStep = 1;
+
+        // Determine API BASE for local file access vs server access
+        const getApiBase = () => {
+            const { hostname, protocol, port } = window.location;
+            if (protocol === 'file:') return 'http://localhost:3000';
+            if ((hostname === 'localhost' || hostname === '127.0.0.1') && port !== '3000') {
+                return 'http://localhost:3000';
+            }
+            return '';
+        };
+        const API_BASE = getApiBase();
+
+        const form = document.getElementById('authForm');
+        const loginView = document.getElementById('loginView');
+        const registerWizard = document.getElementById('registerWizard');
+        const progressBar = document.getElementById('progressBar');
+        const pageTitle = document.getElementById('pageTitle');
+        const errorMsg = document.getElementById('errorMsg');
+        const roleInput = document.getElementById('role');
+        const tabLogin = document.getElementById('tabLogin');
+        const tabRegister = document.getElementById('tabRegister');
+        const toggleText = document.getElementById('toggleText');
+        const toggleLink = document.getElementById('toggleLink');
+        const guardianFields = document.getElementById('guardianFields');
+
+        // ERROR HELPER
+        function showError(msg) {
+            errorMsg.textContent = msg;
+            errorMsg.style.display = 'block';
+            errorMsg.style.background = '#ffebee';
+            errorMsg.style.color = '#d32f2f';
+        }
+
+        // SWITCH TAB
+        function switchTab(mode) {
+            errorMsg.style.display = 'none';
+            if (mode === 'login') {
+                isRegister = false;
+                loginView.style.display = 'block';
+                registerWizard.classList.add('hidden');
+                progressBar.classList.add('hidden');
+
+                tabLogin.classList.add('active');
+                tabRegister.classList.remove('active');
+
+                pageTitle.textContent = 'Welcome Back!';
+                toggleText.textContent = "Don't have an account?";
+                toggleLink.textContent = "Register here";
+                toggleLink.onclick = () => { switchTab('register'); return false; };
+            } else {
+                isRegister = true;
+                loginView.style.display = 'none';
+                registerWizard.classList.remove('hidden');
+                progressBar.classList.remove('hidden');
+
+                tabLogin.classList.remove('active');
+                tabRegister.classList.add('active');
+
+                pageTitle.textContent = 'Join Our Family';
+                toggleText.textContent = "Already have an account?";
+                toggleLink.textContent = "Login here";
+                toggleLink.onclick = () => { switchTab('login'); return false; };
+
+                // Reset Wizard
+                nextStep(1);
+            }
+        }
+
+        function toggleAuthMode() {
+            if (isRegister) switchTab('login');
+            else switchTab('register');
+        }
+
+        // ROLE SELECTION
+        function selectRole(role) {
+            roleInput.value = role;
+            document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById(`card-${role}`).classList.add('selected');
+
+            // Show/Hide Guardian Fields
+            if (role === 'kid') {
+                guardianFields.style.display = 'block';
+            } else {
+                guardianFields.style.display = 'none';
+            }
+        }
+
+        // WIZARD NAVIGATION
+        function nextStep(step) {
+            // Validation for Step 1 -> 2
+            if (step === 2) {
+                if (!roleInput.value) {
+                    showError("Please select a role to continue.");
+                    return;
+                }
+                errorMsg.style.display = 'none';
+            }
+            // Validation for Step 2 -> 3
+            if (step === 3) {
+                const fname = document.getElementById('fullname').value;
+                if (!fname) {
+                    showError("Please enter your full name.");
+                    return;
+                }
+                errorMsg.style.display = 'none';
+            }
+
+            // Update Steps
+            document.querySelectorAll('.wizard-step').forEach(s => s.classList.remove('active'));
+            document.getElementById(`step${step}`).classList.add('active');
+
+            // Update Progress
+            document.querySelectorAll('.progress-step').forEach((p, idx) => {
+                if (idx < step) p.classList.add('active');
+                else p.classList.remove('active');
+            });
+
+            pStep = step;
+        }
+
+        // ... (existing code)
+
+        // LOGIN SUBMIT
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            errorMsg.style.display = 'none';
+
+            if (isRegister) {
+                return;
+            }
+
+            const btn = document.getElementById('loginBtn');
+            btn.disabled = true;
+            btn.textContent = "Verifying...";
+
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                const res = await fetch(`${API_BASE}/api/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    localStorage.setItem('kidsToken', data.token);
+                    localStorage.setItem('kidsUser', JSON.stringify(data.user));
+                    window.location.href = data.user.role === 'teacher' ? '../teacher-dashboard.html' : 'index.html';
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (err) {
+                showError(err.message);
+                btn.disabled = false;
+                btn.textContent = "Login";
+            }
+        });
+
+        // REGISTER SUBMIT
+        async function submitRegister() {
+            const btn = document.getElementById('finalSubmitBtn');
+            btn.disabled = true;
+            btn.textContent = "Creating Account...";
+            errorMsg.style.display = 'none';
+
+            try {
+                // Collect Data
+                const role = roleInput.value;
+                const terms = document.getElementById('terms').checked;
+                if (!terms) throw new Error("Please agree to the Terms & Conditions");
+
+                const body = {
+                    email: document.getElementById('email').value,
+                    password: document.getElementById('password').value,
+                    fullname: document.getElementById('fullname').value,
+                    role: role,
+                    phoneNumber: document.getElementById('phoneNumber').value,
+                    dateOfBirth: document.getElementById('dateOfBirth').value,
+                    sex: document.getElementById('sex').value,
+                    address: document.getElementById('address').value,
+                    guardianName: role === 'kid' ? document.getElementById('guardianName').value : null,
+                    guardianPhone: role === 'kid' ? document.getElementById('guardianPhone').value : null,
+                    isSubscribed: document.getElementById('regSubscribe').checked
+                };
+
+                if (!body.email || !body.password) throw new Error("Email and Password are required");
+
+                const res = await fetch(`${API_BASE}/api/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    if (data.pendingVerification) {
+                        showError(data.message);
+                        errorMsg.style.background = '#e8f5e9';
+                        errorMsg.style.color = '#2e7d32';
+                        btn.textContent = "Done";
+                        btn.disabled = true;
+
+                        // Wait a bit then switch to login
+                        setTimeout(() => {
+                            alert(data.message);
+                            switchTab('login');
+                        }, 2000);
+                        return;
+                    }
+
+                    // Success
+                    alert("Account Created! You can now login.");
+                    switchTab('login');
+                } else {
+                    throw new Error(data.error || "Registration failed");
+                }
+            } catch (err) {
+                showError(err.message);
+                btn.disabled = false;
+                btn.textContent = "Create Account";
+            }
+        }
+    </script>
+
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(reg => console.log('SW registered')).catch(err => console.log('SW registration failed', err));
+      });
+    }
+  </script>
+</body>
+
+</html>

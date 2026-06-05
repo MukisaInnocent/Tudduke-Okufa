@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Donate | Tudduke Okufa Ministry</title>
+
+  <!-- FONTS & ICONS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <script src="https://unpkg.com/feather-icons"></script>
+
+  <style>
+    :root {
+      --brand: #c60000;
+      --brand-glow: rgba(198, 0, 0, 0.4);
+      --bg: #0a0a0a;
+      --surface: #141414;
+      --surface-2: #1f1f1f;
+      --text: #ffffff;
+      --text-muted: #a0a0a0;
+      --border: rgba(255, 255, 255, 0.1);
+      --glass: rgba(255, 255, 255, 0.05);
+      --radius: 12px;
+      --font-main: 'Outfit', sans-serif;
+    }
+
+    [data-theme="light"] {
+      --bg: #f4f4f4;
+      --surface: #ffffff;
+      --surface-2: #f0f0f0;
+      --text: #1a1a1a;
+      --text-muted: #666666;
+      --border: rgba(0, 0, 0, 0.1);
+      --glass: rgba(0, 0, 0, 0.05);
+    }
+
+    /* Ensure light mode header brand logo is visible */
+    [data-theme="light"] .brand-logo {
+      color: var(--brand);
+    }
+
+    [data-theme="light"] .brand-logo i {
+      stroke: var(--brand);
+    }
+
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* --- HEADER --- */
+    .page-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 70px;
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 1000;
+    }
+
+    [data-theme="light"] .page-header {
+      background: rgba(255, 255, 255, 0.95);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .menu-toggle {
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 24px;
+      cursor: pointer;
+      display: none;
+      /* Desktop default */
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .brand-logo i {
+      color: var(--brand);
+    }
+
+    .theme-toggle {
+      background: transparent;
+      border: none;
+      color: var(--text);
+      cursor: pointer;
+      padding: 8px;
+    }
+
+    /* --- SIDEBAR --- */
+    aside#sidebar {
+      position: fixed;
+      top: 70px;
+      left: 0;
+      width: 260px;
+      height: calc(100vh - 70px);
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 24px;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 999;
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 500;
+      border-radius: 8px;
+      transition: all 0.2s;
+      margin-bottom: 6px;
+    }
+
+    .sidebar-link:hover {
+      background: var(--glass);
+      color: var(--text);
+      transform: translateX(4px);
+    }
+
+    .sidebar-link.active {
+      background: var(--brand);
+      color: white;
+      box-shadow: 0 4px 12px var(--brand-glow);
+    }
+
+    .sidebar-link.active i {
+      color: white;
+    }
+
+    /* --- MAIN CONTENT WRAPPER --- */
+    .main-wrapper {
+      margin-left: 260px;
+      /* Offset for sidebar */
+      padding-top: 70px;
+      /* Offset for header */
+      height: 100vh;
+      overflow: hidden;
+      /* Hide scroll until inside panels */
+    }
+
+    /* --- SPLIT LAYOUT (Renovated) --- */
+    .split-layout {
+      display: grid;
+      grid-template-columns: 45% 55%;
+      height: calc(100vh - 70px);
+      /* Full height minus header */
+    }
+
+    /* LEFT PANEL: Visual & Impact */
+    .left-panel {
+      background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.9)),
+        url('https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=1000&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      color: white;
+      position: relative;
+    }
+
+    .left-panel h1 {
+      font-size: 3rem;
+      line-height: 1.1;
+      margin-bottom: 24px;
+      font-weight: 800;
+    }
+
+    .left-panel p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      max-width: 500px;
+      margin-bottom: 30px;
+    }
+
+    .impact-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 16px;
+      border-radius: var(--radius);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      max-width: 400px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .impact-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--brand);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: white;
+    }
+
+    /* RIGHT PANEL: Wizard Form */
+    .right-panel {
+      background: var(--bg);
+      overflow-y: auto;
+      padding: 40px 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .wizard-container {
+      width: 100%;
+      max-width: 600px;
+      margin-top: 20px;
+      padding-bottom: 60px;
+    }
+
+    /* PROGRESS BAR */
+    .progress-container {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    .progress-container::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--surface-2);
+      z-index: 0;
+      transform: translateY(-50%);
+    }
+
+    .step-indicator {
+      position: relative;
+      z-index: 1;
+      background: var(--bg);
+      padding: 0 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-muted);
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .step-indicator.active {
+      color: var(--brand);
+    }
+
+    .step-num {
+      width: 28px;
+      height: 28px;
+      background: var(--surface-2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      transition: 0.3s;
+    }
+
+    .step-indicator.active .step-num {
+      background: var(--brand);
+      color: white;
+    }
+
+    .step-indicator.completed .step-num {
+      background: var(--text);
+      color: var(--bg);
+    }
+
+    /* WIZARD STEPS */
+    .wizard-step {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .wizard-step.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h2.step-title {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    p.step-desc {
+      color: var(--text-muted);
+      margin-bottom: 30px;
+    }
+
+    /* FORM ELEMENTS */
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-size: 1rem;
+      font-family: inherit;
+      margin-bottom: 20px;
+      transition: 0.2s;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--brand);
+      box-shadow: 0 0 0 4px var(--brand-glow);
+    }
+
+    /* AMOUNT GRID */
+    .amount-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .amount-btn {
+      padding: 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s;
+      text-align: center;
+    }
+
+    .amount-btn:hover {
+      border-color: var(--brand);
+    }
+
+    .amount-btn.selected {
+      background: var(--brand);
+      border-color: var(--brand);
+      color: white;
+      box-shadow: 0 4px 20px var(--brand-glow);
+    }
+
+    .amount-btn span {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: normal;
+      opacity: 0.8;
+      margin-top: 4px;
+    }
+
+    /* PAYMENT METHOD GRID */
+    .method-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+
+    .method-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 16px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: 0.2s;
+    }
+
+    .method-card:hover {
+      border-color: var(--brand);
+    }
+
+    .method-card.selected {
+      background: rgba(198, 0, 0, 0.1);
+      border-color: var(--brand);
+    }
+
+    .method-icon {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+      border-radius: 6px;
+      color: var(--brand);
+    }
+
+    /* DYNAMIC FIELDS */
+    .dynamic-fields {
+      background: var(--surface-2);
+      padding: 24px;
+      border-radius: var(--radius);
+      margin-bottom: 24px;
+      display: none;
+      border-left: 3px solid var(--brand);
+    }
+
+    /* NEW: NETWORK BUTTONS (Mobile Money) */
+    .network-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .network-btn {
+      padding: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-muted);
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: 0.2s;
+    }
+
+    .network-btn.active {
+      border-color: var(--brand);
+      background: var(--surface-2);
+      color: white;
+    }
+
+    .network-btn.mtn.active {
+      border-color: #ffcc00;
+      color: #ffcc00;
+    }
+
+    .network-btn.airtel.active {
+      border-color: #ff0000;
+      color: #ff0000;
+    }
+
+    /* ACTIONS */
+    .wizard-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+      align-items: center;
+    }
+
+    .btn-next {
+      background: var(--brand);
+      color: white;
+      padding: 16px 40px;
+      border: none;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: 0.3s;
+    }
+
+    .btn-next:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px var(--brand-glow);
+    }
+
+    .btn-back {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-back:hover {
+      color: var(--text);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1024px) {
+      .menu-toggle {
+        display: block;
+      }
+
+      aside#sidebar {
+        transform: translateX(-100%);
+        box-shadow: 2px 0 20px rgba(0, 0, 0, 0.5);
+      }
+
+      aside#sidebar.active {
+        transform: translateX(0);
+      }
+
+      .main-wrapper {
+        margin-left: 0;
+      }
+
+      .split-layout {
+        grid-template-columns: 1fr;
+        height: auto;
+        display: block;
+        overflow-y: scroll;
+        padding-bottom: 80px;
+      }
+
+      .left-panel {
+        padding: 80px 24px;
+        min-height: 40vh;
+        text-align: center;
+        align-items: center;
+      }
+
+      .right-panel {
+        padding: 40px 24px;
+        overflow-y: visible;
+      }
+
+      /* Allow body scroll on mobile */
+      body {
+        overflow-x: hidden;
+      }
+
+      .main-wrapper {
+        height: auto;
+        overflow: visible;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .amount-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .method-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#c60000">
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="page-header">
+    <div class="header-left">
+      <button class="menu-toggle" id="menuToggle"><i data-feather="menu"></i></button>
+      <a href="index.html" class="brand-logo">
+        <i data-feather="feather"></i> TUDDUKE OKUFA
+      </a>
+    </div>
+    <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+      <i data-feather="moon"></i>
+    </button>
+  </header>
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <a href="index.html" class="sidebar-link"><i data-feather="home"></i> Home</a>
+    <a href="videos.html" class="sidebar-link"><i data-feather="play-circle"></i> Videos</a>
+    <a href="sermons.html" class="sidebar-link"><i data-feather="book-open"></i> Sermons</a>
+    <a href="donate.html" class="sidebar-link active"><i data-feather="heart"></i> Donate</a>
+    <a href="livestream.html" class="sidebar-link"><i data-feather="tv"></i> Live Stream</a>
+    <a href="kids/index.html" class="sidebar-link"><i data-feather="smile"></i> Kids Details</a>
+    <a href="login.html" class="sidebar-link" style="margin-top:auto; color:var(--brand);"><i data-feather="shield"></i>
+      Staff Portal</a>
+  </aside>
+
+  <!-- MAIN WRAPPER -->
+  <div class="main-wrapper">
+    <div class="split-layout">
+
+      <!-- LEFT PANEL: STORY -->
+      <div class="left-panel">
+        <h1>Make a <br><span style="color:var(--brand)">Difference</span> Today.</h1>
+        <p>Your support brings hope, education, and the Gospel to those who need it most. 100% of your donation goes
+          directly to the field.</p>
+
+        <div class="impact-card">
+          <div class="impact-icon"><i data-feather="users"></i></div>
+          <div>
+            <strong>Join 1,200+ Donors</strong>
+            <div style="font-size:0.9rem; opacity:0.7;">Changing lives globally since 2010.</div>
+          </div>
+        </div>
+
+        <div class="impact-card">
+          <div class="impact-icon"><i data-feather="lock"></i></div>
+          <div>
+            <strong>Secure & Encrypted</strong>
+            <div style="font-size:0.9rem; opacity:0.7;">All payments are SSL processed.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT PANEL: WIZARD -->
+      <div class="right-panel">
+        <div class="wizard-container">
+
+          <!-- PROGRESS -->
+          <div class="progress-container">
+            <div class="step-indicator active" id="ind-1">
+              <div class="step-num">1</div>
+              <span>Gift</span>
+            </div>
+            <div class="step-indicator" id="ind-2">
+              <div class="step-num">2</div>
+              <span>Details</span>
+            </div>
+            <div class="step-indicator" id="ind-3">
+              <div class="step-num">3</div>
+              <span>Payment</span>
+            </div>
+          </div>
+
+          <form id="donationForm">
+            <!-- HIDDEN FIELDS for Backend -->
+            <input type="hidden" id="currency" value="UGX">
+            <input type="hidden" id="selectedAmount" value="100000">
+            <input type="hidden" id="selectedMethod" value="">
+            <!-- NEW: Mobile Money Network -->
+            <input type="hidden" id="selectedNetwork" value="MTN">
+
+            <!-- STEP 1: AMOUNT -->
+            <div class="wizard-step active" id="step-1">
+              <h2 class="step-title">Choose your gift</h2>
+              <p class="step-desc">How much would you like to donate?</p>
+
+              <div class="amount-grid">
+                <div class="amount-btn" onclick="selectAmount(10000, this)">10K <span>UGX</span></div>
+                <div class="amount-btn" onclick="selectAmount(50000, this)">50K <span>UGX</span></div>
+                <div class="amount-btn selected" onclick="selectAmount(100000, this)">100K <span>UGX</span></div>
+                <div class="amount-btn" onclick="selectAmount(250000, this)">250K <span>UGX</span></div>
+                <div class="amount-btn" onclick="selectAmount(500000, this)">500K <span>UGX</span></div>
+                <div class="amount-btn" onclick="focusCustom()">Other</div>
+              </div>
+
+              <div class="form-input" style="display:flex; align-items:center; padding:0; background:var(--surface);">
+                <span style="padding:16px; font-weight:bold; color:var(--text-muted);">UGX</span>
+                <input type="number" id="customAmountInput" placeholder="Enter custom amount"
+                  style="border:none; padding:16px; background:transparent; width:100%; color:var(--text); font-size:1.1rem;">
+              </div>
+
+              <div class="wizard-actions" style="justify-content: flex-end;">
+                <button type="button" class="btn-next" onclick="goToStep(2)">Next Step <i
+                    data-feather="arrow-right"></i></button>
+              </div>
+            </div>
+
+            <!-- STEP 2: DETAILS -->
+            <div class="wizard-step" id="step-2">
+              <h2 class="step-title">Your Details</h2>
+              <p class="step-desc">So we can send you a receipt.</p>
+
+              <label class="form-label">Full Name</label>
+              <input type="text" id="donorName" class="form-input" placeholder="e.g. Kiviri John Mark">
+
+              <label class="form-label">Email Address</label>
+              <input type="email" id="donorEmail" class="form-input" placeholder="john@example.com">
+
+              <label class="form-label">Phone (Optional)</label>
+              <input type="tel" id="donorPhone" class="form-input" placeholder="+256...">
+
+              <div class="wizard-actions">
+                <button type="button" class="btn-back" onclick="goToStep(1)"><i data-feather="arrow-left"></i>
+                  Back</button>
+                <button type="button" class="btn-next" onclick="goToStep(3)">Next Step <i
+                    data-feather="arrow-right"></i></button>
+              </div>
+            </div>
+
+            <!-- STEP 3: PAYMENT -->
+            <div class="wizard-step" id="step-3">
+              <h2 class="step-title">Payment Method</h2>
+              <p class="step-desc">Securely complete your donation.</p>
+
+              <div class="method-grid">
+                <div class="method-card" onclick="setMethod('Mobile Money', this)">
+                  <div class="method-icon"><i data-feather="smartphone"></i></div>
+                  <span>Mobile Money</span>
+                </div>
+                <div class="method-card" onclick="setMethod('Credit/Debit Card', this)">
+                  <div class="method-icon"><i data-feather="credit-card"></i></div>
+                  <span>Credit / Debit Card</span>
+                </div>
+                <div class="method-card" onclick="setMethod('PayPal', this)">
+                  <div class="method-icon"><i data-feather="dollar-sign"></i></div>
+                  <span>PayPal</span>
+                </div>
+                <div class="method-card" onclick="setMethod('Bitcoin', this)">
+                  <div class="method-icon"><i data-feather="cpu"></i></div>
+                  <span>Cryptocurrency</span>
+                </div>
+              </div>
+
+              <!-- DYNAMIC FIELDS CONTAINER -->
+              <div id="dynamicFieldsContainer"></div>
+
+              <div class="wizard-actions">
+                <button type="button" class="btn-back" onclick="goToStep(2)"><i data-feather="arrow-left"></i>
+                  Back</button>
+                <button type="submit" class="btn-next" id="submitBtn">Donate Now <i data-feather="heart"></i></button>
+              </div>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    feather.replace();
+
+    // --- GLOBAL UI LOGIC (Sidebar / Theme) ---
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebar = document.getElementById('sidebar');
+    const themeToggle = document.getElementById('themeToggle');
+
+    // Sidebar
+    if (menuToggle && sidebar) {
+      menuToggle.addEventListener('click', () => sidebar.classList.toggle('active'));
+      // Close sidebar when clicking outside on mobile
+      document.addEventListener('click', (e) => {
+        if (window.innerWidth <= 1024 && !sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+          sidebar.classList.remove('active');
+        }
+      });
+    }
+
+    // Theme
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+
+    themeToggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const newTheme = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      updateThemeIcon(newTheme);
+    });
+
+    function updateThemeIcon(theme) {
+      themeToggle.innerHTML = theme === 'dark' ? '<i data-feather="sun"></i>' : '<i data-feather="moon"></i>';
+      feather.replace();
+    }
+
+    // --- WIZARD LOGIC ---
+    let currentStep = 1;
+
+    function goToStep(step) {
+      // Validation
+      if (step > currentStep) {
+        if (currentStep === 1) {
+          const amt = document.getElementById('selectedAmount').value;
+          if (!amt || amt <= 0) { alert("Please select a valid amount"); return; }
+        }
+        if (currentStep === 2) {
+          const name = document.getElementById('donorName').value;
+          if (!name) { alert("Please enter your name"); return; }
+        }
+      }
+
+      // UI Update
+      document.querySelectorAll('.wizard-step').forEach(el => el.classList.remove('active'));
+      document.getElementById(`step-${step}`).classList.add('active');
+
+      // Progress Update
+      document.querySelectorAll('.step-indicator').forEach((el, idx) => {
+        if (idx + 1 === step) {
+          el.classList.add('active');
+          el.classList.remove('completed');
+        } else if (idx + 1 < step) {
+          el.classList.add('completed');
+          el.classList.remove('active');
+        } else {
+          el.classList.remove('active', 'completed');
+        }
+      });
+
+      currentStep = step;
+    }
+
+    // --- AMOUNT LOGIC ---
+    function selectAmount(amt, btn) {
+      document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      document.getElementById('selectedAmount').value = amt;
+      document.getElementById('customAmountInput').value = ''; // clear custom
+    }
+
+    function focusCustom() {
+      document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('selected'));
+      document.getElementById('customAmountInput').focus();
+    }
+
+    document.getElementById('customAmountInput').addEventListener('input', function (e) {
+      document.getElementById('selectedAmount').value = e.target.value;
+    });
+
+    // --- PAYMENT METHOD LOGIC ---
+    function setMethod(method, btn) {
+      document.querySelectorAll('.method-card').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      document.getElementById('selectedMethod').value = method;
+
+      renderDynamicFields(method);
+    }
+
+    // NEW: Network Selection Logic
+    function selectNetwork(net) {
+      document.getElementById('selectedNetwork').value = net;
+      // The HTML is re-rendered by renderDynamicFields initial call mostly, 
+      // but this helps if users switch back and forth. 
+      // Better to update Classes dynamically:
+      document.querySelectorAll('.network-btn').forEach(b => b.classList.remove('active'));
+      // This relies on the onclick adding 'active' to 'this' in the inline handler I wrote in the HTML string.
+      // But let's support it here too.
+      const phoneInput = document.getElementById('mmPhone');
+      if (net === 'MTN') {
+        phoneInput.placeholder = 'e.g. 077... or 076...';
+      } else {
+        phoneInput.placeholder = 'e.g. 075... or 070...';
+      }
+    }
+
+    function renderDynamicFields(method) {
+      const container = document.getElementById('dynamicFieldsContainer');
+      container.style.display = 'block';
+      container.innerHTML = ''; // Clear
+
+      let html = '';
+
+      if (method === 'Mobile Money') {
+        html = `
+                    <div class="dynamic-fields" style="display:block">
+                        <h4 style="margin-bottom:12px;">Select Network</h4>
+                        <div class="network-grid">
+                             <div class="network-btn mtn active" onclick="selectNetwork('MTN'); this.parentElement.querySelectorAll('.network-btn').forEach(b=>b.classList.remove('active')); this.classList.add('active');">
+                                <span style="color:#ffcc00; font-weight:900;">MTN</span> MoMo
+                             </div>
+                             <div class="network-btn airtel" onclick="selectNetwork('Airtel'); this.parentElement.querySelectorAll('.network-btn').forEach(b=>b.classList.remove('active')); this.classList.add('active');">
+                                <span style="color:red; font-weight:900;">Airtel</span> Money
+                             </div>
+                        </div>
+
+                        <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:16px;">
+                            We will prompt your phone to approve the transaction.
+                        </p>
+                        <label class="form-label">Phone Number</label>
+                        <input type="tel" class="form-input" id="mmPhone" placeholder="e.g. 077..." required>
+                    </div>
+                `;
+      } else if (method.includes('Card')) {
+        html = `
+                    <div class="dynamic-fields" style="display:block">
+                        <h4 style="margin-bottom:12px;">Card Details</h4>
+                        <label class="form-label">Card Number</label>
+                        <input type="text" class="form-input" placeholder="0000 0000 0000 0000">
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                            <div><label class="form-label">Expiry</label><input type="text" class="form-input" placeholder="MM/YY"></div>
+                            <div><label class="form-label">CVC</label><input type="text" class="form-input" placeholder="123"></div>
+                        </div>
+                    </div>
+                `;
+      } else if (method.includes('Bitcoin') || method.includes('Crypto')) {
+        html = `
+                    <div class="dynamic-fields" style="display:block; text-align:center;">
+                        <h4 style="margin-bottom:12px;">Scan to Donate</h4>
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=3FZbgi29cpjq2GjdwV8eyHuJJnkLtktZc5" style="border-radius:8px; margin-bottom:12px;">
+                        <p class="form-label">BTC Address</p>
+                        <div style="background:var(--bg); padding:12px; border-radius:8px; font-family:monospace; word-break:break-all; border:1px solid var(--border);">
+                            3FZbgi29cpjq2GjdwV8eyHuJJnkLtktZc5
+                        </div>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-top:8px;">Send only BTC to this address.</p>
+                        <button type="button" class="btn-back" style="margin:16px auto; border:1px solid var(--border); padding:8px 16px; border-radius:4px;">Copy Address</button>
+                    </div>
+                `;
+      }
+      // PayPal usually redirects, no fields needed.
+
+      container.innerHTML = html;
+    }
+
+    // --- SUBMISSION LOGIC ---
+    document.getElementById('donationForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const btn = document.getElementById('submitBtn');
+      const originalText = btn.innerHTML;
+      const amount = document.getElementById('selectedAmount').value;
+      const method = document.getElementById('selectedMethod').value;
+      let paymentDetails = method;
+
+      if (!method) {
+        alert("Please select a payment method.");
+        return;
+      }
+
+      // --- MOBILE MONEY SIMULATION ---
+      if (method === 'Mobile Money') {
+        const network = document.getElementById('selectedNetwork').value;
+        const phone = document.getElementById('mmPhone').value;
+        if (!phone) { alert("Please enter phone number"); return; }
+
+        paymentDetails = `${network} Mobile Money: ${phone}`;
+
+        // 1. Loader
+        btn.innerHTML = `<i data-feather="loader" class="spin"></i> Sending Prompt...`;
+        btn.disabled = true;
+        feather.replace();
+
+        // 2. Simulate delay for push
+        await new Promise(r => setTimeout(r, 2000));
+
+        // 3. Prompt user check
+        const confirmed = confirm(`📲 A request has been sent to ${phone} on ${network}.\n\nPlease check your phone and enter your pin to approve the transaction.\n\nClick OK once you have approved it.`);
+
+        if (!confirmed) {
+          btn.innerHTML = originalText;
+          btn.disabled = false;
+          return; // Abort
+        }
+
+        // 4. Processing 
+        btn.innerHTML = `<i data-feather="loader" class="spin"></i> Verifying Payment...`;
+        await new Promise(r => setTimeout(r, 2000));
+
+      } else {
+        // Standard processing for others
+        btn.innerHTML = '<i data-feather="loader" class="spin"></i> Processing...';
+        btn.disabled = true;
+        feather.replace();
+      }
+
+      // API Base Logic
+      const getApiBase = () => {
+        const { hostname, protocol, port } = window.location;
+        if (protocol === 'file:') return 'http://localhost:3000';
+        if ((hostname === 'localhost' || hostname === '127.0.0.1') && port !== '3000') {
+          return 'http://localhost:3000';
+        }
+        return '';
+      };
+      const API_BASE = getApiBase();
+
+      // --- API CALL ---
+      try {
+        const currency = document.getElementById('currency').value;
+        const name = document.getElementById('donorName').value;
+        const email = document.getElementById('donorEmail').value;
+        const phone = document.getElementById('donorPhone') ? document.getElementById('donorPhone').value : null;
+
+        const res = await fetch(`${API_BASE}/api/donations`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name, email, phone, amount, currency, paymentMethod: method, paymentDetails,
+            status: 'pending' // Admin will confirm later
+          })
+        });
+
+        if (res.ok) {
+          // Success UI
+          alert("✅ Donation Successful!\n\nThank you for your generosity. A receipt has been sent to your email.");
+          window.location.href = 'index.html'; // Or thank you page
+        } else {
+          alert("Something went wrong. Please try again.");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Network error.");
+      }
+
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    });
+
+  </script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(reg => console.log('SW registered')).catch(err => console.log('SW registration failed', err));
+      });
+    }
+  </script>
+</body>
+
+</html>

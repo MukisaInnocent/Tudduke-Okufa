@@ -1,0 +1,9 @@
+--- Starting Verification ---
+Connecting to DB...
+DB Connected.
+Found test teacher.
+Attempting to create ClassEvent without classId via Model...
+✅ SUCCESS: Event created successfully without classId!
+Event ID: 4
+Test event cleaned up.
+Done.

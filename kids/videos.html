@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kids Videos | Tudduke Okufa Kids</title>
+
+  <!-- FONTS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* PAGE SPECIFIC STYLES */
+    .videos-container {
+      padding: 100px 5% 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    @media (min-width: 1024px) {
+      .videos-container {
+        margin-left: 280px;
+        width: auto;
+        max-width: none;
+      }
+    }
+
+    .video-search {
+      max-width: 600px;
+      margin: 0 auto 40px;
+      position: relative;
+    }
+
+    /* Input styles now inherited from style.css */
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+    }
+
+    .video-card {
+      background: var(--k-surface);
+      border-radius: var(--k-radius);
+      overflow: hidden;
+      box-shadow: var(--k-shadow);
+      transition: 0.3s;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .video-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--k-shadow-hover);
+    }
+
+    .thumbnail-wrapper {
+      position: relative;
+      padding-top: 56.25%;
+      /* 16:9 Aspect Ratio */
+      background: #000;
+    }
+
+    .thumbnail-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .video-info {
+      padding: 20px;
+      text-align: left;
+    }
+
+    .video-info h3 {
+      font-size: 1.2rem;
+      margin-bottom: 8px;
+      color: var(--k-text);
+    }
+
+    .video-info p {
+      font-size: 0.9rem;
+      color: var(--k-text-light);
+      line-height: 1.5;
+    }
+
+    .category-tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      background: rgba(198, 0, 0, 0.1);
+      color: var(--k-brand);
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .channel-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 12px;
+      border: 2px solid var(--k-brand);
+    }
+  </style>
+
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#c60000">
+</head>
+
+<body>
+
+  <header>
+    <div class="header-left">
+      <button class="menu-toggle" id="menuToggle">
+        <i data-feather="menu"></i>
+      </button>
+      <div class="header-text">
+        <h1>TUDDUKE OKUFA</h1>
+        <p>Preparing People for the Second Coming</p>
+      </div>
+    </div>
+    <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+      <i data-feather="moon"></i>
+    </button>
+  </header>
+
+  <aside id="sidebar">
+    <a href="index.html"><i data-feather="home"></i> Kids Home</a>
+    <a href="videos.html" class="active"><i data-feather="play-circle"></i> Kids Videos</a>
+    <a href="quiz.html"><i data-feather="help-circle"></i> Bible Quiz</a>
+    <a href="memory-verses.html"><i data-feather="book-open"></i> Memory Verses</a>
+    <a href="children-sermon.html"><i data-feather="mic"></i> Children Sermons</a>
+    <a href="weekly-lesson.html"><i data-feather="sun"></i> Weekly Lessons</a>
+    <a href="parents.html"><i data-feather="users"></i> Parents & Teachers</a>
+    <div style="height: 1px; background: rgba(0,0,0,0.1); margin: 10px 0;"></div>
+    <a href="auth.html" style="color: var(--k-brand); border: 1px solid var(--k-brand); justify-content: center;"><i
+        data-feather="lock"></i> Login / Join</a>
+    <a href="../index.html" style="opacity: 0.7;"><i data-feather="arrow-left"></i> Home Page</a>
+  </aside>
+
+  <div class="overlay" id="overlay"></div>
+
+  <!-- MAIN CONTENT -->
+  <main class="videos-container">
+    <div style="text-align: center; margin-bottom: 40px;">
+      <span class="hero-badge" style="margin-bottom: 10px;">Watch & Learn</span>
+      <h2 style="font-size: 2.5rem; color: var(--k-brand);">Kids Video Library</h2>
+      <p style="color: var(--k-text-light);">Bible stories and songs to help you grow.</p>
+    </div>
+
+    <div class="video-search">
+      <input type="text" placeholder="Search videos (e.g., Noah, David, Jesus)...">
+    </div>
+
+    <div class="video-grid">
+      <!-- Video 1 -->
+      <div class="video-card">
+        <div class="thumbnail-wrapper">
+          <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?si=kids_demo" title="YouTube video player"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen></iframe>
+        </div>
+        <div class="video-info">
+          <img src="logo.png" alt="Tudduke Okufa Logo" class="channel-logo">
+          <span class="category-tag">Bible Story</span>
+          <h3>David and Goliath</h3>
+          <p>Learn how a young shepherd boy defeated a giant with faith in God.</p>
+        </div>
+      </div>
+
+      <!-- Video 2 -->
+      <div class="video-card">
+        <div class="thumbnail-wrapper">
+          <iframe src="https://www.youtube.com/embed/dummy_id_2" title="YouTube video player"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen></iframe>
+        </div>
+        <div class="video-info">
+          <img src="logo.png" alt="Tudduke Okufa Logo" class="channel-logo">
+          <span class="category-tag">Song</span>
+          <h3>Jesus Loves Me</h3>
+          <p>Sing along to this classic song about Jesus' love for you.</p>
+        </div>
+      </div>
+
+      <!-- Video 3 -->
+      <div class="video-card">
+        <div class="thumbnail-wrapper">
+          <iframe src="https://www.youtube.com/embed/dummy_id_3" title="YouTube video player"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen></iframe>
+        </div>
+        <div class="video-info">
+          <img src="logo.png" alt="Tudduke Okufa Logo" class="channel-logo">
+          <span class="category-tag">Lesson</span>
+          <h3>The Creation Story</h3>
+          <p>In the beginning, God created the heavens and the earth.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <h3>Tudduke Okufa Ministry</h3>
+        <p class="leader-text">Led by Servant Kiviri John Mark</p>
+      </div>
+
+      <div class="footer-dev">
+        <p>Developed with excellence by</p>
+        <a href="#" class="dev-link">InnoTech Solutions</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; <span id="year"></span> Tudduke Okufa. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <script src="auth-helper.js"></script>
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="script.js"></script>
+
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(reg => console.log('SW registered')).catch(err => console.log('SW registration failed', err));
+      });
+    }
+  </script>
+</body>
+
+</html>

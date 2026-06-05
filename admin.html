@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Tudduke Okufa</title>
+
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- ICONS -->
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <style>
+        :root {
+            /* Brand Identity */
+            --primary: #b30000;
+            --primary-dark: #800000;
+            --primary-light: #ff4d4d;
+            --accent: #e53e3e;
+
+            /* UI Colors */
+            --bg-body: #f8f9fa;
+            --bg-glass: rgba(255, 255, 255, 0.85);
+            --bg-surface: #ffffff;
+            --text-main: #2d3748;
+            --text-muted: #718096;
+            --border: #e2e8f0;
+
+            /* Utility Colors */
+            --success-bg: #c6f6d5;
+            --success-text: #22543d;
+            --warning-bg: #feebc8;
+            --warning-text: #744210;
+            --danger: #e53e3e;
+
+            /* Effects */
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --blur: blur(12px);
+            --radius: 16px;
+            --transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] {
+            --bg-body: #0f172a;
+            --bg-glass: rgba(30, 41, 59, 0.7);
+            --bg-surface: #1e293b;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: #334155;
+
+            --success-bg: rgba(34, 197, 94, 0.2);
+            --success-text: #4ade80;
+            --warning-bg: rgba(245, 158, 11, 0.2);
+            --warning-text: #fbbf24;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            outline: none;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: 280px;
+            background: var(--bg-surface);
+            border-right: 1px solid var(--border);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+        }
+
+        .sidebar-header {
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo-box {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 4px 10px rgba(179, 0, 0, 0.3);
+        }
+
+        .brand-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-menu {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .nav-item:hover {
+            color: var(--primary);
+            background: rgba(179, 0, 0, 0.05);
+            transform: translateX(4px);
+        }
+
+        .nav-item.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(179, 0, 0, 0.3);
+        }
+
+        .nav-item i {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 40px;
+            max-width: 1600px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        .page-title h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: var(--bg-surface);
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-icon:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: rotate(15deg);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+            box-shadow: 0 4px 14px rgba(179, 0, 0, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        /* --- STATS GRID --- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .stat-card {
+            background: var(--bg-surface);
+            padding: 30px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(179, 0, 0, 0.05) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(30%, -30%);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .trend-badge {
+            font-size: 0.85rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: var(--success-bg);
+            color: var(--success-text);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* --- DATA TABLE PANEL --- */
+        .panel {
+            background: var(--bg-surface);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .toolbar {
+            padding: 25px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            background: var(--bg-glass);
+            backdrop-filter: var(--blur);
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .input-control {
+            background: var(--bg-body);
+            border: 1px solid var(--border);
+            padding: 12px 16px;
+            border-radius: 10px;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        .input-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(179, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: var(--bg-body);
+        }
+
+        th {
+            text-align: left;
+            padding: 18px 25px;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-main);
+            vertical-align: middle;
+        }
+
+        tr {
+            transition: background 0.2s;
+        }
+
+        tr:hover {
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        [data-theme="dark"] tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .user-cell {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--text-main);
+        }
+
+        .user-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .amount-cell {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge-success {
+            background: var(--success-bg);
+            color: var(--success-text);
+        }
+
+        .badge-warning {
+            background: var(--warning-bg);
+            color: var(--warning-text);
+        }
+
+        .verify-btn {
+            background: var(--text-main);
+            color: var(--bg-surface);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .verify-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .pagination {
+            padding: 20px 25px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 15px;
+            border-top: 1px solid var(--border);
+        }
+
+        .page-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg-surface);
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .page-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Animations */
+        @keyframes slideDown {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-main);
+            cursor: pointer;
+        }
+    </style>
+
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#c60000">
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-box"><i data-feather="activity"></i></div>
+            <div class="brand-name">Tudduke Admin</div>
+        </div>
+        <nav class="nav-menu">
+            <a href="#" class="nav-item active"><i data-feather="grid"></i> Dashboard</a>
+            <a href="activity-dashboard.html" class="nav-item"><i data-feather="users"></i> User Activity</a>
+            <a href="transactions.html" class="nav-item"><i data-feather="dollar-sign"></i> Donations</a>
+            <a href="messages.html" class="nav-item"><i data-feather="mail"></i> Messages</a>
+            <div style="flex:1;"></div>
+            <a href="index.html" class="nav-item"><i data-feather="external-link"></i> Live Site</a>
+            <a href="#" onclick="logout()" class="nav-item" style="color:var(--danger);"><i data-feather="log-out"></i>
+                Logout</a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <button class="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('active')"><i
+                        data-feather="menu"></i></button>
+                <div class="page-title">
+                    <h1>Overview</h1>
+                    <p style="color:var(--text-muted);">Welcome back, Admin</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="btn-icon" onclick="toggleTheme()"><i data-feather="moon"></i></button>
+                <button class="btn-primary" onclick="loadData(); loadPendingResources();"><i
+                        data-feather="refresh-cw"></i> Refresh Data</button>
+            </div>
+        </header>
+
+        <!-- Currency Selector -->
+        <div
+            style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 30px; gap: 15px; animation: fadeInUp 0.6s ease-out;">
+            <div
+                style="display: flex; align-items: center; gap: 12px; background: var(--bg-surface); padding: 12px 20px; border-radius: 12px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); transition: all 0.3s ease;">
+                <i data-feather="dollar-sign" style="width: 20px; height: 20px; color: var(--primary);"></i>
+                <label
+                    style="font-weight: 600; color: var(--text-main); font-size: 0.95rem; margin: 0;">Currency:</label>
+                <select id="currencySelector" style="
+                        padding: 8px 16px;
+                        font-size: 0.95rem;
+                        font-weight: 600;
+                        border: 2px solid var(--border);
+                        border-radius: 8px;
+                        background: linear-gradient(135deg, var(--bg-surface) 0%, var(--bg-body) 100%);
+                        color: var(--primary);
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        min-width: 100px;
+                        outline: none;
+                        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+                    " onchange="switchCurrency()"
+                    onmouseover="this.style.borderColor='var(--primary)'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(179, 0, 0, 0.2)';"
+                    onmouseout="this.style.borderColor='var(--border)'; this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.05)';">
+                    <option value="UGX">UGX</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Metrics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Transactions</div>
+                <div class="stat-value">
+                    <span id="totalDonations">0</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Revenue</div>
+                <div class="stat-value">
+                    <span id="totalRevenue">0</span>
+                    <div class="trend-badge"><i data-feather="trending-up" style="width:14px;"></i> Live</div>
+                </div>
+            </div>
+            <div class="stat-card" style="border-left: 4px solid var(--warning-text);">
+                <div class="stat-label">Pending Revenue</div>
+                <div class="stat-value">
+                    <span id="pendingRevenue" style="color: var(--warning-text);">0</span>
+                    <div class="trend-badge" style="background: var(--warning-bg); color: var(--warning-text);">
+                        <i data-feather="alert-circle" style="width:14px;"></i> Unverified
+                    </div>
+                </div>
+                <div style="margin-top: 10px; font-size: 0.85rem; color: var(--text-muted);">
+                    <span id="pendingCount">0</span> donations awaiting verification
+                </div>
+            </div>
+            <div class="stat-card" style="border-left: 4px solid var(--accent);">
+                <div class="stat-label">Pending Resources</div>
+                <div class="stat-value">
+                    <span id="pendingResources" style="color: var(--accent);">0</span>
+                    <div class="trend-badge" style="background: rgba(229, 62, 62, 0.1); color: var(--accent);">
+                        <i data-feather="book-open" style="width:14px;"></i> Review
+                    </div>
+                </div>
+                <div style="margin-top: 10px; font-size: 0.85rem; color: var(--text-muted);">
+                    <span id="pendingResourcesCount">0</span> preacher resources awaiting approval
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Panel -->
+        <div class="panel">
+            <div class="toolbar">
+                <div class="filter-group">
+                    <label style="font-weight:600; color:var(--text-muted);">Show:</label>
+                    <select id="limitFilter" class="input-control" onchange="filterTable()">
+                        <option value="15">15 rows</option>
+                        <option value="50">50 rows</option>
+                        <option value="100">100 rows</option>
+                        <option value="1000" selected>All</option>
+                    </select>
+                    <div style="width:1px; height:24px; background:var(--border);"></div>
+                    <select id="statusFilter" class="input-control" onchange="filterTable()">
+                        <option value="all">All Status</option>
+                        <option value="completed">Completed</option>
+                        <option value="pending">Pending</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <input type="text" id="search" class="input-control" placeholder="Search donors..."
+                        style="width:250px;" onkeyup="filterTable()">
+                </div>
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table id="donationsTable">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Donor Details</th>
+                            <th>Amount</th>
+                            <th>Method</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="donationsBody">
+                        <!-- JS Injection -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination">
+                <span id="pageInfo" style="color:var(--text-muted); font-weight:500;">Page 1 of 1</span>
+                <div style="display:flex; gap:8px;">
+                    <button class="page-btn" id="prevBtn" onclick="changePage(-1)" disabled><i
+                            data-feather="chevron-left"></i></button>
+                    <button class="page-btn" id="nextBtn" onclick="changePage(1)" disabled><i
+                            data-feather="chevron-right"></i></button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // --- AUTH ---
+        const token = localStorage.getItem('ministryToken');
+        const userStr = localStorage.getItem('ministryUser');
+
+        if (!token || !userStr) {
+            window.location.href = 'login.html';
+        } else {
+            const user = JSON.parse(userStr);
+            if (user.role !== 'admin') {
+                window.location.href = 'login.html';
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('ministryToken');
+            localStorage.removeItem('ministryUser');
+            window.location.href = 'login.html';
+        }
+
+        // --- DATA LOGIC ---
+        const getApiBase = () => {
+            const { hostname, protocol, port } = window.location;
+            if (protocol === 'file:') return 'http://localhost:3000';
+            if ((hostname === 'localhost' || hostname === '127.0.0.1') && port !== '3000') {
+                return 'http://localhost:3000';
+            }
+            return '';
+        };
+        const API_BASE = getApiBase();
+        let currentPage = 1;
+        let totalPages = 1;
+
+        async function loadPendingResources() {
+            try {
+                const res = await fetch(`${API_BASE}/api/resources/pending`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    const count = data.count || data.length || 0;
+                    document.getElementById('pendingResources').innerText = count;
+                    document.getElementById('pendingResourcesCount').innerText = count;
+                } else {
+                    // Fallback if endpoint doesn't exist yet
+                    document.getElementById('pendingResources').innerText = '0';
+                    document.getElementById('pendingResourcesCount').innerText = '0';
+                }
+            } catch (e) {
+                console.log('Unable to fetch pending resources:', e.message);
+                document.getElementById('pendingResources').innerText = '0';
+                document.getElementById('pendingResourcesCount').innerText = '0';
+            }
+        }
+
+        async function loadData(page = 1) {
+            const tbody = document.getElementById("donationsBody");
+            const search = document.getElementById("search").value;
+            const status = document.getElementById("statusFilter").value;
+            const limit = document.getElementById("limitFilter").value;
+
+            // Loading State
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:40px; color:var(--text-muted);">
+                <div style="display:inline-block; animation:spin 1s linear infinite;"><i data-feather="loader"></i></div>
+                <div style="margin-top:10px;">Fetching records...</div>
+            </td></tr>`;
+            feather.replace();
+
+            try {
+                const params = new URLSearchParams({ page, limit, search, status });
+                const res = await fetch(`${API_BASE}/api/donations?${params}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!res.ok) throw new Error("API Error");
+                const response = await res.json();
+
+                // Normalization
+                let data = Array.isArray(response) ? response : response.data;
+                currentPage = response.page || 1;
+                totalPages = response.totalPages || 1;
+
+                // Render
+                renderRows(data);
+                updateControls();
+                updateStats(response);
+
+            } catch (err) {
+                console.error(err);
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:40px; color:var(--danger);">
+                    <i data-feather="alert-circle" style="width:32px; height:32px; margin-bottom:10px;"></i><br>
+                    Failed to load data. Is the server running?
+                </td></tr>`;
+                feather.replace();
+            }
+        }
+
+        function renderRows(data) {
+            const tbody = document.getElementById("donationsBody");
+            if (!data.length) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:40px; color:var(--text-muted);">No donations found matching your filters.</td></tr>`;
+                return;
+            }
+
+            const checkIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+
+            tbody.innerHTML = data.map(d => {
+                const isCompleted = d.status === 'completed';
+                const statusBadge = isCompleted
+                    ? `<span class="badge-pill badge-success">Completed</span>`
+                    : `<span class="badge-pill badge-warning">Pending</span>`;
+
+                const action = isCompleted
+                    ? `<span style="color:var(--success-text); font-weight:700; display:flex; align-items:center; gap:6px;">${checkIcon} Verified</span>`
+                    : `<button class="verify-btn" onclick="markCompleted('${d.donationid}')">Verify</button>`;
+
+                return `
+                <tr>
+                    <td style="color:var(--text-muted); font-weight:500;">${new Date(d.createdAt).toLocaleDateString()}</td>
+                    <td>
+                        <div class="user-cell">
+                            <span class="user-name">${d.name || 'Anonymous'}</span>
+                            <span class="user-meta">${d.email || d.phone || 'No contact info'}</span>
+                        </div>
+                    </td>
+                    <td class="amount-cell">${d.currency || 'UGX'} ${parseFloat(d.amount).toLocaleString()}</td>
+                    <td style="text-transform:capitalize;">${d.paymentMethod || 'Web'}</td>
+                    <td>${statusBadge}</td>
+                    <td>${action}</td>
+                </tr>
+                `;
+            }).join('');
+        }
+
+        // Store revenue data in all currencies dynamically
+        let revenueData = {};
+        let pendingData = {};
+        let availableCurrencies = new Set(['UGX']); // Default to UGX
+
+        function updateStats(response) {
+            if (response.stats) {
+                document.getElementById('totalDonations').innerText = response.total || 0;
+
+                // Store both currency values (fallback for old API)
+                revenueData.UGX = parseFloat(response.stats.totalUGX || 0);
+                revenueData.USD = parseFloat(response.stats.totalUSD || 0);
+                if (revenueData.USD > 0) availableCurrencies.add('USD');
+
+                // Handle pending revenue
+                if (response.stats.pendingUGX !== undefined) {
+                    pendingData.UGX = parseFloat(response.stats.pendingUGX || 0);
+                    pendingData.USD = parseFloat(response.stats.pendingUSD || 0);
+                    document.getElementById('pendingCount').innerText = response.stats.pendingCount || 0;
+                }
+
+                // Update display based on selected currency
+                switchCurrency();
+            } else if (response.total) { // Fallback
+                document.getElementById('totalDonations').innerText = response.total;
+            }
+
+            // If stats don't include pending, calculate from data
+            if (response.data && !response.stats?.pendingUGX) {
+                calculatePendingFromData(response.data);
+            }
+
+            // Extract all currencies from data
+            if (response.data) {
+                extractCurrenciesFromData(response.data);
+            }
+        }
+
+        function extractCurrenciesFromData(data) {
+            // Reset revenue data for recalculation
+            const newRevenueData = {};
+            const newPendingData = {};
+            let pendingCount = 0;
+
+            data.forEach(donation => {
+                const currency = donation.currency || 'UGX';
+                availableCurrencies.add(currency);
+
+                // Initialize if not exists
+                if (!newRevenueData[currency]) newRevenueData[currency] = 0;
+                if (!newPendingData[currency]) newPendingData[currency] = 0;
+
+                // Sum totals
+                const amount = parseFloat(donation.amount || 0);
+                if (donation.status === 'completed') {
+                    newRevenueData[currency] += amount;
+                } else if (donation.status === 'pending') {
+                    newPendingData[currency] += amount;
+                    pendingCount++;
+                }
+            });
+
+            // Update global data
+            revenueData = newRevenueData;
+            pendingData = newPendingData;
+            document.getElementById('pendingCount').innerText = pendingCount;
+
+            // Update dropdown
+            populateCurrencyDropdown();
+            switchCurrency();
+        }
+
+        function populateCurrencyDropdown() {
+            const selector = document.getElementById('currencySelector');
+            const currentValue = selector.value;
+
+            // Clear and repopulate
+            selector.innerHTML = '';
+            const sortedCurrencies = Array.from(availableCurrencies).sort();
+
+            sortedCurrencies.forEach(currency => {
+                const option = document.createElement('option');
+                option.value = currency;
+                option.textContent = currency;
+                selector.appendChild(option);
+            });
+
+            // Restore selection if currency still exists
+            if (availableCurrencies.has(currentValue)) {
+                selector.value = currentValue;
+            } else if (availableCurrencies.has('UGX')) {
+                selector.value = 'UGX';
+            }
+        }
+
+        function switchCurrency() {
+            const currency = document.getElementById('currencySelector').value;
+            const symbol = currency === 'USD' ? '$' : '';
+            const suffix = currency === 'USD' ? '' : ' ' + currency;
+
+            // Update total revenue
+            const totalAmount = revenueData[currency] || 0;
+            document.getElementById('totalRevenue').innerText = symbol + totalAmount.toLocaleString() + suffix;
+
+            // Update pending revenue
+            const pendingAmount = pendingData[currency] || 0;
+            document.getElementById('pendingRevenue').innerText = symbol + pendingAmount.toLocaleString() + suffix;
+        }
+
+        function calculatePendingFromData(data) {
+            // Extract currencies will handle this
+            extractCurrenciesFromData(data);
+        }
+
+        // --- ACTIONS ---
+        function filterTable() { loadData(1); }
+        function changePage(delta) {
+            const next = currentPage + delta;
+            if (next > 0 && next <= totalPages) loadData(next);
+        }
+        function updateControls() {
+            document.getElementById('pageInfo').innerText = `Page ${currentPage} of ${totalPages}`;
+            document.getElementById('prevBtn').disabled = currentPage <= 1;
+            document.getElementById('nextBtn').disabled = currentPage >= totalPages;
+        }
+
+        async function markCompleted(id) {
+            if (!confirm("Verify this donation as received?")) return;
+            try {
+                const res = await fetch(`${API_BASE}/api/donations/${id}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ status: 'completed' })
+                });
+                if (res.ok) loadData(currentPage);
+                else alert("Failed to verify.");
+            } catch (e) { alert("Network error."); }
+        }
+
+        // --- THEME ---
+        function toggleTheme() {
+            const current = document.body.getAttribute('data-theme');
+            const newTheme = current === 'dark' ? 'light' : 'dark';
+            document.body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('adminTheme', newTheme);
+            updateIcons(newTheme);
+        }
+
+        function updateIcons(theme) {
+            const btn = document.querySelector('.btn-icon i');
+            // Feather icons need replace call to update
+            if (btn) {
+                // Simple hack: reload feather is hard inside button innerHTML dynamically without re-running feather.replace
+                // We rely on CSS variables for theme usually, but icon shape changes:
+                // We will just let the user toggle and re-render page or just swap class if we had specific icon classes
+                // For now, let's just re-run feather on the button container
+                const container = document.querySelector('.btn-icon');
+                container.innerHTML = theme === 'dark' ? '<i data-feather="sun"></i>' : '<i data-feather="moon"></i>';
+                feather.replace();
+            }
+        }
+
+        // INIT
+        window.addEventListener('DOMContentLoaded', () => {
+            const saved = localStorage.getItem('adminTheme') || 'light';
+            document.body.setAttribute('data-theme', saved);
+            updateIcons(saved);
+            feather.replace();
+            loadData();
+            loadPendingResources();
+        });
+    </script>
+
+    <style>
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(reg => console.log('SW registered')).catch(err => console.log('SW registration failed', err));
+      });
+    }
+  </script>
+</body>
+
+</html>

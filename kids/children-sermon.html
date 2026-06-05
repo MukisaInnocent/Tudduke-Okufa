@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Children Sermons | Tudduke Okufa Kids</title>
+
+  <!-- FONTS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* PAGE SPECIFIC STYLES */
+    .container {
+      max-width: 1000px;
+      margin: 110px auto 40px;
+      padding: 0 5%;
+    }
+
+    @media (min-width: 1024px) {
+      .container {
+        margin-left: 280px;
+        width: auto;
+        max-width: 1000px;
+        padding-right: 20px;
+      }
+    }
+
+    h2 {
+      color: var(--k-brand);
+      margin-bottom: 10px;
+      font-size: 2.2rem;
+      text-align: center;
+    }
+
+    .intro {
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto 40px;
+      color: var(--k-text-light);
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+
+    /* ===== SERMON CARDS ===== */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+    }
+
+    .card {
+      background: var(--k-surface);
+      border-radius: var(--k-radius);
+      padding: 24px;
+      box-shadow: var(--k-shadow);
+      animation: fadeUp .6s ease;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      transition: 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--k-shadow-hover);
+    }
+
+    .card h3 {
+      color: var(--k-text);
+      margin-bottom: 8px;
+      font-size: 1.25rem;
+    }
+
+    .card p {
+      font-size: 0.95rem;
+      margin-bottom: 14px;
+      color: var(--k-text-light);
+      line-height: 1.5;
+    }
+
+    .card button {
+      background: var(--k-brand);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: 0.2s;
+    }
+
+    .card button:hover {
+      background: #b30000;
+      transform: scale(1.05);
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#c60000">
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-left">
+      <button class="menu-toggle" id="menuToggle">
+        <i data-feather="menu"></i>
+      </button>
+      <div class="header-text">
+        <h1>TUDDUKE OKUFA</h1>
+        <p>Preparing People for the Second Coming</p>
+      </div>
+    </div>
+    <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+      <i data-feather="moon"></i>
+    </button>
+  </header>
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <a href="index.html"><i data-feather="home"></i> Kids Home</a>
+    <a href="videos.html"><i data-feather="play-circle"></i> Kids Videos</a>
+    <a href="quiz.html"><i data-feather="help-circle"></i> Bible Quiz</a>
+    <a href="memory-verses.html"><i data-feather="book-open"></i> Memory Verses</a>
+    <a href="children-sermon.html" class="active"><i data-feather="mic"></i> Children Sermons</a>
+    <a href="weekly-lesson.html"><i data-feather="sun"></i> Weekly Lessons</a>
+    <a href="parents.html"><i data-feather="users"></i> Parents & Teachers</a>
+    <div style="height: 1px; background: rgba(0,0,0,0.1); margin: 10px 0;"></div>
+    <a href="auth.html" style="color: var(--k-brand); border: 1px solid var(--k-brand); justify-content: center;"><i
+        data-feather="lock"></i> Login / Join</a>
+    <a href="../index.html" style="opacity: 0.7;"><i data-feather="arrow-left"></i> Home Page</a>
+  </aside>
+
+  <div class="overlay" id="overlay"></div>
+
+  <!-- MAIN -->
+  <div class="container">
+    <div style="text-align: center;">
+      <span class="hero-badge" style="margin-bottom: 20px;">Listen & Learn</span>
+    </div>
+    <h2>Children Sermons</h2>
+    <p class="intro">
+      Short and simple sermons to help children understand God’s Word
+      and apply it in their daily lives.
+    </p>
+
+    <div class="grid" id="sermonsGrid">
+      <p style="text-align:center;grid-column:1/-1;">Loading sermons...</p>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <h3>Tudduke Okufa Ministry</h3>
+        <p class="leader-text">Led by Servant Kiviri John Mark</p>
+      </div>
+
+      <div class="footer-dev">
+        <p>Developed with excellence by</p>
+        <a href="#" class="dev-link">InnoTech Solutions</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; <span id="year"></span> Tudduke Okufa. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <script src="auth-helper.js"></script>
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="script.js"></script>
+
+  <script>
+    /* LOAD CHILDREN SERMONS FROM BACKEND */
+    async function loadChildrenSermons() {
+      // API Base Logic
+      const getApiBase = () => {
+        const { hostname, protocol, port } = window.location;
+        if (protocol === 'file:') return 'http://localhost:3000';
+        if ((hostname === 'localhost' || hostname === '127.0.0.1') && port !== '3000') {
+          return 'http://localhost:3000';
+        }
+        return '';
+      };
+      const API_BASE = getApiBase();
+
+      try {
+        const res = await fetch(`${API_BASE}/api/kids/sermons`);
+        if (!res.ok) throw new Error('Failed to fetch sermons');
+        const sermons = await res.json();
+
+        const grid = document.getElementById('sermonsGrid');
+        grid.innerHTML = '';
+
+        if (sermons.length === 0) {
+          grid.innerHTML = '<p style="text-align:center;grid-column:1/-1;padding:20px;">No sermons available yet. Check back soon!</p>';
+          return;
+        }
+
+        sermons.forEach(sermon => {
+          const card = document.createElement('div');
+          card.className = 'card';
+
+          let videoEmbed = '';
+          if (sermon.videoUrl) {
+            // Simple extraction of YouTube ID if full URL is pasted
+            let videoId = sermon.videoUrl;
+            if (sermon.videoUrl.includes('v=')) {
+              videoId = sermon.videoUrl.split('v=')[1].split('&')[0];
+            } else if (sermon.videoUrl.includes('youtu.be/')) {
+              videoId = sermon.videoUrl.split('youtu.be/')[1];
+            }
+
+            videoEmbed = `
+                <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;margin-bottom:15px;border-radius:10px;">
+                    <iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
+                </div>`;
+          } else {
+            // Placeholder icon if no video
+            videoEmbed = `<div style="text-align:center; padding: 20px; background: rgba(0,0,0,0.03); border-radius:10px; margin-bottom:15px;"><i data-feather="mic" style="width:40px; height:40px; color:var(--k-text-light);"></i></div>`;
+          }
+
+          card.innerHTML = `
+            ${videoEmbed}
+            <h3>${sermon.title}</h3>
+            <p style="font-size: 0.85rem; color: var(--k-text-light); margin-bottom: 10px;">By ${sermon.teacherName} • ${new Date(sermon.createdAt).toLocaleDateString()}</p>
+            <p>${sermon.description}</p>
+          `;
+          grid.appendChild(card);
+
+          if (window.feather) feather.replace();
+        });
+      } catch (err) {
+        console.error('Error loading sermons:', err);
+        const grid = document.getElementById('sermonsGrid');
+        if (grid) grid.innerHTML = '<p style="color:red;text-align:center;grid-column:1/-1;padding:20px;">Failed to load sermons. Please try again later.</p>';
+      }
+    }
+
+    // Load sermons on page load
+    loadChildrenSermons();
+  </script>
+
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(reg => console.log('SW registered')).catch(err => console.log('SW registration failed', err));
+      });
+    }
+  </script>
+</body>
+
+</html>

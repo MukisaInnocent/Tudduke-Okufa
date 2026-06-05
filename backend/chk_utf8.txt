@@ -1,0 +1,39 @@
+﻿[dotenv@17.2.3] injecting env (7) from .env -- tip: Γ£à audit secrets and track compliance: https://dotenvx.com/ops
+Checking Sermons in DB...
+Executing (default): SELECT "Sermon"."sermonid", "Sermon"."topic", "Sermon"."title", "Sermon"."scripture", "Sermon"."explanation", "Sermon"."examples", "Sermon"."views", "Sermon"."authorid", "Sermon"."entrytime", "Sermon"."status", "Sermon"."verifiedBy", "author"."userid" AS "author.userid", "author"."fullname" AS "author.fullname" FROM "sermons" AS "Sermon" LEFT OUTER JOIN "users" AS "author" ON "Sermon"."authorid" = "author"."userid";
+Found 5 sermons:
+- ID: 3, Title: "Hope in Christ", AuthorID: 1, AuthorName: Mukisa Innocent
+- ID: 2, Title: "God's Unconditional Love", AuthorID: 1, AuthorName: Mukisa Innocent
+- ID: 1, Title: "Walking by Faith", AuthorID: 1, AuthorName: Mukisa Innocent
+- ID: 4, Title: "Good", AuthorID: 14, AuthorName: Sam
+- ID: 5, Title: "hgijgkjkhkghf", AuthorID: 26, AuthorName: Kisakye Nicole
+
+Checking Users:
+Executing (default): SELECT "userid", "fullname", "email", "password", "description", "roles", "phoneNumber", "guardianName", "guardianPhone", "dateOfBirth", "sex", "address", "profileImage", "profileData", "profileMimeType", "isSubscribed", "isVerified", "registerdate" FROM "users" AS "User";
+- UserID: 1, Name: Mukisa Innocent, Role: kid
+- UserID: 2, Name: Mukisa Innocent, Role: teacher
+- UserID: 3, Name: Micheal Choi, Role: teacher
+- UserID: 4, Name: John Mark, Role: kid
+- UserID: 5, Name: John Mark, Role: kid
+- UserID: 6, Name: Test Preacher, Role: kid
+- UserID: 7, Name: mich1, Role: preacher
+- UserID: 8, Name: mich1, Role: admin
+- UserID: 9, Name: Innocent, Role: admin
+- UserID: 10, Name: Markline, Role: kid
+- UserID: 11, Name: jude, Role: preacher
+- UserID: 12, Name: Mukisa Immaculate, Role: teacher
+- UserID: 13, Name: Mukisa Immaculate, Role: teacher
+- UserID: 14, Name: Sam, Role: preacher
+- UserID: 15, Name: Math, Role: teacher
+- UserID: 16, Name: Test Teacher, Role: teacher
+- UserID: 17, Name: Test Kid, Role: kid
+- UserID: 18, Name: Teacher A, Role: teacher
+- UserID: 19, Name: Teacher A, Role: teacher
+- UserID: 20, Name: Teacher A, Role: teacher
+- UserID: 21, Name: Teacher B, Role: teacher
+- UserID: 22, Name: Teacher A, Role: teacher
+- UserID: 23, Name: Teacher B, Role: teacher
+- UserID: 24, Name: Schema Tester, Role: User
+- UserID: 25, Name: Test Teacher, Role: teacher
+- UserID: 27, Name: Mukisa Immaculate, Role: teacher
+- UserID: 26, Name: Kisakye Nicole, Role: preacher

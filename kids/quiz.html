@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bible Quiz | Tudduke Okufa Kids</title>
+
+  <!-- FONTS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* PAGE SPECIFIC STYLES */
+    .container {
+      max-width: 800px;
+      margin: 120px auto 40px;
+      padding: 0 5%;
+      text-align: center;
+    }
+
+    @media (min-width: 1024px) {
+      .container {
+        margin-left: 280px;
+        width: auto;
+        max-width: none;
+        padding-right: 40px;
+      }
+
+      /* Center the inner card manually since container is now full width */
+      .quiz-wrapper {
+        max-width: 700px;
+        margin: 0 auto;
+      }
+    }
+
+    h2 {
+      margin-bottom: 24px;
+      color: var(--k-brand);
+      font-size: 2.5rem;
+    }
+
+    /* ===== QUIZ CARD ===== */
+    .quiz-card {
+      background: var(--k-surface);
+      padding: 40px;
+      border-radius: var(--k-radius);
+      box-shadow: var(--k-shadow);
+      animation: fadeUp .6s ease;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .quiz-card h3 {
+      margin-bottom: 30px;
+      font-size: 1.4rem;
+      color: var(--k-text);
+      line-height: 1.4;
+    }
+
+    .options {
+      display: grid;
+      gap: 16px;
+    }
+
+    .options button {
+      padding: 16px;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      border-radius: 16px;
+      cursor: pointer;
+      font-weight: 600;
+      font-family: inherit;
+      background: var(--k-bg);
+      color: var(--k-text);
+      transition: .2s;
+      font-size: 1rem;
+    }
+
+    .options button:hover {
+      background: rgba(0, 0, 0, 0.05);
+      transform: translateX(5px);
+    }
+
+    .options button.correct {
+      background: #4caf50;
+      color: #fff;
+      border-color: #4caf50;
+    }
+
+    .options button.wrong {
+      background: #f44336;
+      color: #fff;
+      border-color: #f44336;
+    }
+
+    /* ===== SCORE ===== */
+    .score {
+      margin-top: 30px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--k-brand);
+      padding-top: 20px;
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* TOPIC GRID */
+    .topic-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .topic-card {
+      background: white;
+      padding: 24px;
+      border-radius: var(--k-radius);
+      box-shadow: var(--k-shadow);
+      cursor: pointer;
+      transition: 0.3s;
+      border: 2px solid transparent;
+      text-align: center;
+    }
+
+    .topic-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--k-brand);
+      background: #fff9f9;
+    }
+
+    .topic-card h3 {
+      color: var(--k-brand);
+      margin-bottom: 10px;
+    }
+
+    .topic-card p {
+      color: #666;
+      font-size: 0.9rem;
+    }
+  </style>
+
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#c60000">
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-left">
+      <button class="menu-toggle" id="menuToggle">
+        <i data-feather="menu"></i>
+      </button>
+      <div class="header-text">
+        <h1>TUDDUKE OKUFA</h1>
+        <p>Preparing People for the Second Coming</p>
+      </div>
+    </div>
+    <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+      <i data-feather="moon"></i>
+    </button>
+  </header>
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <a href="index.html"><i data-feather="home"></i> Kids Home</a>
+    <a href="videos.html"><i data-feather="play-circle"></i> Kids Videos</a>
+    <a href="quiz.html" class="active"><i data-feather="help-circle"></i> Bible Quiz</a>
+    <a href="memory-verses.html"><i data-feather="book-open"></i> Memory Verses</a>
+    <a href="children-sermon.html"><i data-feather="mic"></i> Children Sermons</a>
+    <a href="weekly-lesson.html"><i data-feather="sun"></i> Weekly Lessons</a>
+    <a href="parents.html"><i data-feather="users"></i> Parents & Teachers</a>
+    <div style="height: 1px; background: rgba(0,0,0,0.1); margin: 10px 0;"></div>
+    <a href="auth.html" style="color: var(--k-brand); border: 1px solid var(--k-brand); justify-content: center;"><i
+        data-feather="lock"></i> Login / Join</a>
+    <a href="../index.html" style="opacity: 0.7;"><i data-feather="arrow-left"></i> Home Page</a>
+  </aside>
+
+  <div class="overlay" id="overlay"></div>
+
+  <!-- MAIN -->
+  <div class="container">
+    <div class="quiz-wrapper">
+
+      <!-- TOPIC SELECTION -->
+      <div id="topicSection">
+        <span class="hero-badge" style="margin-bottom: 10px;">Select a Topic</span>
+        <h2>Choose Your Challenge</h2>
+        <div id="topicGrid" class="topic-grid">
+          <p>Loading topics...</p>
+        </div>
+      </div>
+
+      <!-- QUIZ GAME (Hidden initially) -->
+      <div id="quizSection" style="display: none;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span class="hero-badge" style="margin-bottom: 10px;">Test Your Knowledge</span>
+          <button onclick="showTopics()"
+            style="background:none; border:none; text-decoration:underline; cursor:pointer;">Change Topic</button>
+        </div>
+        <h2 id="currentTopicTitle">General Quiz</h2>
+
+        <div class="quiz-card">
+          <h3 id="question">Loading Question...</h3>
+          <div class="options" id="options"></div>
+          <div class="score">⭐ Score: <span id="score">0</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <h3>Tudduke Okufa Ministry</h3>
+        <p class="leader-text">Led by Servant Kiviri John Mark</p>
+      </div>
+
+      <div class="footer-dev">
+        <p>Developed with excellence by</p>
+        <a href="#" class="dev-link">InnoTech Solutions</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; <span id="year"></span> Tudduke Okufa. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <script src="auth-helper.js"></script>
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="script.js"></script>
+
+  <script>
+    /* ===== QUIZ DATA ===== */
+    let quizQuestions = [];
+    let currentIndex = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const scoreEl = document.getElementById("score");
+
+    /* LOAD TOPICS FIRST */
+    async function loadTopics() {
+      try {
+        const API_BASE = getApiBase();
+        const res = await fetch(`${API_BASE}/api/kids/quiz/topics`);
+        const topics = await res.json();
+
+        const grid = document.getElementById('topicGrid');
+        if (topics.length === 0) {
+          grid.innerHTML = '<p>No quizzes available right now. Please check back later!</p>';
+          return;
+        }
+
+        grid.innerHTML = topics.map(t => `
+                <div class="topic-card" onclick="startQuiz(${t.topicid}, '${t.title}')">
+                    <h3>${t.title}</h3>
+                    <p>${t.description || 'Click to start!'}</p>
+                </div>
+            `).join('');
+
+      } catch (e) {
+        console.error(e);
+        document.getElementById('topicGrid').innerHTML = '<p>Error loading topics.</p>';
+      }
+    }
+
+    function startQuiz(topicId, topicTitle) {
+      document.getElementById('topicSection').style.display = 'none';
+      document.getElementById('quizSection').style.display = 'block';
+      document.getElementById('currentTopicTitle').textContent = topicTitle;
+
+      currentIndex = 0;
+      score = 0;
+      document.getElementById('score').textContent = '0';
+
+      loadQuizQuestions(topicId);
+    }
+
+    function showTopics() {
+      document.getElementById('quizSection').style.display = 'none';
+      document.getElementById('topicSection').style.display = 'block';
+    }
+
+    /* LOAD QUIZ QUESTIONS FROM BACKEND */
+    async function loadQuizQuestions(topicId) {
+      const API_BASE = getApiBase();
+
+      try {
+        let url = `${API_BASE}/api/kids/quiz`;
+        if (topicId) url += `?topicId=${topicId}`;
+
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('Failed to fetch quiz questions');
+
+        const data = await res.json();
+        if (data && data.length > 0) {
+          quizQuestions = data;
+          loadQuestion();
+        } else {
+          // Fallback if no questions
+          document.getElementById('question').textContent = "No questions found for this topic!";
+          document.getElementById('options').innerHTML = `<button onclick="showTopics()">Go Back</button>`;
+        }
+      } catch (err) {
+        console.error("Error loading quiz:", err);
+        // Fallback or Mock data for demo
+        quizQuestions = [
+          {
+            question: "Who built the Ark?",
+            options: ["Moses", "Noah", "David", "Jesus"],
+            answer: "Noah"
+          },
+          {
+            question: "How many days did it take God to create the world?",
+            options: ["3 Days", "6 Days", "7 Days", "40 Days"],
+            answer: "6 Days"
+          }
+        ];
+        loadQuestion();
+      }
+    }
+
+    async function loadQuestion() {
+      if (currentIndex >= quizQuestions.length) {
+        questionEl.innerHTML = "🎉 Quiz Completed!";
+        optionsEl.innerHTML = `
+            <button onclick="startQuiz(null, 'Replay')" style="background:var(--k-brand); color:white; border:none; margin-right:10px;">Replay</button>
+            <button onclick="showTopics()" style="background:#555; color:white; border:none;">Choose Topic</button>
+        `;
+
+        // Submit Result
+        await submitQuizResult(score, quizQuestions.length);
+        return;
+      }
+
+      const currentQ = quizQuestions[currentIndex];
+      questionEl.textContent = currentQ.question;
+      optionsEl.innerHTML = "";
+
+      currentQ.options.forEach(opt => {
+        const btn = document.createElement("button");
+        btn.textContent = opt;
+        btn.onclick = () => checkAnswer(opt, currentQ.answer, btn);
+        optionsEl.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(selected, correct, btn) {
+      const buttons = optionsEl.querySelectorAll("button");
+      buttons.forEach(b => b.disabled = true);
+
+      if (selected === correct) {
+        btn.classList.add("correct");
+        score++;
+        scoreEl.textContent = score;
+      } else {
+        btn.classList.add("wrong");
+        // Highlight correct one
+        buttons.forEach(b => {
+          if (b.textContent === correct) b.classList.add("correct");
+        });
+      }
+
+      setTimeout(() => {
+        currentIndex++;
+        loadQuestion();
+      }, 1500);
+    }
+
+    async function submitQuizResult(score, total) {
+      if (!isLoggedIn()) return; // check auth-helper
+      const getApiBase = () => {
+        const { hostname, protocol, port } = window.location;
+        if (protocol === 'file:') return 'http://localhost:3000';
+        if ((hostname === 'localhost' || hostname === '127.0.0.1') && port !== '3000') {
+          return 'http://localhost:3000';
+        }
+        return '';
+      };
+      const API_BASE = getApiBase();
+
+      try {
+        const res = await fetch(`${API_BASE}/api/kids/quiz/submit`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+          body: JSON.stringify({ score, total })
+        });
+        if (res.ok) {
+          // Maybe show notification
+          console.log("Score Saved!");
+        }
+      } catch (e) { console.error(e); }
+    }
+
+    // Start
+    // Start
+    const getApiBase = () => {
+      const { hostname, protocol, port } = window.location;
+      if (protocol === 'file:') return 'http://localhost:3000';
+      if ((hostname === 'localhost' || hostname === '127.0.0.1') && port !== '3000') {
+        return 'http://localhost:3000';
+      }
+      return '';
+    };
+    loadTopics();
+  </script>
+
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(reg => console.log('SW registered')).catch(err => console.log('SW registration failed', err));
+      });
+    }
+  </script>
+</body>
+
+</html>

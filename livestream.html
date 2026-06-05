@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Stream | Tudduke Okufa</title>
+
+  <!-- FONTS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brand: #c60000;
+      --brand-glow: rgba(198, 0, 0, 0.4);
+      --bg: #0a0a0a;
+      --surface: #141414;
+      --surface-2: #1f1f1f;
+      --text: #ffffff;
+      --text-muted: #a0a0a0;
+      --border: rgba(255, 255, 255, 0.1);
+      --glass: rgba(255, 255, 255, 0.05);
+      --radius: 12px;
+      --font-main: 'Outfit', sans-serif;
+      --surface-translucent: rgba(15, 15, 15, 0.95);
+    }
+
+    /* LIGHT THEME */
+    /* LIGHT THEME */
+    [data-theme="light"] {
+      --bg: #f4f4f4;
+      --surface: #ffffff;
+      --surface-2: #f0f0f0;
+      --text: #1a1a1a;
+      --text-muted: #666666;
+      --border: rgba(0, 0, 0, 0.1);
+      --glass: rgba(0, 0, 0, 0.05);
+      --surface-translucent: rgba(255, 255, 255, 0.95);
+    }
+
+    /* LIGHT THEME HEADER OVERRIDES */
+    [data-theme="light"] .page-header {
+      background: var(--brand);
+      border-bottom: none;
+      box-shadow: 0 4px 12px rgba(198, 0, 0, 0.3);
+    }
+
+    [data-theme="light"] .page-header .brand-logo,
+    [data-theme="light"] .page-header .menu-toggle,
+    [data-theme="light"] .page-header .theme-toggle {
+      color: white !important;
+    }
+
+    [data-theme="light"] .page-header .brand-logo i {
+      fill: white !important;
+      color: white !important;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* HEADER */
+    .page-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 70px;
+      background: var(--surface-translucent);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 1000;
+      transition: 0.3s;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .menu-toggle {
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 24px;
+      cursor: pointer;
+      display: none;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .brand-logo i {
+      color: var(--brand);
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      color: var(--text);
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 50%;
+      margin-right: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .theme-toggle:hover {
+      background: var(--glass);
+    }
+
+    /* SIDEBAR */
+    aside#sidebar {
+      position: fixed;
+      top: 71px;
+      left: 0;
+      width: 250px;
+      height: calc(100vh - 71px);
+      background: var(--surface-translucent);
+      border-right: 1px solid var(--border);
+      padding: 20px;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 999;
+    }
+
+    /* Sidebar Links same as Videos */
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      color: var(--text-sec);
+      text-decoration: none;
+      font-weight: 500;
+      border-radius: var(--radius);
+      transition: 0.2s;
+      margin-bottom: 4px;
+    }
+
+    .sidebar-link:hover {
+      background: var(--glass);
+      color: var(--text);
+    }
+
+    .sidebar-link.active {
+      background: var(--brand);
+      color: white;
+    }
+
+    .sidebar-link.active i {
+      color: white;
+    }
+
+    /* MAIN CONTENT */
+    main {
+      margin-left: 250px;
+      margin-top: 70px;
+      padding: 30px;
+      min-height: calc(100vh - 70px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* HERO PLAYER SECTION */
+    .hero-player {
+      width: 100%;
+      max-width: 1100px;
+      background: #000;
+      /* Always dark for cinema feel */
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      margin-bottom: 40px;
+      position: relative;
+    }
+
+    .video-wrapper {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      background: #000;
+    }
+
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .player-info {
+      padding: 24px;
+      background: #1a1a1a;
+      color: white;
+    }
+
+    .player-info h1 {
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+    }
+
+    .player-info p {
+      color: #aaa;
+      font-size: 0.95rem;
+    }
+
+    /* LIVE BADGE */
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #cc0000;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.6;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+
+    /* OFFLINE STATE */
+    .offline-state {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #111, #222);
+      color: #ddd;
+      text-align: center;
+    }
+
+    .offline-icon {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+
+    /* SECTIONS GRID */
+    .content-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 30px;
+      width: 100%;
+      max-width: 1100px;
+    }
+
+    .section-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+    }
+
+    .schedule-item {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 15px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .schedule-time {
+      font-weight: 700;
+      color: var(--brand);
+      min-width: 80px;
+    }
+
+    .cta-btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      text-align: center;
+      background: var(--brand);
+      color: white;
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 8px;
+      margin-top: 10px;
+      transition: 0.2s;
+    }
+
+    .cta-btn:hover {
+      filter: brightness(1.1);
+      transform: translateY(-2px);
+    }
+
+    /* FOOTER */
+    .site-footer {
+      margin-top: auto;
+      width: 100%;
+      padding: 40px 20px;
+      margin-left: 250px;
+      background: #000;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1024px) {
+      main {
+        margin-left: 0;
+      }
+
+      .site-footer {
+        margin-left: 0;
+      }
+
+      .menu-toggle {
+        display: block;
+      }
+
+      aside#sidebar {
+        transform: translateX(-100%);
+      }
+
+      aside#sidebar.active {
+        transform: translateX(0);
+      }
+
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#c60000">
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="page-header">
+    <div class="header-left">
+      <button class="menu-toggle" id="menuToggle"><i data-feather="menu"></i></button>
+      <a href="index.html" class="brand-logo">
+        <i data-feather="feather"></i> TUDDUKE OKUFA
+      </a>
+    </div>
+    <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+      <i data-feather="moon"></i>
+    </button>
+  </header>
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <a href="index.html" class="sidebar-link"><i data-feather="home"></i> Home</a>
+    <a href="videos.html" class="sidebar-link"><i data-feather="play-circle"></i> Videos</a>
+    <a href="sermons.html" class="sidebar-link"><i data-feather="book-open"></i> Sermons</a>
+    <a href="donate.html" class="sidebar-link"><i data-feather="heart"></i> Donate</a>
+    <a href="livestream.html" class="sidebar-link active"><i data-feather="tv"></i> Live Stream</a>
+  </aside>
+
+  <main>
+    <!-- HERO PLAYER -->
+    <div class="hero-player">
+      <div class="video-wrapper">
+        <!-- LIVE IFRAME -->
+        <div id="playerContainer">
+          <iframe id="liveFrame" src="" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+        </div>
+
+        <!-- OFFLINE OVERLAY (Default visible until JS checks) -->
+        <div id="offlineOverlay" class="offline-state" style="display:none;">
+          <i data-feather="tv" class="offline-icon"></i>
+          <h2>We are currently offline</h2>
+          <p style="margin-top:10px; max-width:400px;">Check our schedule below for the next broadcast. You can watch
+            past sermons in our video library.</p>
+          <a href="videos.html"
+            style="margin-top:20px; color:var(--brand); text-decoration:none; font-weight:600;">Browse Library
+            &rarr;</a>
+        </div>
+      </div>
+
+      <div class="player-info">
+        <div id="liveBadge" class="live-badge" style="display:none;">🔴 LIVE NOW</div>
+        <h1 id="streamTitle">Tudduke Okufa Television</h1>
+        <p id="streamDesc">Broadcasting the message of the Second Coming of Jesus Christ.</p>
+      </div>
+    </div>
+
+    <!-- CONTENT GRID -->
+    <div class="content-grid">
+      <!-- LEFT: Schedule -->
+      <div class="section-card">
+        <h3 class="section-title">Upcoming Broadcasts</h3>
+
+        <div class="schedule-item">
+          <div class="schedule-time">FRI 18:30</div>
+          <div>
+            <div style="font-weight:600;">Sabbath Opening</div>
+            <div style="font-size:0.9rem; color:var(--text-sec);">Welcoming the Holy Sabbath.</div>
+          </div>
+        </div>
+
+        <div class="schedule-item">
+          <div class="schedule-time">SAT 10:30</div>
+          <div>
+            <div style="font-weight:600;">Sabbath Divine Service</div>
+            <div style="font-size:0.9rem; color:var(--text-sec);">Main worship, song, and sermon.</div>
+          </div>
+        </div>
+
+        <div class="schedule-item">
+          <div class="schedule-time">WED 18:00</div>
+          <div>
+            <div style="font-weight:600;">Midweek Prayer & Bible Study</div>
+            <div style="font-size:0.9rem; color:var(--text-sec);">Deep dive into scriptures.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Support -->
+      <div class="section-card">
+        <h3 class="section-title">Support the Ministry</h3>
+        <p style="font-size:0.95rem; line-height:1.6; color:var(--text-sec); margin-bottom:20px;">
+          Your generous support enables us to continue spreading the gospel worldwide.
+        </p>
+        <a href="donate.html" class="cta-btn">Give Now</a>
+        <div style="margin-top:20px; font-size:0.85rem; text-align:center; opacity:0.7;">
+          Secure payments via Mobile Money & Visa
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <p style="color:#666; font-size:0.9rem;">&copy; <span id="year"></span> Tudduke Okufa Ministry</p>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script>
+    feather.replace();
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // --- UI TOGGLES ---
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebar = document.getElementById('sidebar');
+    const themeToggle = document.getElementById('themeToggle');
+
+    menuToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
+    });
+
+    // Theme Logic
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+
+    themeToggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+      updateThemeIcon(next);
+    });
+
+    function updateThemeIcon(theme) {
+      themeToggle.innerHTML = theme === 'dark' ? '<i data-feather="sun"></i>' : '<i data-feather="moon"></i>';
+      feather.replace();
+    }
+
+
+    // --- LIVE STREAM LOGIC ---
+    const API_KEY = "AIzaSyDkSgTK7TuY4Pglpk3vPB9yYaR6Wmf4uiI";
+    const CHANNEL_ID = "UCDsOIE3HRX412EbbPzW6XxQ";
+
+    async function checkLiveStatus() {
+      const liveBadge = document.getElementById('liveBadge');
+      const offlineOverlay = document.getElementById('offlineOverlay');
+      const liveFrame = document.getElementById('liveFrame');
+      const title = document.getElementById('streamTitle');
+
+      try {
+        // Check for live video
+        const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&eventType=live&type=video&key=${API_KEY}`;
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (data.items && data.items.length > 0) {
+          // LIVE IS ON
+          const vid = data.items[0];
+          liveFrame.src = `https://www.youtube.com/embed/${vid.id.videoId}?autoplay=1&mute=0&rel=0`;
+
+          liveBadge.style.display = 'inline-flex';
+          offlineOverlay.style.display = 'none';
+          title.textContent = vid.snippet.title;
+        } else {
+          // LIVE IS OFF
+          liveFrame.src = ''; // Clear iframe to save resources
+          liveBadge.style.display = 'none';
+          offlineOverlay.style.display = 'flex';
+          title.textContent = 'Tudduke Okufa Television';
+        }
+      } catch (e) {
+        console.error("Live Check Error", e);
+        // Fallback to offline state on error
+        offlineOverlay.style.display = 'flex';
+      }
+    }
+
+    checkLiveStatus();
+    // Check every 5 mins
+    setInterval(checkLiveStatus, 300000);
+
+  </script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(reg => console.log('SW registered')).catch(err => console.log('SW registration failed', err));
+      });
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weekly Lesson | Tudduke Okufa Kids</title>
+
+  <!-- FONTS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* PAGE SPECIFIC STYLES */
+    .container {
+      max-width: 900px;
+      margin: 110px auto 40px;
+      padding: 0 5%;
+    }
+
+    @media (min-width: 1024px) {
+      .container {
+        margin-left: 280px;
+        width: auto;
+        max-width: 900px;
+        padding-right: 20px;
+      }
+
+      .lesson-wrapper {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+    }
+
+    h2 {
+      color: var(--k-brand);
+      text-align: center;
+      margin-bottom: 8px;
+      font-size: 2.2rem;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 1.1rem;
+      margin-bottom: 32px;
+      color: var(--k-text-light);
+    }
+
+    /* LESSON CARD */
+    .lesson {
+      background: var(--k-surface);
+      padding: 40px;
+      border-radius: var(--k-radius);
+      box-shadow: var(--k-shadow);
+      margin-bottom: 30px;
+      animation: fadeUp .5s ease;
+      position: relative;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .lesson h3 {
+      color: var(--k-brand);
+      margin-bottom: 16px;
+      font-size: 1.5rem;
+      border-bottom: 2px solid rgba(198, 0, 0, 0.1);
+      padding-bottom: 10px;
+      display: inline-block;
+    }
+
+    .lesson p {
+      margin-bottom: 20px;
+      line-height: 1.7;
+      font-size: 1.05rem;
+      color: var(--k-text);
+    }
+
+    /* COMPLETE BUTTON */
+    .complete-btn {
+      display: block;
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 50px;
+      background: var(--k-brand);
+      color: #fff;
+      font-size: 1.1rem;
+      cursor: pointer;
+      font-weight: 700;
+      transition: 0.3s;
+      margin-top: 30px;
+      box-shadow: 0 4px 12px rgba(198, 0, 0, 0.2);
+    }
+
+    .complete-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 16px rgba(198, 0, 0, 0.3);
+    }
+
+    /* QUIZ */
+    .quiz {
+      display: none;
+      background: var(--k-surface);
+      padding: 40px;
+      border-radius: var(--k-radius);
+      box-shadow: var(--k-shadow);
+      animation: fadeUp .5s ease;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .quiz h3 {
+      color: var(--k-brand);
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+    }
+
+    .quiz label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      cursor: pointer;
+      padding: 12px;
+      border-radius: 12px;
+      transition: 0.2s;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .quiz label:hover {
+      background: rgba(0, 0, 0, 0.02);
+    }
+
+    .quiz input[type="radio"] {
+      accent-color: var(--k-brand);
+      transform: scale(1.2);
+    }
+
+    .quiz button {
+      margin-top: 20px;
+      padding: 14px 24px;
+      background: var(--k-brand);
+      border: none;
+      border-radius: 50px;
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: 0.2s;
+    }
+
+    .quiz button:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+
+    /* RESULT */
+    .result {
+      margin-top: 20px;
+      font-weight: 800;
+      font-size: 1.2rem;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    /* ANIMATION */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#c60000">
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-left">
+      <button class="menu-toggle" id="menuToggle">
+        <i data-feather="menu"></i>
+      </button>
+      <div class="header-text">
+        <h1>TUDDUKE OKUFA</h1>
+        <p>Preparing People for the Second Coming</p>
+      </div>
+    </div>
+    <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+      <i data-feather="moon"></i>
+    </button>
+  </header>
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <a href="index.html"><i data-feather="home"></i> Kids Home</a>
+    <a href="weekly-lesson.html" class="active"><i data-feather="sun"></i> Weekly Lesson</a>
+    <a href="videos.html"><i data-feather="play-circle"></i> Kids Videos</a>
+    <a href="quiz.html"><i data-feather="help-circle"></i> Bible Quiz</a>
+    <a href="memory-verses.html"><i data-feather="book-open"></i> Memory Verses</a>
+    <a href="children-sermon.html"><i data-feather="mic"></i> Children Sermons</a>
+    <a href="parents.html"><i data-feather="users"></i> Parents & Teachers</a>
+    <div style="height: 1px; background: rgba(0,0,0,0.1); margin: 10px 0;"></div>
+    <a href="auth.html" style="color: var(--k-brand); border: 1px solid var(--k-brand); justify-content: center;"><i
+        data-feather="lock"></i> Login / Join</a>
+    <a href="../index.html" style="opacity: 0.7;"><i data-feather="arrow-left"></i> Home Page</a>
+  </aside>
+
+  <div class="overlay" id="overlay"></div>
+
+  <!-- CONTENT -->
+  <div class="container">
+    <div class="lesson-wrapper">
+      <div style="text-align: center;">
+        <span class="hero-badge" style="margin-bottom: 15px;">Grow in Faith</span>
+      </div>
+      <h2>Weekly Bible Lesson</h2>
+      <p class="subtitle" id="lessonSubtitle">Loading lesson...</p>
+
+      <!-- LESSON -->
+      <div class="lesson" id="lessonBox">
+        <div id="lessonContent">
+          <p style="text-align:center; padding: 40px; color: var(--k-text-light);">Loading lesson content...</p>
+        </div>
+        <button class="complete-btn" id="completeLesson" style="display:none;">
+          I Have Finished This Lesson
+        </button>
+      </div>
+
+      <!-- QUIZ -->
+      <div class="quiz" id="quizBox" style="display:none;">
+        <h3>📝 Lesson Quiz</h3>
+        <div id="quizContent"></div>
+        <button onclick="checkQuiz()">Submit Answer</button>
+        <div class="result" id="result"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <h3>Tudduke Okufa Ministry</h3>
+        <p class="leader-text">Led by Servant Kiviri John Mark</p>
+      </div>
+
+      <div class="footer-dev">
+        <p>Developed with excellence by</p>
+        <a href="#" class="dev-link">InnoTech Solutions</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; <span id="year"></span> Tudduke Okufa. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <script src="auth-helper.js"></script>
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="script.js"></script>
+
+  <script>
+    /* LOAD LESSON FROM BACKEND */
+    let currentLesson = null;
+
+    // API Base Logic
+    const getApiBase = () => {
+      const { hostname, protocol, port } = window.location;
+      if (protocol === 'file:') return 'http://localhost:3000';
+      if ((hostname === 'localhost' || hostname === '127.0.0.1') && port !== '3000') {
+        return 'http://localhost:3000';
+      }
+      return '';
+    };
+    const API_BASE = getApiBase();
+
+    async function loadWeeklyLesson() {
+      try {
+        const res = await fetch(`${API_BASE}/api/kids/lessons`);
+        if (!res.ok) throw new Error('Failed to fetch lesson');
+        const lessons = await res.json();
+
+        if (lessons.length === 0) {
+          document.getElementById('lessonSubtitle').textContent = 'No lesson available yet';
+          document.getElementById('lessonContent').innerHTML = '<p style="text-align:center; padding: 40px;">Check back soon for new lessons!</p>';
+          return;
+        }
+
+        // Get the most recent lesson
+        currentLesson = lessons[0];
+        const lesson = currentLesson;
+
+        document.getElementById('lessonSubtitle').innerHTML = `Lesson of the Week: <strong style="color:var(--k-text);">${lesson.title}</strong>`;
+
+        const lessonContent = document.getElementById('lessonContent');
+        lessonContent.innerHTML = `
+      <h3>📖 Bible Reading</h3>
+      <p><strong>${lesson.scripture || 'Scripture'}</strong> — ${lesson.bibleReading || ''}</p>
+      
+      <h3>✨ Lesson Message</h3>
+      <p>${lesson.lessonMessage || ''}</p>
+      
+      ${lesson.keyPoints ? `
+      <h3>🙏 What Can We Learn?</h3>
+      <p>${lesson.keyPoints.split('\n').map(point => `• ${point.trim()}`).join('<br>')}</p>
+      ` : ''}
+    `;
+
+        document.getElementById('completeLesson').style.display = 'block';
+
+        // Load quiz for this lesson
+        loadQuiz();
+      } catch (err) {
+        console.error('Error loading lesson:', err);
+        document.getElementById('lessonSubtitle').textContent = 'Error loading lesson';
+        document.getElementById('lessonContent').innerHTML = '<p style="color:red;text-align:center; padding: 40px;">Failed to load lesson. Please try again later.</p>';
+      }
+    }
+
+    async function loadQuiz() {
+      try {
+        const res = await fetch(`${API_BASE}/api/kids/quiz`);
+        if (!res.ok) throw new Error('Failed to fetch quiz');
+        const questions = await res.json();
+
+        if (questions.length === 0) {
+          document.getElementById('quizContent').innerHTML = '<p>No quiz questions available yet.</p>';
+          return;
+        }
+
+        // Use first question for now
+        const q = questions[0];
+        document.getElementById('quizContent').innerHTML = `
+      <p style="font-weight:600; margin-bottom:15px; font-size:1.1rem;">1. ${q.question}</p>
+      <label><input type="radio" name="q1" value="0"> ${q.option1}</label>
+      <label><input type="radio" name="q1" value="1"> ${q.option2}</label>
+      <label><input type="radio" name="q1" value="2"> ${q.option3}</label>
+      <input type="hidden" id="correctAnswer" value="${q.correctAnswer - 1}">
+    `;
+      } catch (err) {
+        console.error('Error loading quiz:', err);
+        document.getElementById('quizContent').innerHTML = '<p>Quiz questions will be available soon.</p>';
+      }
+
+      /* LESSON COMPLETE */
+      document.getElementById("completeLesson").onclick = () => {
+        document.getElementById("quizBox").style.display = "block";
+        document.getElementById("lessonBox").style.display = "none";
+        setTimeout(() => {
+          window.scrollTo({ top: document.getElementById("quizBox").offsetTop - 100, behavior: "smooth" });
+        }, 100);
+      };
+
+      /* QUIZ CHECK */
+      function checkQuiz() {
+        const answer = document.querySelector('input[name="q1"]:checked');
+        const result = document.getElementById("result");
+        const correctAnswer = parseInt(document.getElementById("correctAnswer")?.value || "1");
+
+        if (!answer) {
+          result.textContent = "Please choose an answer 😊";
+          result.style.color = "var(--k-text-light)";
+          result.style.backgroundColor = "transparent";
+          return;
+        }
+
+        const selectedAnswer = parseInt(answer.value);
+        if (selectedAnswer === correctAnswer) {
+          result.textContent = "🎉 Correct! Great job!";
+          result.style.color = "#155724";
+          result.style.backgroundColor = "#d4edda";
+          result.style.border = "1px solid #c3e6cb";
+        } else {
+          result.textContent = "❌ Try again! You can do it!";
+          result.style.color = "#721c24";
+          result.style.backgroundColor = "#f8d7da";
+          result.style.border = "1px solid #f5c6cb";
+        }
+      }
+
+      // Load lesson on page load
+      loadWeeklyLesson();
+  </script>
+
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(reg => console.log('SW registered')).catch(err => console.log('SW registration failed', err));
+      });
+    }
+  </script>
+</body>
+
+</html>

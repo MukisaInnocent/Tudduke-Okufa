@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home | Tudduke Okufa Ministry</title>
+
+  <!-- FONTS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --brand: #c60000;
+      --brand-dark: #900000;
+      --bg: #0f0f0f;
+      --surface: #1e1e1e;
+      --text: #ffffff;
+      --text-sec: #aaaaaa;
+      --radius: 12px;
+      --surface-translucent: rgba(15, 15, 15, 0.95);
+      --border: rgba(255, 255, 255, 0.1);
+      --glass: rgba(255, 255, 255, 0.05);
+    }
+
+    /* LIGHT THEME */
+    [data-theme="light"] {
+      --bg: #f8f9fa;
+      --surface: #ffffff;
+      --text: #1a1a1a;
+      --text-sec: #666666;
+      --surface-translucent: rgba(255, 255, 255, 0.95);
+      --border: rgba(0, 0, 0, 0.1);
+      --glass: rgba(0, 0, 0, 0.05);
+    }
+
+    [data-theme="light"] .page-header {
+      background: var(--brand);
+      border-bottom: none;
+      box-shadow: 0 4px 12px rgba(198, 0, 0, 0.3);
+    }
+
+    [data-theme="light"] .page-header .brand-logo,
+    [data-theme="light"] .page-header .menu-toggle,
+    [data-theme="light"] .page-header .theme-toggle {
+      color: white !important;
+    }
+
+    [data-theme="light"] .page-header .brand-logo i {
+      fill: white !important;
+      color: white !important;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* HEADER */
+    .page-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 70px;
+      background: var(--surface-translucent);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 1000;
+      transition: 0.3s;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .menu-toggle {
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 24px;
+      cursor: pointer;
+      display: none;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .brand-logo img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      color: var(--text);
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 50%;
+      margin-right: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .theme-toggle:hover {
+      background: var(--glass);
+    }
+
+    /* SIDEBAR */
+    aside#sidebar {
+      position: fixed;
+      top: 71px;
+      left: 0;
+      width: 250px;
+      height: calc(100vh - 71px);
+      background: var(--surface-translucent);
+      border-right: 1px solid var(--border);
+      padding: 20px;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 999;
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      color: var(--text-sec);
+      text-decoration: none;
+      font-weight: 500;
+      border-radius: var(--radius);
+      transition: 0.2s;
+      margin-bottom: 4px;
+    }
+
+    .sidebar-link:hover {
+      background: var(--glass);
+      color: var(--text);
+    }
+
+    .sidebar-link.active {
+      background: var(--brand);
+      color: white;
+    }
+
+    .sidebar-link.active i {
+      color: white;
+    }
+
+    /* MAIN CONTENT */
+    main {
+      margin-left: 250px;
+      margin-top: 70px;
+      min-height: calc(100vh - 70px);
+    }
+
+    /* HERO SECTION */
+    .hero {
+      position: relative;
+      height: 60vh;
+      min-height: 500px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), var(--bg)),
+        url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+      color: white;
+    }
+
+    .hero-content {
+      max-width: 800px;
+      z-index: 2;
+    }
+
+    .hero h1 {
+      font-size: 3.5rem;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 20px;
+      text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+
+    @media (max-width: 600px) {
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+
+    /* HERO BUTTONS */
+    .hero-btns {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 14px 28px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: var(--brand);
+      color: white;
+      border: 2px solid var(--brand);
+    }
+
+    .btn-primary:hover {
+      background: #a00000;
+      border-color: #a00000;
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(5px);
+    }
+
+    .btn-outline:hover {
+      background: white;
+      color: black;
+      border-color: white;
+      transform: translateY(-2px);
+    }
+
+    /* SECTIONS */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 24px;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .section-header h2 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      color: var(--text);
+    }
+
+    .section-header p {
+      color: var(--text-sec);
+    }
+
+    /* VALUES GRID */
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+    }
+
+    .value-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 30px;
+      border-radius: 16px;
+      transition: 0.3s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .value-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--brand);
+    }
+
+    .value-icon {
+      width: 60px;
+      height: 60px;
+      background: rgba(198, 0, 0, 0.1);
+      color: var(--brand);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .value-card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: var(--text);
+    }
+
+    .value-card p {
+      color: var(--text-sec);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* LATEST MEDIA ROW */
+    .media-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: center;
+      background: var(--surface);
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .media-content {
+      padding: 40px;
+    }
+
+    .media-image {
+      height: 100%;
+      min-height: 300px;
+      background: url('https://images.unsplash.com/photo-1507646227500-4d389b0012be?auto=format&fit=crop&w=800&q=80') center/cover;
+    }
+
+    /* FOOTER */
+    .site-footer {
+      background: #000;
+      border-top: 1px solid var(--border);
+      padding: 60px 24px 20px;
+      margin-top: auto;
+    }
+
+    .footer-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+
+    .footer-col h3 {
+      color: white;
+      margin-bottom: 20px;
+      font-size: 1.1rem;
+    }
+
+    .footer-col p,
+    .footer-col a {
+      color: #888;
+      text-decoration: none;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .footer-col a:hover {
+      color: var(--brand);
+    }
+
+    .copyright {
+      text-align: center;
+      color: #555;
+      font-size: 0.85rem;
+      border-top: 1px solid #222;
+      padding-top: 20px;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1024px) {
+      main {
+        margin-left: 0;
+      }
+
+      .menu-toggle {
+        display: block;
+      }
+
+      aside#sidebar {
+        transform: translateX(-100%);
+      }
+
+      aside#sidebar.active {
+        transform: translateX(0);
+      }
+
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+
+      .media-row {
+        grid-template-columns: 1fr;
+      }
+
+      .media-image {
+        min-height: 250px;
+      }
+
+      .site-footer {
+        padding-bottom: 80px;
+      }
+
+      /* Pad for mobile nav if needed */
+    }
+  </style>
+
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#c60000">
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="page-header">
+    <div class="header-left">
+      <button class="menu-toggle" id="menuToggle"><i data-feather="menu"></i></button>
+      <a href="index.html" class="brand-logo">
+        <img src="logo.png" alt="Tudduke Okufa Logo"> TUDDUKE OKUFA
+      </a>
+    </div>
+    <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+      <i data-feather="moon"></i>
+    </button>
+  </header>
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <a href="index.html" class="sidebar-link active"><i data-feather="home"></i> Home</a>
+    <a href="videos.html" class="sidebar-link"><i data-feather="play-circle"></i> Videos</a>
+    <a href="sermons.html" class="sidebar-link"><i data-feather="book-open"></i> Sermons</a>
+    <a href="donate.html" class="sidebar-link"><i data-feather="heart"></i> Donate</a>
+    <a href="livestream.html" class="sidebar-link"><i data-feather="tv"></i> Live Stream</a>
+    <a href="kids/index.html" class="sidebar-link"><i data-feather="smile"></i> Kids</a>
+    <a href="login.html" class="sidebar-link" style="margin-top:auto; color:var(--brand);"><i data-feather="shield"></i>
+      Staff Portal</a>
+  </aside>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-content">
+        <h1>Preparing for Eternity</h1>
+        <p>Welcome to Tudduke Okufa Ministry. We are dedicated to preaching the everlasting gospel and preparing hearts
+          for the Second Coming of Jesus Christ.</p>
+        <div class="hero-btns">
+          <a href="livestream.html" class="btn btn-primary"><i data-feather="tv"></i> Watch Live</a>
+          <a href="videos.html" class="btn btn-outline"><i data-feather="play"></i> Latest Sermons</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- MISSION VALUES -->
+    <section class="container">
+      <div class="section-header">
+        <h2>Our Mission</h2>
+        <p>Standing firm on the pillars of truth.</p>
+      </div>
+      <div class="values-grid">
+        <div class="value-card">
+          <div class="value-icon"><i data-feather="book"></i></div>
+          <h3>Biblical Truth</h3>
+          <p>We believe in the Bible as the unerring Word of God, our guide for faith and practice in these last days.
+          </p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon"><i data-feather="sun"></i></div>
+          <h3>Blessed Hope</h3>
+          <p>Proclaiming the imminent return of our Savior, seeking to awaken the world to His glory.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon"><i data-feather="users"></i></div>
+          <h3>Community</h3>
+          <p>Building a family of believers united in prayer, worship, and service to humanity.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURED MEDIA -->
+    <section class="container">
+      <div class="media-row">
+        <div class="media-image"></div>
+        <div class="media-content">
+          <span
+            style="color:var(--brand); font-weight:700; text-transform:uppercase; font-size:0.8rem; letter-spacing:1px;">Latest
+            Message</span>
+          <h2 style="font-size:2rem; margin-top:10px; margin-bottom:15px; color:var(--text);">The Signs of the Times
+          </h2>
+          <p style="color:var(--text-sec); margin-bottom:25px; line-height:1.6;">Join Servant Kiviri John Mark as he
+            expounds on the prophetic timeline and our role in the closing scenes of history.</p>
+          <a href="videos.html" class="btn btn-primary">Watch Now</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h3>Tudduke Okufa Ministry</h3>
+          <p>Preparing People for the Second Coming of Jesus Christ.</p>
+          <p>Led by Servant Kiviri John Mark.</p>
+        </div>
+        <div class="footer-col">
+          <h3>Quick Links</h3>
+          <a href="livestream.html">Live Stream</a>
+          <a href="videos.html">Sermons</a>
+          <a href="donate.html">Donate</a>
+          <a href="contact.html">Contact Us</a>
+        </div>
+        <div class="footer-col">
+          <h3>Connect</h3>
+          <p><i data-feather="map-pin" style="width:14px;"></i> Kampala, Uganda</p>
+          <p><i data-feather="mail" style="width:14px;"></i> info@tuddukeokufa.org</p>
+          <p><i data-feather="phone" style="width:14px;"></i> +256 700 000 000</p>
+        </div>
+      </div>
+      <div class="copyright">
+        &copy; <span id="year"></span> Tudduke Okufa. Developed by Innotech Solutions.
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- SCRIPTS -->
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script>
+    feather.replace();
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // UI Toggles
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebar = document.getElementById('sidebar');
+    const themeToggle = document.getElementById('themeToggle');
+
+    menuToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
+    });
+
+    // Theme Logic
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+
+    themeToggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const newTheme = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      updateThemeIcon(newTheme);
+    });
+
+    function updateThemeIcon(theme) {
+      themeToggle.innerHTML = theme === 'dark' ? '<i data-feather="sun"></i>' : '<i data-feather="moon"></i>';
+      feather.replace();
+    }
+  </script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(reg => console.log('SW registered')).catch(err => console.log('SW registration failed', err));
+      });
+    }
+  </script>
+</body>
+
+</html>

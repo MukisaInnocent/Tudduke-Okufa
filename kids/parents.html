@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parents & Teachers | Tudduke Okufa Kids</title>
+
+  <!-- FONTS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* PAGE SPECIFIC STYLES */
+    .container {
+      max-width: 1000px;
+      margin: 110px auto 40px;
+      padding: 0 5%;
+    }
+
+    @media (min-width: 1024px) {
+      .container {
+        margin-left: 280px;
+        width: auto;
+        max-width: 1000px;
+        padding-right: 20px;
+      }
+    }
+
+    h2 {
+      color: var(--k-brand);
+      text-align: center;
+      margin-bottom: 12px;
+      font-size: 2.2rem;
+    }
+
+    .intro {
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto 40px;
+      color: var(--k-text-light);
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+
+    /* CARDS */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+    }
+
+    .card {
+      background: var(--k-surface);
+      border-radius: var(--k-radius);
+      padding: 30px;
+      box-shadow: var(--k-shadow);
+      animation: fadeUp .6s ease;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      transition: 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--k-shadow-hover);
+    }
+
+    .card h3 {
+      color: var(--k-brand);
+      margin-bottom: 20px;
+      font-size: 1.4rem;
+      border-bottom: 2px solid rgba(198, 0, 0, 0.1);
+      padding-bottom: 15px;
+    }
+
+    .card ul {
+      padding-left: 18px;
+      font-size: 1rem;
+      color: var(--k-text);
+      line-height: 1.8;
+    }
+
+    .card li {
+      margin-bottom: 8px;
+      padding-left: 5px;
+    }
+
+    .card li::marker {
+      color: var(--k-brand);
+      font-weight: bold;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .section-separator {
+      height: 1px;
+      background: rgba(0, 0, 0, 0.1);
+      margin: 60px 0;
+    }
+
+    [data-theme="dark"] .section-separator {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .directory-section {
+      margin-bottom: 50px;
+    }
+
+    .directory-title {
+      font-size: 1.5rem;
+      color: var(--k-text);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .directory-title i {
+      color: var(--k-brand);
+    }
+
+    .user-card {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      background: var(--k-bg);
+      padding: 15px;
+      border-radius: 16px;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    [data-theme="dark"] .user-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .user-avatar {
+      width: 50px;
+      height: 50px;
+      background: var(--k-brand-light);
+      color: var(--k-brand);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+  </style>
+
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#c60000">
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-left">
+      <button class="menu-toggle" id="menuToggle">
+        <i data-feather="menu"></i>
+      </button>
+      <div class="header-text">
+        <h1>TUDDUKE OKUFA</h1>
+        <p>Preparing People for the Second Coming</p>
+      </div>
+    </div>
+    <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+      <i data-feather="moon"></i>
+    </button>
+  </header>
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <a href="index.html"><i data-feather="home"></i> Kids Home</a>
+    <a href="videos.html"><i data-feather="play-circle"></i> Kids Videos</a>
+    <a href="quiz.html"><i data-feather="help-circle"></i> Bible Quiz</a>
+    <a href="memory-verses.html"><i data-feather="book-open"></i> Memory Verses</a>
+    <a href="children-sermon.html"><i data-feather="mic"></i> Children Sermons</a>
+    <a href="weekly-lesson.html"><i data-feather="sun"></i> Weekly Lessons</a>
+    <a href="parents.html" class="active"><i data-feather="users"></i> Parents & Teachers</a>
+    <div style="height: 1px; background: rgba(0,0,0,0.1); margin: 10px 0;"></div>
+    <a href="auth.html" style="color: var(--k-brand); border: 1px solid var(--k-brand); justify-content: center;"><i
+        data-feather="lock"></i> Login / Join</a>
+    <a href="../index.html" style="opacity: 0.7;"><i data-feather="arrow-left"></i> Home Page</a>
+  </aside>
+
+  <div class="overlay" id="overlay"></div>
+
+  <!-- MAIN CONTENT -->
+  <div class="container">
+    <div style="text-align: center;">
+      <span class="hero-badge" style="margin-bottom: 20px;">Support & Grow</span>
+    </div>
+    <h2>Parents & Teachers Guide</h2>
+    <p class="intro">
+      Resources and guidance to help parents and teachers nurture
+      children in the fear of the Lord.
+    </p>
+
+    <div class="grid">
+      <div class="card">
+        <h3><i data-feather="heart" style="width:20px; vertical-align:middle; margin-right:8px;"></i> Daily Devotion
+          Tips</h3>
+        <ul>
+          <li>Read a Bible verse together daily</li>
+          <li>Pray with children in simple words</li>
+          <li>Encourage questions about faith</li>
+          <li>Share personal testimonies appropriately</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3><i data-feather="book" style="width:20px; vertical-align:middle; margin-right:8px;"></i> Teaching Methods
+        </h3>
+        <ul>
+          <li>Use stories and vivid illustrations</li>
+          <li>Encourage gentle memorization</li>
+          <li>Use songs and interactive play</li>
+          <li>Keep lessons short and engaging</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3><i data-feather="calendar" style="width:20px; vertical-align:middle; margin-right:8px;"></i> Weekly Schedule
+        </h3>
+        <ul>
+          <li>Create a consistent routine</li>
+          <li>Review the Weekly Lesson together</li>
+          <li>Practice the Memory Verse daily</li>
+          <li>End the week with a family quiz</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3><i data-feather="sun" style="width:20px; vertical-align:middle; margin-right:8px;"></i> Spiritual Growth
+        </h3>
+        <ul>
+          <li>Model Christ-like behavior</li>
+          <li>Teach kindness, patience, and love</li>
+          <li>Encourage obedience to God's word</li>
+          <li>Celebrate spiritual milestones</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section-separator"></div>
+
+    <!-- DIRECTORY SECTION -->
+    <div style="text-align: center; margin-bottom: 40px;">
+      <span class="hero-badge">Community</span>
+      <h2>Verified Community</h2>
+      <p class="intro" style="margin-bottom: 30px;">Meet our dedicated leaders and registered families.</p>
+    </div>
+
+    <!-- Teachers -->
+    <div class="directory-section">
+      <h3 class="directory-title"><i data-feather="briefcase"></i> Verified Teachers</h3>
+      <div class="grid" id="teachersGrid">
+        <i data-feather="loader" class="spin"></i> Loading...
+      </div>
+    </div>
+
+    <!-- Preachers -->
+    <div class="directory-section">
+      <h3 class="directory-title"><i data-feather="mic"></i> Verified Preachers</h3>
+      <div class="grid" id="preachersGrid">
+        <i data-feather="loader" class="spin"></i> Loading...
+      </div>
+    </div>
+
+    <!-- Parents -->
+    <div class="directory-section">
+      <h3 class="directory-title"><i data-feather="users"></i> Registered Parents</h3>
+      <div class="grid" id="parentsGrid">
+        <i data-feather="loader" class="spin"></i> Loading...
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <h3>Tudduke Okufa Ministry</h3>
+        <p class="leader-text">Led by Servant Kiviri John Mark</p>
+      </div>
+
+      <div class="footer-dev">
+        <p>Developed with excellence by</p>
+        <a href="#" class="dev-link">InnoTech Solutions</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; <span id="year"></span> Tudduke Okufa. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <script src="auth-helper.js"></script>
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="script.js"></script>
+  <script>
+    // Fetch Directory Data
+    async function loadDirectory() {
+      const getApiBase = () => {
+        const { hostname, protocol, port } = window.location;
+        if (protocol === 'file:') return 'http://localhost:3000';
+        if ((hostname === 'localhost' || hostname === '127.0.0.1') && port !== '3000') {
+          return 'http://localhost:3000';
+        }
+        return '';
+      };
+      const API_BASE = getApiBase();
+
+      try {
+        const res = await fetch(`${API_BASE}/api/kids/directory`);
+        if (!res.ok) throw new Error('Failed to load directory');
+        const data = await res.json();
+
+        renderUsers('teachersGrid', data.teachers, 'No teachers found.');
+        renderUsers('preachersGrid', data.preachers, 'No preachers found.');
+        renderUsers('parentsGrid', data.parents, 'No parents registered yet.');
+
+        feather.replace();
+
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function renderUsers(elementId, users, emptyMsg) {
+      const grid = document.getElementById(elementId);
+      if (!users || users.length === 0) {
+        grid.innerHTML = `<div style="color:var(--k-text-light); grid-column:1/-1;">${emptyMsg}</div>`;
+        return;
+      }
+
+      grid.innerHTML = users.map(u => {
+        const initials = u.fullname.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+        return `
+        <div class="card user-card">
+          <div class="user-avatar">${initials}</div>
+          <div>
+            <h4 style="margin:0; color:var(--k-text); font-size:1.1rem;">${u.fullname}</h4>
+            <span style="font-size:0.85rem; color:var(--k-text-light); opacity:0.8;">${u.roles}</span>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    loadDirectory();
+  </script>
+
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(reg => console.log('SW registered')).catch(err => console.log('SW registration failed', err));
+      });
+    }
+  </script>
+</body>
+
+</html>

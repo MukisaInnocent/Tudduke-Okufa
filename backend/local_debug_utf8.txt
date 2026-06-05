@@ -1,0 +1,12 @@
+﻿
+--- Testing for User: Mukisa Innocent (ID: 1) ---
+STATUS: 500
+RESPONSE: {
+  "error": "Failed to fetch sermon"
+}
+
+--- Testing for User: Kisakye Nicole (ID: 26) ---
+STATUS: 500
+RESPONSE: {
+  "error": "Failed to fetch sermon"
+}

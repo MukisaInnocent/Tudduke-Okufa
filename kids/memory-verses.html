@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memory Verses | Tudduke Okufa Kids</title>
+
+  <!-- FONTS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* PAGE SPECIFIC STYLES */
+    .container {
+      max-width: 900px;
+      margin: 110px auto 40px;
+      padding: 0 5%;
+      text-align: center;
+    }
+
+    @media (min-width: 1024px) {
+      .container {
+        margin-left: 280px;
+        width: auto;
+        max-width: none;
+      }
+
+      .content-wrapper {
+        max-width: 900px;
+        margin: 0 auto;
+      }
+    }
+
+    h2 {
+      color: var(--k-brand);
+      margin-bottom: 24px;
+      font-size: 2.2rem;
+    }
+
+    /* ===== VERSE CARD ===== */
+    .main-verse {
+      background: var(--k-surface);
+      padding: 40px;
+      border-radius: var(--k-radius);
+      box-shadow: var(--k-shadow);
+      margin-bottom: 30px;
+      animation: float 4s ease-in-out infinite;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      position: relative;
+    }
+
+    .main-verse p {
+      font-size: 1.5rem;
+      line-height: 1.6;
+      font-weight: 500;
+      color: var(--k-text);
+      font-style: italic;
+    }
+
+    .reference {
+      display: block;
+      margin-top: 16px;
+      color: var(--k-brand);
+      font-weight: 800;
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* ===== CONTROLS ===== */
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+      margin: 30px 0 50px;
+    }
+
+    .controls button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      background: var(--k-brand);
+      color: #fff;
+      font-weight: 700;
+      font-family: inherit;
+      transition: 0.2s;
+      box-shadow: 0 4px 12px rgba(198, 0, 0, 0.2);
+    }
+
+    .controls button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(198, 0, 0, 0.3);
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      color: var(--k-text);
+      background: var(--k-surface);
+      padding: 10px 20px;
+      border-radius: 50px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    /* ===== OTHER VERSES ===== */
+    h3 {
+      color: var(--k-text);
+      margin-bottom: 20px;
+      font-size: 1.4rem;
+    }
+
+    .other-verses {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      margin-bottom: 50px;
+    }
+
+    .verse-card {
+      background: var(--k-surface);
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: var(--k-shadow);
+      text-align: left;
+      border: 1px solid rgba(0, 0, 0, 0.03);
+      transition: 0.3s;
+    }
+
+    .verse-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .verse-card p {
+      font-size: 0.95rem;
+      color: var(--k-text-light);
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+
+    .verse-card .ref {
+      font-weight: 700;
+      color: var(--k-brand);
+      font-size: 0.9rem;
+    }
+
+    /* ===== WEEKLY ===== */
+    .weekly {
+      margin-top: 40px;
+      text-align: left;
+    }
+
+    .weekly h3 {
+      text-align: center;
+    }
+
+    .weekly ul {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      padding: 0;
+    }
+
+    .weekly li {
+      background: var(--k-surface);
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      text-align: center;
+      border-left: 4px solid var(--k-brand);
+      color: var(--k-text);
+      font-weight: 500;
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+  </style>
+
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#c60000">
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-left">
+      <button class="menu-toggle" id="menuToggle">
+        <i data-feather="menu"></i>
+      </button>
+      <div class="header-text">
+        <h1>TUDDUKE OKUFA</h1>
+        <p>Preparing People for the Second Coming</p>
+      </div>
+    </div>
+    <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+      <i data-feather="moon"></i>
+    </button>
+  </header>
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <a href="index.html"><i data-feather="home"></i> Kids Home</a>
+    <a href="videos.html"><i data-feather="play-circle"></i> Kids Videos</a>
+    <a href="quiz.html"><i data-feather="help-circle"></i> Bible Quiz</a>
+    <a href="memory-verses.html" class="active"><i data-feather="book-open"></i> Memory Verses</a>
+    <a href="children-sermon.html"><i data-feather="mic"></i> Children Sermons</a>
+    <a href="weekly-lesson.html"><i data-feather="sun"></i> Weekly Lessons</a>
+    <a href="parents.html"><i data-feather="users"></i> Parents & Teachers</a>
+    <div style="height: 1px; background: rgba(0,0,0,0.1); margin: 10px 0;"></div>
+    <a href="auth.html" style="color: var(--k-brand); border: 1px solid var(--k-brand); justify-content: center;"><i
+        data-feather="lock"></i> Login / Join</a>
+    <a href="../index.html" style="opacity: 0.7;"><i data-feather="arrow-left"></i> Home Page</a>
+  </aside>
+
+  <div class="overlay" id="overlay"></div>
+
+  <!-- MAIN CONTENT -->
+  <div class="container">
+    <div class="content-wrapper">
+      <span class="hero-badge" style="margin-bottom: 20px;">Hide it in your Heart</span>
+      <h2>Daily Memory Verse</h2>
+
+      <div class="main-verse">
+        <p id="mainText">Loading verse...</p>
+        <span class="reference" id="mainRef"></span>
+      </div>
+
+      <div class="controls">
+        <button onclick="readVerse()"><i data-feather="volume-2"
+            style="width:16px; vertical-align:middle; margin-right:5px;"></i> Read Aloud</button>
+        <button onclick="window.print()"><i data-feather="printer"
+            style="width:16px; vertical-align:middle; margin-right:5px;"></i> Print Card</button>
+        <label><input type="checkbox" id="memorized"> Memorized Today?</label>
+      </div>
+
+      <h3>More Verses to Learn</h3>
+      <div class="other-verses" id="otherVerses"></div>
+
+      <div class="weekly">
+        <h3>Weekly Schedule</h3>
+        <ul id="weeklyList"></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <h3>Tudduke Okufa Ministry</h3>
+        <p class="leader-text">Led by Servant Kiviri John Mark</p>
+      </div>
+
+      <div class="footer-dev">
+        <p>Developed with excellence by</p>
+        <a href="#" class="dev-link">InnoTech Solutions</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; <span id="year"></span> Tudduke Okufa. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <script src="auth-helper.js"></script>
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="script.js"></script>
+
+  <script>
+    let verses = [];
+
+    // Select Elements
+    const mainText = document.getElementById("mainText");
+    const mainRef = document.getElementById("mainRef");
+    const otherVerses = document.getElementById("otherVerses");
+    const weeklyList = document.getElementById("weeklyList");
+    const memCheck = document.getElementById("memorized");
+
+    /* API Base Logic */
+    const getApiBase = () => {
+      const { hostname, protocol, port } = window.location;
+      if (protocol === 'file:') return 'http://localhost:3000';
+      if ((hostname === 'localhost' || hostname === '127.0.0.1') && port !== '3000') {
+        return 'http://localhost:3000';
+      }
+      return '';
+    };
+
+    async function loadVerses() {
+      try {
+        const API_BASE = getApiBase();
+        const res = await fetch(`${API_BASE}/api/kids/memory-verses`);
+        const data = await res.json();
+
+        if (data && data.length > 0) {
+          verses = data;
+        } else {
+          // Fallback if DB is empty
+          verses = [
+            { text: "Thy word is a lamp unto my feet, and a light unto my path.", reference: "Psalm 119:105" }
+          ];
+        }
+        init();
+      } catch (e) {
+        console.error("Error loading verses:", e);
+        verses = [
+          { text: "Thy word is a lamp unto my feet, and a light unto my path.", reference: "Psalm 119:105" }
+        ];
+        init();
+      }
+    }
+
+    // Init
+    function init() {
+      if (verses.length === 0) return;
+
+      // Main Verse (Random for now)
+      const random = verses[Math.floor(Math.random() * verses.length)];
+      mainText.textContent = `"${random.text}"`;
+      mainRef.innerHTML = `${random.reference} <br><span style="font-size: 0.8em; font-weight: normal; color: var(--k-text-light); text-transform: none;">Posted by: ${random.creator ? random.creator.fullname : 'Tudduke Teacher'}</span>`;
+
+      // Populate Others
+      otherVerses.innerHTML = "";
+      verses.forEach(v => {
+        if (v.reference !== random.reference) {
+          const card = document.createElement("div");
+          card.className = "verse-card";
+          const postedBy = v.creator ? v.creator.fullname : 'Tudduke Teacher';
+          card.innerHTML = `<p>"${v.text}"</p><div class="ref">${v.reference}</div><div style="font-size: 0.85rem; color: #888; margin-top: 5px;">Posted by: ${postedBy}</div>`;
+          otherVerses.appendChild(card);
+        }
+      });
+
+      // Weekly (Static or could be dynamic too)
+      // For now keep static or clear
+      // weeklyList.innerHTML = ""; 
+
+      // Check LocalStorage for memorized
+      if (localStorage.getItem('verseMemorized_' + new Date().toDateString())) {
+        memCheck.checked = true;
+      }
+    }
+
+    memCheck.addEventListener('change', (e) => {
+      if (e.target.checked) {
+        localStorage.setItem('verseMemorized_' + new Date().toDateString(), 'true');
+        // Celebration effect?
+        alert("Great Job! Keep God's word in your heart.");
+      }
+    });
+
+    function readVerse() {
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(`${mainText.textContent} - ${mainRef.textContent}`);
+        window.speechSynthesis.speak(utterance);
+      } else {
+        alert("Sorry, your browser doesn't support reading aloud.");
+      }
+    }
+
+    loadVerses();
+
+    // Refresh Feather icons for new dynamic content if needed
+    // But since script.js runs at end of body, we might need to re-run it or let it handle it.
+    // script.js calls replace() at end.
+  </script>
+
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(reg => console.log('SW registered')).catch(err => console.log('SW registration failed', err));
+      });
+    }
+  </script>
+</body>
+
+</html>
