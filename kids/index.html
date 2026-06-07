@@ -166,6 +166,174 @@
     /* Large Screen Optimization (1920x1080) */
     @media (min-width: 1400px) {
 
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kids | Tudduke Okufa Ministry</title>
+
+  <!-- FONTS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Custom Styles for Content Library */
+    .content-library-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .content-library-header h2 {
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--k-text) 0%, var(--k-text-light) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin: 0;
+    }
+
+    [data-theme="dark"] .content-library-header h2 {
+      background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    /* Glassmorphism & Premium Textures */
+    .content-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 24px;
+      padding: 28px;
+      transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      box-shadow:
+        0 4px 6px rgba(0, 0, 0, 0.02),
+        0 12px 24px rgba(0, 0, 0, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      height: 100%;
+    }
+
+    [data-theme="dark"] .content-card {
+      background: rgba(30, 30, 35, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .content-card:hover {
+      transform: translateY(-8px) scale(1.01);
+      box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.1),
+        0 8px 16px rgba(0, 0, 0, 0.05);
+      border-color: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.95);
+    }
+
+    [data-theme="dark"] .content-card:hover {
+      background: rgba(40, 40, 45, 0.9);
+      border-color: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Beautiful Empty State */
+    .empty-state {
+      background: rgba(255, 255, 255, 0.5);
+      border: 2px dashed rgba(0, 0, 0, 0.1);
+      border-radius: 24px;
+      padding: 50px 20px;
+      text-align: center;
+      grid-column: 1 / -1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      transition: 0.3s;
+    }
+
+    [data-theme="dark"] .empty-state {
+      background: rgba(255, 255, 255, 0.03);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .empty-state:hover {
+      background: rgba(255, 255, 255, 0.8);
+      border-color: var(--k-brand);
+      transform: scale(1.02);
+    }
+
+    [data-theme="dark"] .empty-state:hover {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .btn-view {
+      width: 100%;
+      padding: 14px;
+      border-radius: 16px;
+      background: var(--k-surface);
+      color: var(--k-text);
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .btn-view:hover {
+      background: var(--k-brand);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(220, 38, 38, 0.25);
+    }
+
+    [data-theme="dark"] .btn-view {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Layout Balance: Side-by-Side on Desktop */
+    .split-section {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 40px;
+      padding: 0 20px 80px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    @media (min-width: 900px) {
+      .split-section {
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        align-items: start;
+        /* Prevent stretching if one column is short */
+      }
+    }
+
+    /* Large Screen Optimization (1920x1080) */
+    @media (min-width: 1400px) {
+
       .split-section,
       .content-library,
       .cards {
@@ -177,11 +345,51 @@
         gap: 30px;
       }
     }
+
+    /* MOBILE RESPONSIVE */
+    @media (max-width: 1024px) {
+      .split-section {
+        padding: 0 5% 60px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .content-library-header h2 {
+        font-size: 1.6rem;
+      }
+
+      .split-section {
+        gap: 30px;
+        padding: 0 15px 40px;
+      }
+
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .content-library-header h2 {
+        font-size: 1.4rem;
+      }
+
+      .content-card {
+        padding: 20px;
+      }
+
+      .content-card h3 {
+        font-size: 1.1rem;
+      }
+
+      .btn-view {
+        padding: 12px;
+        font-size: 0.95rem;
+      }
+    }
   </style>
 
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#c60000">
-</head>
 
 <body>
 

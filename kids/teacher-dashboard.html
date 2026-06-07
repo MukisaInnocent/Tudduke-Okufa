@@ -140,6 +140,73 @@
             color: var(--k-brand);
             background: rgba(198, 0, 0, 0.1);
         }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .dashboard-section {
+                margin-left: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-section {
+                padding: 100px 5% 40px;
+            }
+
+            .dash-header h2 {
+                font-size: 1.5rem;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .card h3 {
+                font-size: 1.2rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: span 1;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .dashboard-section {
+                padding: 80px 15px 30px;
+            }
+
+            .dash-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .dash-header h2 {
+                font-size: 1.3rem;
+            }
+
+            .card {
+                padding: 16px;
+                margin-bottom: 20px;
+            }
+
+            .sermon-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+                padding: 15px;
+            }
+
+            .actions {
+                width: 100%;
+                justify-content: flex-end;
+                border-top: 1px solid rgba(0,0,0,0.05);
+                padding-top: 10px;
+            }
+        }
     </style>
 
   <link rel="manifest" href="/manifest.json">

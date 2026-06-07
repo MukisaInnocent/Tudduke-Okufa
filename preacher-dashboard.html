@@ -185,13 +185,35 @@
         }
 
         /* Responsive Mobile */
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
+            .dashboard-section {
+                padding: 40px 15px;
+            }
+
+            .dash-header h2 {
+                font-size: 1.5rem;
+            }
+
+            .form-cols {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
             .header-text h1 {
                 font-size: 1.2rem;
             }
 
             .header-text p {
                 display: none;
+            }
+
+            .dashboard-section {
+                padding: 30px 10px;
             }
 
             .dash-header {
@@ -211,10 +233,6 @@
                 width: 100%;
                 text-align: center;
                 margin: 0 !important;
-            }
-
-            .form-cols {
-                grid-template-columns: 1fr;
             }
 
             .sermon-item {

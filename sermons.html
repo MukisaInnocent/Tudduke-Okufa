@@ -469,6 +469,201 @@
         text-align: left;
       }
 
+    /* ===== ENGAGEMENT ===== */
+    .engagement-bar {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #eee;
+    }
+
+    .btn-action {
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      font-weight: 600;
+      transition: 0.2s;
+      padding: 6px 10px;
+      border-radius: 6px;
+    }
+
+    .btn-action:hover {
+      background: rgba(0, 0, 0, 0.05);
+      color: var(--brand);
+    }
+
+    .btn-action.active {
+      color: var(--brand);
+    }
+
+    .btn-action i {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* COMMENTS SECTION */
+    .comments-section {
+      margin-top: 15px;
+      padding: 15px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      display: none;
+      /* Hidden by default */
+    }
+
+    .comments-section.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-5px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .comment-list {
+      max-height: 300px;
+      overflow-y: auto;
+      margin-bottom: 15px;
+    }
+
+    .comment-item {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+      font-size: 0.9rem;
+    }
+
+    .comment-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #ddd;
+      flex-shrink: 0;
+      object-fit: cover;
+    }
+
+    .comment-content b {
+      display: block;
+      color: #333;
+      font-size: 0.85rem;
+    }
+
+    .comment-input-area {
+      display: flex;
+      gap: 10px;
+    }
+
+    .comment-input-area input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+    }
+
+    .comment-submit {
+      background: var(--brand);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+
+    .comment-submit:hover {
+      background: #900000;
+    }
+
+    /* FOOTERS */
+    .doc-footer {
+      text-align: center;
+      margin-top: 30px;
+      padding: 14px;
+      background: #eee;
+      border-radius: 8px;
+      font-style: italic;
+    }
+
+    /* FOOTER */
+    .site-footer {
+      background: linear-gradient(to bottom, #1a1a1a, #000);
+      color: #bbb;
+      padding: 40px 20px;
+      text-align: center;
+      border-top: 4px solid var(--brand);
+    }
+
+    .footer-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .footer-brand h3 {
+      color: white;
+      font-size: 1.5rem;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .leader-text {
+      color: var(--brand);
+      font-weight: bold;
+      font-style: italic;
+    }
+
+    .footer-dev p {
+      margin-bottom: 5px;
+      font-size: 0.9rem;
+    }
+
+    .dev-link {
+      display: inline-block;
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 8px 16px;
+      border-radius: 20px;
+      transition: 0.3s;
+    }
+
+    .dev-link:hover {
+      background: var(--brand);
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(179, 0, 0, 0.3);
+    }
+
+    .footer-bottom {
+      font-size: 0.85rem;
+      opacity: 0.7;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 20px;
+    }
+
+    @media (min-width: 768px) {
+      .footer-content {
+        flex-direction: row;
+        justify-content: space-around;
+        text-align: left;
+      }
+
       .footer-brand {
         align-items: flex-start;
       }
@@ -500,7 +695,9 @@
       }
 
       main {
-        margin-top: 100px;
+        margin-top: 85px;
+        padding: 0 12px;
+        grid-template-columns: 1fr;
       }
 
       aside#sidebar {
@@ -509,29 +706,120 @@
         top: 70px;
         height: calc(100vh - 70px);
       }
+
+      article {
+        padding: 16px;
+      }
+
+      .engagement-bar {
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .comment-input-area {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .comment-submit {
+        width: 100%;
+      }
+
+      .site-footer {
+        padding: 30px 16px;
+      }
     }
 
     @media(max-width:500px) {
+      header {
+        padding: 0 8px;
+        gap: 6px;
+        height: 60px;
+      }
+
       .header-left h1 {
-        font-size: 0.95rem;
+        font-size: 0.9rem;
       }
 
       .header-logo {
-        width: 30px;
-        height: 30px;
+        width: 28px;
+        height: 28px;
       }
 
       .search-bar {
-        max-width: 150px;
+        max-width: 120px;
+        min-width: 80px;
       }
 
       .search-bar input {
-        font-size: 0.8rem;
+        font-size: 0.75rem;
         padding: 6px 10px;
       }
 
       .menu-toggle {
         font-size: 1.4rem;
+        padding: 4px;
+      }
+
+      main {
+        margin-top: 75px;
+        padding: 0 8px;
+        gap: 16px;
+      }
+
+      article {
+        padding: 14px;
+        border-radius: 10px;
+      }
+
+      article h2 {
+        font-size: 1.1rem;
+      }
+
+      .preacher-info {
+        padding: 8px;
+        gap: 8px;
+      }
+
+      .preacher-avatar {
+        width: 38px;
+        height: 38px;
+      }
+
+      .engagement-bar {
+        gap: 8px;
+        padding-top: 10px;
+        margin-top: 10px;
+      }
+
+      .btn-action {
+        padding: 4px 6px;
+        font-size: 0.8rem;
+      }
+
+      h2 {
+        font-size: 1.1rem;
+        padding-bottom: 4px;
+        margin-top: 24px;
+      }
+    }
+
+    /* Tiny phones */
+    @media(max-width:360px) {
+      .header-left h1 {
+        font-size: 0.8rem;
+      }
+
+      .search-bar {
+        max-width: 100px;
+      }
+
+      article h2 {
+        font-size: 1rem;
+      }
+
+      article p {
+        font-size: 0.85rem;
       }
     }
 

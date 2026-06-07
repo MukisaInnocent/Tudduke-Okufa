@@ -140,6 +140,148 @@
       border-color: var(--k-brand);
       background: #fff9f9;
     }
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bible Quiz | Tudduke Okufa Kids</title>
+
+  <!-- FONTS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* PAGE SPECIFIC STYLES */
+    .container {
+      max-width: 800px;
+      margin: 120px auto 40px;
+      padding: 0 5%;
+      text-align: center;
+    }
+
+    @media (min-width: 1024px) {
+      .container {
+        margin-left: 280px;
+        width: auto;
+        max-width: none;
+        padding-right: 40px;
+      }
+
+      /* Center the inner card manually since container is now full width */
+      .quiz-wrapper {
+        max-width: 700px;
+        margin: 0 auto;
+      }
+    }
+
+    h2 {
+      margin-bottom: 24px;
+      color: var(--k-brand);
+      font-size: 2.5rem;
+    }
+
+    /* ===== QUIZ CARD ===== */
+    .quiz-card {
+      background: var(--k-surface);
+      padding: 40px;
+      border-radius: var(--k-radius);
+      box-shadow: var(--k-shadow);
+      animation: fadeUp .6s ease;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .quiz-card h3 {
+      margin-bottom: 30px;
+      font-size: 1.4rem;
+      color: var(--k-text);
+      line-height: 1.4;
+    }
+
+    .options {
+      display: grid;
+      gap: 16px;
+    }
+
+    .options button {
+      padding: 16px;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      border-radius: 16px;
+      cursor: pointer;
+      font-weight: 600;
+      font-family: inherit;
+      background: var(--k-bg);
+      color: var(--k-text);
+      transition: .2s;
+      font-size: 1rem;
+    }
+
+    .options button:hover {
+      background: rgba(0, 0, 0, 0.05);
+      transform: translateX(5px);
+    }
+
+    .options button.correct {
+      background: #4caf50;
+      color: #fff;
+      border-color: #4caf50;
+    }
+
+    .options button.wrong {
+      background: #f44336;
+      color: #fff;
+      border-color: #f44336;
+    }
+
+    /* ===== SCORE ===== */
+    .score {
+      margin-top: 30px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--k-brand);
+      padding-top: 20px;
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* TOPIC GRID */
+    .topic-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .topic-card {
+      background: white;
+      padding: 24px;
+      border-radius: var(--k-radius);
+      box-shadow: var(--k-shadow);
+      cursor: pointer;
+      transition: 0.3s;
+      border: 2px solid transparent;
+      text-align: center;
+    }
+
+    .topic-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--k-brand);
+      background: #fff9f9;
+    }
 
     .topic-card h3 {
       color: var(--k-brand);
@@ -150,11 +292,57 @@
       color: #666;
       font-size: 0.9rem;
     }
+
+    /* RESPONSIVE */
+    @media (max-width: 1024px) {
+      .container {
+        margin-left: 0;
+        margin-top: 100px;
+        padding-right: 5%;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        margin-top: 80px;
+        padding: 0 15px;
+      }
+
+      h2 {
+        font-size: 2rem;
+      }
+
+      .quiz-card {
+        padding: 30px 20px;
+      }
+
+      .topic-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        margin-top: 70px;
+      }
+
+      h2 {
+        font-size: 1.6rem;
+      }
+
+      .quiz-card h3 {
+        font-size: 1.2rem;
+      }
+
+      .options button {
+        padding: 12px;
+        font-size: 0.95rem;
+      }
+    }
   </style>
 
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#c60000">
-</head>
 
 <body>
 

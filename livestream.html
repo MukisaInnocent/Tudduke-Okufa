@@ -348,6 +348,201 @@
       width: 100%;
       padding: 40px 20px;
       margin-left: 250px;
+align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      color: var(--text-sec);
+      text-decoration: none;
+      font-weight: 500;
+      border-radius: var(--radius);
+      transition: 0.2s;
+      margin-bottom: 4px;
+    }
+
+    .sidebar-link:hover {
+      background: var(--glass);
+      color: var(--text);
+    }
+
+    .sidebar-link.active {
+      background: var(--brand);
+      color: white;
+    }
+
+    .sidebar-link.active i {
+      color: white;
+    }
+
+    /* MAIN CONTENT */
+    main {
+      margin-left: 250px;
+      margin-top: 70px;
+      padding: 30px;
+      min-height: calc(100vh - 70px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* HERO PLAYER SECTION */
+    .hero-player {
+      width: 100%;
+      max-width: 1100px;
+      background: #000;
+      /* Always dark for cinema feel */
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      margin-bottom: 40px;
+      position: relative;
+    }
+
+    .video-wrapper {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      background: #000;
+    }
+
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .player-info {
+      padding: 24px;
+      background: #1a1a1a;
+      color: white;
+    }
+
+    .player-info h1 {
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+    }
+
+    .player-info p {
+      color: #aaa;
+      font-size: 0.95rem;
+    }
+
+    /* LIVE BADGE */
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #cc0000;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.6;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+
+    /* OFFLINE STATE */
+    .offline-state {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #111, #222);
+      color: #ddd;
+      text-align: center;
+    }
+
+    .offline-icon {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+
+    /* SECTIONS GRID */
+    .content-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 30px;
+      width: 100%;
+      max-width: 1100px;
+    }
+
+    .section-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+    }
+
+    .schedule-item {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 15px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .schedule-time {
+      font-weight: 700;
+      color: var(--brand);
+      min-width: 80px;
+    }
+
+    .cta-btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      text-align: center;
+      background: var(--brand);
+      color: white;
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 8px;
+      margin-top: 10px;
+      transition: 0.2s;
+    }
+
+    .cta-btn:hover {
+      filter: brightness(1.1);
+      transform: translateY(-2px);
+    }
+
+    /* FOOTER */
+    .site-footer {
+      margin-top: auto;
+      width: 100%;
+      padding: 40px 20px;
+      margin-left: 250px;
       background: #000;
       border-top: 1px solid var(--border);
       text-align: center;
@@ -379,12 +574,111 @@
         grid-template-columns: 1fr;
       }
     }
+
+    @media (max-width: 768px) {
+      .page-header {
+        padding: 0 16px;
+        height: 60px;
+      }
+
+      main {
+        margin-top: 60px;
+        padding: 20px 12px;
+      }
+
+      .player-info h1 {
+        font-size: 1.4rem;
+      }
+
+      .section-card {
+        padding: 20px;
+      }
+
+      .hero-player {
+        border-radius: 12px;
+        margin-bottom: 24px;
+      }
+
+      .site-footer {
+        padding: 30px 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .page-header {
+        padding: 0 12px;
+        height: 56px;
+      }
+
+      main {
+        margin-top: 56px;
+        padding: 16px 8px;
+      }
+
+      .player-info {
+        padding: 16px;
+      }
+
+      .player-info h1 {
+        font-size: 1.2rem;
+      }
+
+      .player-info p {
+        font-size: 0.85rem;
+      }
+
+      .section-card {
+        padding: 16px;
+        border-radius: 12px;
+      }
+
+      .section-title {
+        font-size: 1.05rem;
+      }
+
+      .schedule-item {
+        gap: 10px;
+        flex-direction: column;
+      }
+
+      .schedule-time {
+        min-width: auto;
+      }
+
+      .brand-logo {
+        font-size: 1rem;
+      }
+
+      aside#sidebar {
+        width: 220px;
+      }
+
+      .hero-player {
+        border-radius: 8px;
+      }
+
+      .content-grid {
+        gap: 16px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .player-info h1 {
+        font-size: 1.1rem;
+      }
+
+      .brand-logo {
+        font-size: 0.85rem;
+      }
+
+      aside#sidebar {
+        width: 200px;
+      }
+    }
   </style>
 
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#c60000">
-</head>
-
 <body>
 
   <!-- HEADER -->

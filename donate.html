@@ -537,6 +537,200 @@
       align-items: center;
       gap: 8px;
     }
+    /* FORM ELEMENTS */
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-size: 1rem;
+      font-family: inherit;
+      margin-bottom: 20px;
+      transition: 0.2s;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--brand);
+      box-shadow: 0 0 0 4px var(--brand-glow);
+    }
+
+    /* AMOUNT GRID */
+    .amount-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .amount-btn {
+      padding: 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s;
+      text-align: center;
+    }
+
+    .amount-btn:hover {
+      border-color: var(--brand);
+    }
+
+    .amount-btn.selected {
+      background: var(--brand);
+      border-color: var(--brand);
+      color: white;
+      box-shadow: 0 4px 20px var(--brand-glow);
+    }
+
+    .amount-btn span {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: normal;
+      opacity: 0.8;
+      margin-top: 4px;
+    }
+
+    /* PAYMENT METHOD GRID */
+    .method-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+
+    .method-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 16px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: 0.2s;
+    }
+
+    .method-card:hover {
+      border-color: var(--brand);
+    }
+
+    .method-card.selected {
+      background: rgba(198, 0, 0, 0.1);
+      border-color: var(--brand);
+    }
+
+    .method-icon {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+      border-radius: 6px;
+      color: var(--brand);
+    }
+
+    /* DYNAMIC FIELDS */
+    .dynamic-fields {
+      background: var(--surface-2);
+      padding: 24px;
+      border-radius: var(--radius);
+      margin-bottom: 24px;
+      display: none;
+      border-left: 3px solid var(--brand);
+    }
+
+    /* NEW: NETWORK BUTTONS (Mobile Money) */
+    .network-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .network-btn {
+      padding: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-muted);
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: 0.2s;
+    }
+
+    .network-btn.active {
+      border-color: var(--brand);
+      background: var(--surface-2);
+      color: white;
+    }
+
+    .network-btn.mtn.active {
+      border-color: #ffcc00;
+      color: #ffcc00;
+    }
+
+    .network-btn.airtel.active {
+      border-color: #ff0000;
+      color: #ff0000;
+    }
+
+    /* ACTIONS */
+    .wizard-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+      align-items: center;
+    }
+
+    .btn-next {
+      background: var(--brand);
+      color: white;
+      padding: 16px 40px;
+      border: none;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: 0.3s;
+    }
+
+    .btn-next:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px var(--brand-glow);
+    }
+
+    .btn-back {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
     .btn-back:hover {
       color: var(--text);
@@ -592,6 +786,46 @@
       }
     }
 
+    @media (max-width: 768px) {
+      .page-header {
+        padding: 0 16px;
+        height: 60px;
+      }
+
+      .main-wrapper {
+        padding-top: 60px;
+      }
+
+      .left-panel {
+        padding: 50px 20px;
+        min-height: 30vh;
+      }
+
+      .left-panel h1 {
+        font-size: 2.2rem;
+      }
+
+      .left-panel p {
+        font-size: 1rem;
+      }
+
+      .right-panel {
+        padding: 30px 16px;
+      }
+
+      h2.step-title {
+        font-size: 1.6rem;
+      }
+
+      .progress-container {
+        margin-bottom: 20px;
+      }
+
+      .step-indicator span {
+        font-size: 0.75rem;
+      }
+    }
+
     @media (max-width: 600px) {
       .amount-grid {
         grid-template-columns: 1fr 1fr;
@@ -599,6 +833,109 @@
 
       .method-grid {
         grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .page-header {
+        padding: 0 12px;
+        height: 56px;
+      }
+
+      .main-wrapper {
+        padding-top: 56px;
+      }
+
+      .left-panel {
+        padding: 40px 16px;
+        min-height: auto;
+      }
+
+      .left-panel h1 {
+        font-size: 1.8rem;
+      }
+
+      .left-panel p {
+        font-size: 0.9rem;
+      }
+
+      .impact-card {
+        padding: 12px;
+        gap: 12px;
+      }
+
+      .right-panel {
+        padding: 24px 12px;
+      }
+
+      h2.step-title {
+        font-size: 1.4rem;
+      }
+
+      p.step-desc {
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+      }
+
+      .form-input {
+        padding: 12px;
+        font-size: 0.9rem;
+      }
+
+      .amount-btn {
+        padding: 14px;
+        font-size: 1rem;
+      }
+
+      .btn-next {
+        padding: 14px 30px;
+        font-size: 1rem;
+      }
+
+      .wizard-actions {
+        margin-top: 20px;
+      }
+
+      .brand-logo {
+        font-size: 1rem;
+      }
+
+      aside#sidebar {
+        width: 220px;
+      }
+
+      .network-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .left-panel h1 {
+        font-size: 1.5rem;
+      }
+
+      h2.step-title {
+        font-size: 1.2rem;
+      }
+
+      .amount-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .amount-btn {
+        padding: 12px;
+        font-size: 0.9rem;
+      }
+
+      .brand-logo {
+        font-size: 0.85rem;
+        gap: 8px;
+      }
+
+      .step-indicator span {
+        display: none;
       }
     }
   </style>

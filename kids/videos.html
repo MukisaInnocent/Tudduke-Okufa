@@ -95,6 +95,103 @@
       font-size: 0.75rem;
       background: rgba(198, 0, 0, 0.1);
       color: var(--k-brand);
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kids Videos | Tudduke Okufa Kids</title>
+
+  <!-- FONTS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* PAGE SPECIFIC STYLES */
+    .videos-container {
+      padding: 100px 5% 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    @media (min-width: 1024px) {
+      .videos-container {
+        margin-left: 280px;
+        width: auto;
+        max-width: none;
+      }
+    }
+
+    .video-search {
+      max-width: 600px;
+      margin: 0 auto 40px;
+      position: relative;
+    }
+
+    /* Input styles now inherited from style.css */
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+    }
+
+    .video-card {
+      background: var(--k-surface);
+      border-radius: var(--k-radius);
+      overflow: hidden;
+      box-shadow: var(--k-shadow);
+      transition: 0.3s;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .video-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--k-shadow-hover);
+    }
+
+    .thumbnail-wrapper {
+      position: relative;
+      padding-top: 56.25%;
+      /* 16:9 Aspect Ratio */
+      background: #000;
+    }
+
+    .thumbnail-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .video-info {
+      padding: 20px;
+      text-align: left;
+    }
+
+    .video-info h3 {
+      font-size: 1.2rem;
+      margin-bottom: 8px;
+      color: var(--k-text);
+    }
+
+    .video-info p {
+      font-size: 0.9rem;
+      color: var(--k-text-light);
+      line-height: 1.5;
+    }
+
+    .category-tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      background: rgba(198, 0, 0, 0.1);
+      color: var(--k-brand);
       padding: 4px 12px;
       border-radius: 20px;
       margin-bottom: 12px;
@@ -109,12 +206,50 @@
       margin-bottom: 12px;
       border: 2px solid var(--k-brand);
     }
+
+    /* RESPONSIVE */
+    @media (max-width: 1024px) {
+      .videos-container {
+        margin-left: 0;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .videos-container {
+        padding: 100px 5% 40px;
+      }
+
+      .video-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .video-search {
+        margin-bottom: 30px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .videos-container {
+        padding: 80px 15px 30px;
+      }
+
+      .video-info {
+        padding: 15px;
+      }
+
+      .video-info h3 {
+        font-size: 1.1rem;
+      }
+
+      .video-info p {
+        font-size: 0.85rem;
+      }
+    }
   </style>
 
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#c60000">
-</head>
-
 <body>
 
   <header>
