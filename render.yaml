@@ -3,7 +3,7 @@ services:
     name: tudduke-okufa-web
     env: node
     plan: free 
-    buildCommand: cd backend && npm install && npm rebuild sqlite3 --build-from-source
+    buildCommand: cd backend && npm install --build-from-source
     startCommand: cd backend && npm run seed && node server.js
     envVars:
       - key: NODE_ENV

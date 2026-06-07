@@ -176,6 +176,7 @@ async function seed() {
         description: 'Teaching children about God\'s unconditional love.',
         content: 'God loves you very much! He loves you when you\'re happy, when you\'re sad, and even when you make mistakes. God showed His love by sending Jesus to save us. Jesus came to Earth because God loves us so much. Remember, no matter what happens, God will always love you!',
         scripture: 'John 3:16',
+        userId: teacherUser.userid,
         createdAt: new Date()
       },
       {
@@ -183,6 +184,7 @@ async function seed() {
         description: 'Learning why obedience brings blessings.',
         content: 'When we obey God, we show that we love Him. God gave us rules to keep us safe and happy. When we obey our parents and teachers, we are also obeying God. Obedience brings blessings and makes God happy!',
         scripture: 'Ephesians 6:1',
+        userId: teacherUser.userid,
         createdAt: new Date()
       },
       {
@@ -190,6 +192,7 @@ async function seed() {
         description: 'Encouraging children to trust God in all situations.',
         content: 'Sometimes things can be scary or difficult. But we can trust God! God knows everything and He will take care of us. Just like a child trusts their parents, we can trust God. He will never leave us alone.',
         scripture: 'Proverbs 3:5',
+        userId: teacherUser.userid,
         createdAt: new Date()
       },
       {
@@ -197,6 +200,7 @@ async function seed() {
         description: 'Showing kindness as Jesus taught us.',
         content: 'Jesus was always kind to everyone. He helped people who were sick, fed people who were hungry, and loved everyone. We should be kind too! When we are kind to others, we show God\'s love. Kindness makes the world a better place!',
         scripture: 'Ephesians 4:32',
+        userId: teacherUser.userid,
         createdAt: new Date()
       }
     ]);
